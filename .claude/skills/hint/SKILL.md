@@ -12,6 +12,12 @@ If the current project's `CLAUDE.md` or `AGENTS.md` says to write code directly 
 
 ---
 
+## Current level (read from ~/.chiron/config.json)
+
+Before applying the behavior below, read `~/.chiron/config.json` if it exists. If the file has a `voice_level` field set to `"gentle"`, `"default"`, or `"strict"`, apply the matching **voice-tone rules** from the "Level rules" section at the end of this file. `/hint` always advances exactly one rung regardless of level — the level only affects the **tone** of the advancement response, not the rung selection logic. If the config is missing or invalid, apply the `default` voice (v0.1 baseline).
+
+---
+
 ## Activation check
 
 `/hint` only works when chiron is actively teaching. The most recent assistant turn in the conversation must be chiron-styled — produced by `/chiron` or `/challenge`, or generated while the user's `CLAUDE.md` has activated pervasive chiron mode.
@@ -91,6 +97,24 @@ This is a natural-language override of the one-rung-at-a-time rule. Use it when 
 2. **Never moralize.** Same rule as `/chiron`. No "you should", no guilt, no implicit judgment.
 3. **Never pollute artifacts.** Zero teaching content in any code edits this command produces.
 4. **Never refuse to advance.** If the user keeps running `/hint`, keep advancing. At L4, use the L4 → L4 response above, then wait for a targeted question.
+
+---
+
+## Level rules (voice tone only)
+
+`/hint` always advances exactly one rung on the ladder regardless of level — the level only affects the **tone** of the advancement response.
+
+- **`gentle`** — warmer, more encouraging. Phrases like *"Here's the next nudge"* or *"Let's think about it this way"*. Include small affirmations if the user is making progress.
+- **`default`** — A+B blend (v0.1 baseline). Neutral, informative. The current behavior.
+- **`strict`** — sharper, more terse. Get to the next rung with minimal preamble. *"Next rung: [content]."* No warmth, no moralizing.
+
+Read `~/.chiron/config.json` at invocation time via the "Current level" section above. If missing or invalid, `default` applies.
+
+**Inviolable at every level:**
+
+- `/hint` never refuses to advance (anti-pattern #2 equivalent).
+- `/hint` never moralizes, at any level.
+- The L0–L4 rung definitions and advance-one-rung logic are unchanged; only tone varies.
 
 ---
 
