@@ -4,16 +4,19 @@ Thanks for your interest in contributing. chiron is a small, opinionated plugin 
 
 ## 1. Language packs
 
-The biggest contribution opportunity. v0.1 ships only with Go. Adding a new language is typically a single-file PR against `docs/languages/<language>.md`.
+The biggest contribution opportunity. chiron ships six bundled language packs (Go, Rust, Python, JavaScript, TypeScript, Java). Community contributions for additional languages (Zig, C#, Kotlin, Swift, Ruby, Elixir, etc.) are most welcome. A new language is typically a single-file PR against `docs/languages/<language>.md` plus a mirror into `.claude/skills/challenge/SKILL.md`.
 
 See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the detailed authoring guide. Use [`docs/languages/_template.md`](docs/languages/_template.md) as a starting point.
 
-A good language pack includes:
+A comprehensive language pack includes (see the six bundled packs for the target density):
 
-- **5 canonical idioms** — stdlib primitives, architectural patterns, or design principles with concrete examples
-- **5 common pitfalls** — anti-patterns the mentor should flag
-- **Mental-model deltas** — things that work differently in this language than in C-family defaults
-- **Challenge seeds** — at least 3 seed entries that `/challenge` can pattern-match against. Each seed needs a `Signal` (regex or structural description) and a `Drill` (task + constraint)
+- **10–12 stdlib / ecosystem anchors** — doc pointers to the most important libraries and concepts
+- **25–30 idioms** — stdlib primitives, architectural patterns, and design principles with concrete examples
+- **20–25 anti-patterns** — common pitfalls with the bug, the explanation, and the fix
+- **20–25 mental-model deltas** — things that work differently in this language than in C-family defaults
+- **12–17 challenge seeds** — pre-authored drills that `/challenge` pattern-matches against. Each seed needs a `Signal` (prose or pseudo-regex) and a `Drill` (task + constraint)
+
+Smaller starter packs are fine too — the authoring guide has the full bar and minimums.
 
 Submit the pack as a PR against `main`. Maintainers will review for accuracy and tone.
 
@@ -31,11 +34,12 @@ Use the bug issue template. Include:
 
 chiron has an acceptance contract at [`docs/GOLDEN-TRANSCRIPT.md`](docs/GOLDEN-TRANSCRIPT.md). If you find a case where chiron's behavior diverges from the transcript **in shape** (exact wording will vary — structure must not), please file a bug. This is how we keep the plugin honest.
 
-## What's not welcome (for v0.1)
+## What's not welcome
 
-- **Scope expansion.** chiron is intentionally small. New commands (`/explain`, `/postmortem`, `/tour`, `/level`) are in the v0.2 roadmap and not accepted in v0.1 PRs.
-- **Tone softening.** The A+B voice blend (strict content, neutral framing) is the product. Suggestions to soften it into "friendlier" territory will be declined — chiron is opinionated and users who want gentler mentoring should use a different plugin.
-- **Feature flags and configurability.** v0.1 ships with one voice. Adding `/level gentle` or config files is deferred until there's strong community signal.
+- **Scope creep beyond the roadmap.** chiron is intentionally small. New slash commands outside the shipped set (`/chiron`, `/hint`, `/challenge`, `/level`, `/explain`, `/postmortem`, `/tour`) need to go through a brainstorm/plan cycle first. Open an issue before the PR.
+- **Tone softening of the default voice.** The A+B voice blend (strict content, neutral framing) is the product default. Users who want gentler mentoring can run `/level gentle` — suggestions to soften the `default` level itself will be declined.
+- **Speculative configurability.** `~/.chiron/config.json` ships today with `voice_level` and `drill` fields (v0.2.0–v0.2.1). New config fields need a real use case, not "someone might want to tune this."
+- **Removing the never-refuse rule.** Anti-pattern #2 (never refuse to ship when asked) is inviolable at every level. PRs that walk this back will be closed.
 
 ## Development setup
 

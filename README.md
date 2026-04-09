@@ -162,25 +162,34 @@ If your project's `CLAUDE.md` or `AGENTS.md` contains instructions that conflict
 
 ## Language packs
 
-v0.1 ships with a Go language pack at `docs/languages/go.md`. More languages are welcomed as community contributions.
+chiron ships with comprehensive language packs for six languages. Run `/challenge path/to/file.<ext>` on any supported file:
 
-**Want to add Rust, TypeScript, Python, Zig, or something else?** See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide and start from [`docs/languages/_template.md`](docs/languages/_template.md). A new language pack is usually a single-file PR.
+| Language | Extensions | Pack |
+|----------|------------|------|
+| Go | `.go` | [`docs/languages/go.md`](docs/languages/go.md) |
+| Rust | `.rs` | [`docs/languages/rust.md`](docs/languages/rust.md) |
+| Python | `.py` | [`docs/languages/python.md`](docs/languages/python.md) |
+| JavaScript | `.js`, `.mjs`, `.cjs` | [`docs/languages/javascript.md`](docs/languages/javascript.md) |
+| TypeScript | `.ts`, `.tsx` | [`docs/languages/typescript.md`](docs/languages/typescript.md) |
+| Java | `.java` | [`docs/languages/java.md`](docs/languages/java.md) |
+
+Each pack includes: stdlib anchors, 25–30 idioms, 20–25 common anti-patterns, mental-model deltas, and 12–17 challenge seeds. TypeScript files also match JavaScript seeds — both packs are consulted.
+
+**Want to add Zig, C#, Kotlin, Swift, Ruby, or something else?** See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide and start from [`docs/languages/_template.md`](docs/languages/_template.md). A new language pack is usually a single-file PR against `docs/languages/<lang>.md` plus a mirror into `.claude/skills/challenge/SKILL.md`.
 
 ## Roadmap
 
 chiron's development roadmap from empty repo to v0.1 MVP lives in [`ROADMAP.md`](ROADMAP.md). It tracks phase-by-phase progress (scaffolding → commands → language pack → verification → public release) and lists v0.2+ candidate features that are intentionally not in v0.1.
 
-**v0.2+ candidates at a glance:**
+**Shipped:** `/chiron`, `/hint`, `/challenge`, `/level`, `/explain`, `/postmortem`, `/tour` — and six language packs (Go, Rust, Python, JavaScript, TypeScript, Java).
 
-- `/explain` — compare 2+ approaches with trade-offs
-- `/postmortem` — session-end `/10` across design, code quality, idioms, testing, engineering maturity
-- Profile read-loop — surface recurring weaknesses on session start
-- Rust / TypeScript / Python / Zig language packs (community contributions welcomed)
+**On deck:**
+
 - `chiron-reviewer` agent — review your code the way a senior engineer would
-- `/level` — gentle / default / strict voice dial
 - Pre-edit hook for strict-mode guardrails
+- Additional language packs (C#, Kotlin, Swift, Ruby, Zig — community-driven)
 
-See [`ROADMAP.md`](ROADMAP.md) for the full list and the validation gate that must pass before v0.2 work starts.
+See [`ROADMAP.md`](ROADMAP.md) for the full history and future bundles.
 
 ## License
 
