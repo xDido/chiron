@@ -2,7 +2,7 @@
 name: challenge
 description: Generate idiom drills grounded in specific lines of a source file. Seeded patterns first, model eyeball fallback on no match. Grades user attempts /10 and writes outcomes to ~/.chiron/profile.json.
 user-invocable: true
-argument-hint: path to file, or leave empty for the current file in focus
+argument-hint: "[file]"
 ---
 
 # /challenge — hero feature: drills from your own code
