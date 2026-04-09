@@ -69,18 +69,21 @@ v0.1 ships with a Go language pack at `docs/languages/go.md`. More languages are
 
 **Want to add Rust, TypeScript, Python, Zig, or something else?** See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide and start from [`docs/languages/_template.md`](docs/languages/_template.md). A new language pack is usually a single-file PR.
 
-## Roadmap (v0.2+)
+## Roadmap
 
-Features intentionally NOT in v0.1, documented so contributors know what's planned:
+chiron's development roadmap from empty repo to v0.1 MVP lives in [`ROADMAP.md`](ROADMAP.md). It tracks phase-by-phase progress (scaffolding → commands → language pack → verification → public release) and lists v0.2+ candidate features that are intentionally not in v0.1.
+
+**v0.2+ candidates at a glance:**
 
 - `/explain` — compare 2+ approaches with trade-offs
 - `/postmortem` — session-end `/10` across design, code quality, idioms, testing, engineering maturity
-- `/tour` — "before each task" structured preamble
-- `/level` — gentle / default / strict voice dial
-- Cross-session learner profile read-loop (surface recurring weaknesses on session start)
-- Rust / TypeScript / Python / Zig language packs
+- Profile read-loop — surface recurring weaknesses on session start
+- Rust / TypeScript / Python / Zig language packs (community contributions welcomed)
 - `chiron-reviewer` agent — review your code the way a senior engineer would
+- `/level` — gentle / default / strict voice dial
 - Pre-edit hook for strict-mode guardrails
+
+See [`ROADMAP.md`](ROADMAP.md) for the full list and the validation gate that must pass before v0.2 work starts.
 
 ## License
 
