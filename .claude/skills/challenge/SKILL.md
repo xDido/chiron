@@ -97,16 +97,20 @@ Eyeball drills must follow the same format and sizing rules as seeded drills.
 
 ## Step 6 — Present drills
 
-Present each drill in this exact format:
+Present each drill in this compact format (3 lines per drill, not 6):
 
 ```
-## Drill 1/3 — [idiom tag]
-
-**Location:** <file>:<line-range>
-**Current shape:** <one-sentence description of what's there now>
-**Task:** <what the user should do>
-**Constraint:** <what makes this a drill, not a rewrite>
+Drill 1/3 — <idiom tag> @ <file>:<line-range>
+<what the user should do> (current: <what's there now>)
+Constraint: <what makes this a drill, not a rewrite>
 ```
+
+**Style rules:**
+
+- No `## Drill` header — inline the number in the drill line
+- No `**Location:**` label — use `@` as separator
+- Merge "task" and "current shape" onto one line with `(current: ...)` parenthetical
+- `Constraint:` stays on its own line because it's the load-bearing rule for grading
 
 **Drill sizing requirements (enforce strictly):**
 
