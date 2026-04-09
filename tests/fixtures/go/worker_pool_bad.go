@@ -7,20 +7,20 @@
 //
 // Known bugs (each should surface as a chiron drill):
 //
-//   1. ranging-inside-goroutine — every worker processes every input,
-//      matching seed `go:shared-input-channel`.
+//  1. ranging-inside-goroutine — every worker processes every input,
+//     matching seed `go:shared-input-channel`.
 //
-//   2. no context cancellation check — workers keep running even if the
-//      caller's context is canceled, matching seed `go:goroutine-leak`
-//      and `go:context-propagation`.
+//  2. no context cancellation check — workers keep running even if the
+//     caller's context is canceled, matching seed `go:goroutine-leak`
+//     and `go:context-propagation`.
 //
-//   3. unbuffered coordination — the results channel is unbuffered and
-//      readers/writers can deadlock depending on order. This is a more
-//      subtle design issue worth discussing.
+//  3. unbuffered coordination — the results channel is unbuffered and
+//     readers/writers can deadlock depending on order. This is a more
+//     subtle design issue worth discussing.
 //
-//   4. manual error collection — uses sync.WaitGroup with ad-hoc error
-//      handling instead of errgroup.WithContext, matching seed
-//      `go:errgroup-with-context`.
+//  4. manual error collection — uses sync.WaitGroup with ad-hoc error
+//     handling instead of errgroup.WithContext, matching seed
+//     `go:errgroup-with-context`.
 package workerpool
 
 import (
