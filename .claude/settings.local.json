@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Read(//c/Users/Dido/.claude//**)",
+      "Bash(xargs grep:*)",
+      "Bash(git add:*)",
+      "Bash(git -c core.editor=true rebase --continue)",
+      "Bash(GIT_EDITOR=true git rebase:*)",
+      "Bash(GIT_SEQUENCE_EDITOR=: GIT_EDITOR=: git rebase:*)",
+      "Bash(GIT_EDITOR=: git rebase --continue)"
     ]
   }
 }
