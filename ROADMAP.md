@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 1 — Foundation (nearly complete; awaiting commit)
+**Current status:** Phase 2 — Commands (three files written and post-review edits applied; ready to commit)
 
 ---
 
@@ -39,21 +39,25 @@ Scaffolding the repo so it's buildable and contributable from day one.
 - [x] `docs/GOLDEN-TRANSCRIPT.md` — the v0.1 acceptance contract
 - [x] `tests/golden/fan_out_transcript.md` — CI reproducibility copy
 - [x] Scaffolding committed (commit `03a62b7` "repo boilerplate")
-- [ ] Phase 1 follow-up committed (golden transcript + roadmap)
+- [x] Phase 1 follow-up committed (commit `cb2c5f5` "phase 1: golden transcript and roadmap")
+
+**Phase 1 complete ✅**
 
 **Exit criteria:** Repo is scaffolded, the golden transcript contract is committed, everything below can be built against it.
 
 ---
 
-## Phase 2 — Commands
+## Phase 2 — Commands (in progress)
 
 The three opt-in entry points chiron offers to users. Each command file is self-contained: voice directive, decision tree, anti-patterns, and failure-mode rules are inlined to avoid the skill auto-trigger problem.
 
-- [ ] `commands/chiron.md` — `/chiron <request>` — Socratic voice for a single coding request. Inlines voice (A+B blend), decision tree, L0–L4 ladder, anti-patterns, 4 failure-mode rules.
-- [ ] `commands/hint.md` — `/hint` — stateless rung advancer. Re-reads the most recent turn, identifies current rung, emits the next one.
-- [ ] `commands/challenge.md` — `/challenge <file>` — hero drill generator. Seeded pass against the language pack, eyeball fallback. Grades attempts with `/10`. Writes to `~/.chiron/profile.json`.
+- [x] `commands/chiron.md` — `/chiron <request>` — Socratic voice for a single coding request. Inlines voice (A+B blend), decision tree, L0–L4 ladder, anti-patterns, 4 failure-mode rules.
+- [x] `commands/hint.md` — `/hint` — stateless rung advancer. Re-reads the most recent turn, identifies current rung, emits the next one.
+- [x] `commands/challenge.md` — `/challenge <file>` — hero drill generator. Seeded pass (to be inlined in Phase 3), eyeball fallback. Grades attempts with `/10`. Writes to `~/.chiron/profile.json`.
+- [x] **Post-review corrections applied** — tightened `/chiron` decision tree step 4 ("already knows" criterion), dropped `/10` threshold from `drill_solved` (constraint-pass only). See `plans/mossy-crunching-hopcroft.md` for the rationale.
+- [ ] Phase 2 committed
 
-**Exit criteria:** Each command demos in isolation. `/chiron` matches the golden transcript's first two turns in shape. `/hint` advances a rung. `/challenge` generates seeded drills on the hero fixture.
+**Exit criteria:** Each command demos in isolation. `/chiron` matches the golden transcript's first two turns in shape. `/hint` advances a rung. `/challenge` generates seeded drills (note: Phase 3 will inline the seeds into `commands/challenge.md` to avoid runtime file-loading dependency).
 
 ---
 
