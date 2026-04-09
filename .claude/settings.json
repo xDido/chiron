@@ -1,0 +1,10 @@
+{
+  "extraKnownMarketplaces": {
+    "chiron-dev": {
+      "source": {
+        "source": "directory",
+        "path": "C:\\Users\\Dido\\Desktop\\mentor"
+      }
+    }
+  }
+}

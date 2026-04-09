@@ -1,3 +1,6 @@
 go-mentor.md
 plan.md
-.claude/
+
+# Local Claude Code session state (but keep plugin content under .claude/skills)
+.claude/settings.local.json
+
