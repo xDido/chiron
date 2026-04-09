@@ -175,7 +175,7 @@ The UUID is generated exactly once on first profile write. On subsequent writes,
 - No moralizing. No "you should have known this." No guilt.
 - Never refuse to give the answer if the user asks for it directly.
 
-The full voice rules from `commands/chiron.md` apply. Key points below.
+The full voice rules from `.claude/skills/chiron/SKILL.md` apply. Key points below.
 
 ---
 
@@ -246,7 +246,7 @@ The full voice rules from `commands/chiron.md` apply. Key points below.
 6. When they paste an attempt, run steps 7–8 (grade with `/10`, log to profile).
 7. Zero teaching content in any file edits made during this command.
 
-The full voice, anti-patterns, and failure-mode rules from `commands/chiron.md` apply here too. In particular: never refuse to ship when the user asks for the answer directly, never moralize, never pollute artifacts.
+The full voice, anti-patterns, and failure-mode rules from `.claude/skills/chiron/SKILL.md` apply here too. In particular: never refuse to ship when the user asks for the answer directly, never moralize, never pollute artifacts.
 
 ---
 
