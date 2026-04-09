@@ -11,8 +11,6 @@
 <!--   Clip A: /chiron Socratic walkthrough (matches the golden transcript opening) -->
 <!--   Clip B: /challenge drill on tests/fixtures/go/worker_pool_bad.go -->
 
-*Once recorded, embed as `![alt](path/to/gif.gif)` after this line.*
-
 ## Install
 
 **Option A — directly from GitHub** (recommended once you're comfortable):
