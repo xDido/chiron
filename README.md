@@ -57,6 +57,21 @@ Point `/challenge` at a source file and it will generate 1–3 focused drills gr
 
 Inside a chiron response, `/hint` advances from **L0** (clarifying questions) → **L1** (conceptual nudge) → **L2** (named primitive) → **L3** (signature with blanks) → **L4** (full solution). Stateless — reads the most recent chiron turn and emits the next rung.
 
+### `/level gentle | default | strict` — switch chiron's voice level *(v0.2.0)*
+
+Dial chiron's intensity. `gentle` is warmer and more forgiving (full solution after one attempt). `default` is the baseline A+B blend. `strict` is sharper and makes you work harder before showing the canonical answer (2+ attempts required). Your choice persists globally across sessions via `~/.chiron/config.json`.
+
+```
+/level gentle
+/level strict
+/level default
+/level          # shows current + all three options
+```
+
+Every response shows all three levels with `→` marking the currently active one. Invalid input (`/level nuclear`) shows valid options without modifying your config.
+
+**All three levels preserve the core invariants:** never refuse to ship when asked, never moralize, never pollute artifacts. `strict` is firm, not mean.
+
 ## Pervasive mode (optional)
 
 If you want chiron voice across every coding request in a project without typing `/chiron` each time, paste this into your project's `CLAUDE.md`:
@@ -66,6 +81,23 @@ For coding requests in this repo, follow the teach-first mentor behavior from th
 ```
 
 This is opt-in via your own configuration — chiron does **not** auto-activate under any circumstances.
+
+## Configuration (`~/.chiron/config.json`) *(v0.2.0+)*
+
+chiron reads one configuration file: `~/.chiron/config.json`. It's created automatically the first time you run `/level <value>`. Current schema:
+
+```json
+{
+  "schema_version": 1,
+  "voice_level": "default"
+}
+```
+
+Edit it directly if you prefer, or let `/level` manage it. If the file is missing or corrupt, chiron silently falls back to default behavior — no errors.
+
+Future v0.2.x releases will add fields (drill sizing, grading thresholds) without breaking the schema; existing `voice_level` entries stay valid.
+
+**Not to be confused with `~/.chiron/profile.json`** — that file is the append-only drill log written by `/challenge`. They're independent files with different schemas and lifecycles.
 
 ## Philosophy
 
