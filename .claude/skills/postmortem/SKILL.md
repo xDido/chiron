@@ -57,25 +57,29 @@ If `$ARGUMENTS` contains a user-supplied summary (e.g., `/postmortem fan-out wor
 
 Each axis is scored `/10`. **Be honest and specific. Never cruel.**
 
-## Response format
+## Response format — keep it terse
+
+Compact 3-section format. ~10 lines total instead of decorative `##` headers:
 
 ```
-## Session summary
+Session: <1–2 sentence summary, not 2–3. Be specific about what was worked on.>
 
-<2–3 sentences recapping what was worked on, based on the conversation evidence>
+Scores:
+- Design 7/10: <one-line justification>
+- Code 8/10: <one-line justification>
+- Idioms 6/10: <one-line justification>
+- Testing 5/10: <one-line justification>
+- Maturity 7/10: <one-line justification>
 
-## Scores
-
-- **Design thinking:**       <N>/10 — <one-line specific justification tied to the conversation>
-- **Code quality:**          <N>/10 — <one-line specific justification>
-- **Idioms:**                <N>/10 — <one-line specific justification>
-- **Testing:**               <N>/10 — <one-line specific justification>
-- **Engineering maturity:** <N>/10 — <one-line specific justification>
-
-## One thing to practice
-
-<concrete, bounded next step — specific exercise, function, or pattern. NOT vague advice.>
+Practice: <concrete, bounded next step — specific exercise, not vague advice>
 ```
+
+**Style rules:**
+
+- `Session:` one line, not a `## Session summary` header block
+- Score list is flat bullets with axis name + score + colon + justification; no `**bold labels**`
+- `Practice:` one line, not a `## One thing to practice` header
+- Abbreviations allowed in axis names (`Maturity` instead of `Engineering maturity`) if it saves space
 
 **Justification rules:**
 

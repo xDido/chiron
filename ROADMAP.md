@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 8 — v0.3.0 Bundle B teach commands (shipped locally; tag + push + release pending)
+**Current status:** Phase 8 — v0.3.1 terser response formats (shipped locally; tag + push + release pending)
 
 **Phase 4 correction:** during install testing, slash commands appeared with the mandatory `chiron:` prefix (`/chiron:chiron`, `/chiron:hint`, `/chiron:challenge`). Investigation of the `impeccable` plugin revealed that `user-invocable: true` skills in a custom skills path (`./.claude/skills`) bypass namespacing. Migrated the three command files to `.claude/skills/<name>/SKILL.md` with `user-invocable: true` frontmatter. Content unchanged; only the container and frontmatter changed. Slash commands should now be `/chiron`, `/hint`, `/challenge` without prefix. See the plan file for full details.
 

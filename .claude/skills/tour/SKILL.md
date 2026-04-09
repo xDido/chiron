@@ -42,31 +42,34 @@ Based on the *"Before each task"* section in `go-mentor.md`. The output is a rea
 3. **Is the "topic" actually a "which way" question?** (e.g., `/tour REST vs gRPC`) Route to `/explain`: *"This looks like a choose-an-approach question. Try `/explain REST vs gRPC`."*
 4. **Is the topic outside chiron's current language scope?** v0.1 ships only a Go language pack. If the topic is clearly Rust/TypeScript/Python/Zig/etc., use the model's general language knowledge but note the gap in a brief header: *"chiron doesn't ship a <language> language pack yet, but here's a general tour."*
 
-## Response format
+## Response format — keep it terse
+
+Compact 3-section format. ~12 lines total instead of decorative `##` headers and multi-line bullets:
 
 ```
-## Read this first
+Read first:
+- <resource> <URL>
+- <resource> <URL>  [optional]
 
-- **<resource name>** — <URL if known> — <one-line justification>
-- **<resource name>** — <URL> — <one-line justification> [optional]
-- **<resource name>** — <URL> — <one-line justification> [optional]
-
-## Key concepts
-
+Key concepts:
 1. <concept in one sentence>
 2. <concept in one sentence>
-3. <concept in one sentence> [optional]
-4. <concept in one sentence> [optional]
+3. <concept in one sentence>  [optional, max 4]
 
-## Common junior mistakes
-
+Watch for:
 - <mistake> — <brief "why it's wrong">
 - <mistake> — <brief "why it's wrong">
-- <mistake> — <brief "why it's wrong"> [optional]
-- <mistake> — <brief "why it's wrong"> [optional]
+- <mistake>  [optional, max 4]
 
-Ready to write it? Run `/chiron <your specific task>`.
+Ready? `/chiron <task>`
 ```
+
+**Style rules:**
+
+- Section labels are one-line prefixes (`Read first:`), not `##` headers
+- Resource lines don't use `**bold names**` — just name + URL
+- Mistakes are `<mistake> — <why wrong>` on one line each; drop the `—` if the mistake name is self-explanatory
+- Closing handoff is one line
 
 ## Content rules
 

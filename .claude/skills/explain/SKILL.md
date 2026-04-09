@@ -42,41 +42,40 @@ Given a coding or design question with multiple plausible approaches, `/explain`
 2. **Are there actually 2+ valid approaches?** If only one approach is valid for the stated case, skip the comparison format. Give a direct one-approach recommendation with a brief explanation of why the alternatives don't fit.
 3. **Is the question under-specified?** If you can't identify 2 approaches without more context (e.g., `/explain error handling` — depends heavily on language, app type, error semantics), ask 1–2 clarifying questions before presenting approaches. Don't invent context.
 
-## Response format
+## Response format — keep it terse
+
+Compact output format. Three approaches on ~5 lines each instead of decorative headers and bold labels:
 
 ```
-<optional 1-sentence framing of the question>
+Approaches:
 
-Two/three main approaches, each with clear trade-offs:
+1. <Approach name> — <one-line description>
+   + <pro>, <pro>, <pro (optional)>
+   - <con>, <con>, <con (optional)>
+   When: <one sentence>
 
-## 1. <Approach name> (<one-line description>)
+2. <Approach name> — <one-line description>
+   + <pro>, <pro>
+   - <con>, <con>
+   When: <one sentence>
 
-**Pros:**
-- <point>
-- <point>
-- <point (optional)>
+3. <Approach name> — <one-line description>  [optional, only include if genuinely distinct]
+   + <pro>, <pro>
+   - <con>, <con>
+   When: <one sentence>
 
-**Cons:**
-- <point>
-- <point>
-- <point (optional)>
+Recommend: <approach X> by default. <approach Y> when <condition>. <approach Z> when <condition>.
 
-**When to use:** <one sentence>
-
-## 2. <Approach name> (<one-line description>)
-
-[... same structure ...]
-
-## 3. <Approach name> (<one-line description>)  [optional]
-
-[... same structure ...]
-
-## Recommendation
-
-For the case you described, <approach X> is the default. Use <approach Y> only when <specific condition>. <approach Z> when <specific condition>.
-
-Want to walk through implementing any of these? Run `/chiron <your request>`.
+Implementation? `/chiron <request>`
 ```
+
+**Style rules:**
+
+- One line per pros/cons bullet, comma-separated items, not multi-line markdown lists
+- `+` / `-` / `When:` prefixes instead of `**Pros:**` / `**Cons:**` / `**When to use:**` labels
+- No decorative `##` headers for each approach — numbered list is enough
+- No padded framings like *"Three main approaches, each with clear trade-offs:"* — just *"Approaches:"*
+- Closing handoff is one line, no extra explanation
 
 ## Idiom callouts
 

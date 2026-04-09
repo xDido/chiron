@@ -6,6 +6,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.3.1] — 2026-04-09
+
+### Changed — terser response formats across all skills
+
+User feedback after v0.3.0: *"the output is so large for every command can we make it a little smaller?"*
+
+Response format examples in 5 skill files tightened to produce ~40–60% shorter user-facing output while preserving all information content:
+
+- **`/explain`** — pros/cons/when-to-use inlined on single lines with `+`/`-`/`When:` prefixes instead of `**Pros:**` / `**Cons:**` / `**When to use:**` bold labels. Three approaches drop from ~40 lines to ~15.
+- **`/postmortem`** — `Session:` / `Scores:` / `Practice:` one-line section labels instead of `## Session summary` / `## Scores` / `## One thing to practice` headers. Axis names abbreviated (`Design` / `Code` / `Idioms` / `Testing` / `Maturity`) in the scores block. From ~20 lines to ~10.
+- **`/tour`** — `Read first:` / `Key concepts:` / `Watch for:` one-line section labels instead of `##` headers. Resource bullets drop the `**bold names**` and `—` separator. From ~25 lines to ~12.
+- **`/challenge`** drill format — 3 lines per drill instead of 6. Header, location, task, and current shape merged: `Drill 1/3 — <tag> @ <file>:<line-range>` then task on line 2 with `(current: ...)` parenthetical. `Constraint:` kept on its own line (load-bearing for grading).
+- **`/chiron`** tone examples — updated to reflect the new terse voice: *"Three things that shape the answer:"* instead of *"Before we write it — three things worth thinking about, because the right answer depends on them:"*. Footer tightened: *"Answer any, or `/hint`, or say 'just write it'."*
+- Added an explicit **"Keep responses terse"** directive at the voice section in `/chiron`, to be followed by the other skills as they respond.
+
+### Not changed
+
+- **Decision trees, anti-patterns, invariants, voice rules** — these are skill-internal instructions, not user-facing output. Untouched.
+- **`/hint`** — already short; no change needed.
+- **`/level`** — three-level list format is already tight and the descriptions carry useful information; no change.
+- **The 2–3 approach structure of `/explain`, 3-section structure of `/tour`, 5 axes of `/postmortem`, per-drill constraint format of `/challenge`** — structural contract unchanged, only formatting tightened.
+- **Anti-pattern #2** (never refuse to ship) — preserved verbatim at every level.
+
+### Verification
+
+Before v0.3.1: `/explain error handling in Go` typical response ~45 lines. After v0.3.1: ~18 lines. Same information density; less visual bulk.
+
+---
+
 ## [0.3.0] — 2026-04-09
 
 ### Added — Bundle B teach commands (`/explain`, `/postmortem`, `/tour`)
