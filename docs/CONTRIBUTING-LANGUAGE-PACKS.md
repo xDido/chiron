@@ -1,6 +1,6 @@
 # Contributing a language pack to chiron
 
-This guide explains how to add a new language pack to chiron. The v0.1 release ships with Go only. Community contributions for Rust, TypeScript, Python, Zig, and other languages are welcome.
+This guide explains how to add a new language pack to chiron. The v0.1 release ships with Go only. Community contributions for Rust, TypeScript, Python, and other languages are welcome.
 
 A new language pack is usually a **single PR** that touches two files plus a hero fixture. This guide walks you through it end to end.
 
@@ -22,10 +22,10 @@ The seeds are what makes `/challenge` work for the language. Without seeds, `/ch
 
 Every pack has content in **two files**, both maintained together:
 
-| File | Role | Size |
-|------|------|------|
-| `docs/languages/<lang>.md` | Human-readable reference. Full idiom explanations, all anti-patterns, mental-model deltas, stdlib anchors. Read by contributors and users, not by the runtime. | Large (500+ lines typical) |
-| `commands/challenge.md` § "&lt;Language&gt; language pack (inlined)" | Runtime source of truth. Just the idiom tag list (for eyeball fallback) and the full seeds (for pattern matching). No prose explanations. | ~200 lines per language |
+| File                                                                 | Role                                                                                                                                                           | Size                       |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| `docs/languages/<lang>.md`                                           | Human-readable reference. Full idiom explanations, all anti-patterns, mental-model deltas, stdlib anchors. Read by contributors and users, not by the runtime. | Large (500+ lines typical) |
+| `commands/challenge.md` § "&lt;Language&gt; language pack (inlined)" | Runtime source of truth. Just the idiom tag list (for eyeball fallback) and the full seeds (for pattern matching). No prose explanations.                      | ~200 lines per language    |
 
 **Both files must be kept in sync.** The docs file explains the content; the command file runs the command. A contribution PR touches both. If they drift, the runtime behavior drifts from the documentation.
 
@@ -124,12 +124,14 @@ Run the three verification steps:
 ```
 
 Expected outcome:
+
 - 1–3 drills are generated
 - At least one drill references specific lines in your fixture
 - At least one drill maps to a seed you wrote (not just the eyeball fallback)
 - The drill is scoped correctly (small, focused, achievable in 5–15 minutes)
 
 Then run `/challenge` on a real file in one of your own projects. Expected outcome:
+
 - Either 1–3 seeded drills (if the file has bugs your pack knows about)
 - Or the "no seeds matched" eyeball fallback with 1–3 drills from the model's own judgment
 
@@ -177,15 +179,15 @@ This is the hard part. A good seed is:
 
 Examples of good drill tasks:
 
-- *"Convert the `mu.Unlock()` calls to a single `defer mu.Unlock()` after the Lock."*
-- *"Replace the `%v` verb with `%w` in the `fmt.Errorf` call."*
-- *"Change the worker goroutines to read from a shared input channel instead of ranging over the shared slice."*
+- _"Convert the `mu.Unlock()` calls to a single `defer mu.Unlock()` after the Lock."_
+- _"Replace the `%v` verb with `%w` in the `fmt.Errorf` call."_
+- _"Change the worker goroutines to read from a shared input channel instead of ranging over the shared slice."_
 
 Examples of bad drill tasks (too big or too vague):
 
-- *"Refactor this function to be more idiomatic."* (Vague. What specifically?)
-- *"Add context propagation throughout the package."* (Multi-file; too big.)
-- *"Rewrite the error handling."* (Not bounded.)
+- _"Refactor this function to be more idiomatic."_ (Vague. What specifically?)
+- _"Add context propagation throughout the package."_ (Multi-file; too big.)
+- _"Rewrite the error handling."_ (Not bounded.)
 
 ## How signals are matched at runtime
 
