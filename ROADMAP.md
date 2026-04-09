@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 6 — v0.2.0 `/level` voice dial (shipped locally; tag + push + release pending)
+**Current status:** Phase 7 — v0.2.1 drill sizing config (shipped locally; tag + push + release pending)
 
 **Phase 4 correction:** during install testing, slash commands appeared with the mandatory `chiron:` prefix (`/chiron:chiron`, `/chiron:hint`, `/chiron:challenge`). Investigation of the `impeccable` plugin revealed that `user-invocable: true` skills in a custom skills path (`./.claude/skills`) bypass namespacing. Migrated the three command files to `.claude/skills/<name>/SKILL.md` with `user-invocable: true` frontmatter. Content unchanged; only the container and frontmatter changed. Slash commands should now be `/chiron`, `/hint`, `/challenge` without prefix. See the plan file for full details.
 
@@ -151,6 +151,31 @@ First feature of **Bundle A — Voice & tuning** (see decomposition notes in the
 
 - **v0.2.1 — user config file expansion.** Add fields to `~/.chiron/config.json` for drill sizing (`max_drill_lines`, `max_functions_per_drill`, `drill_time_minutes`) and grading threshold (`drill_solved_threshold`). Non-breaking schema extension. Separate brainstorm → plan → implementation cycle.
 - **v0.2.2 — profile read-loop with level-aware difficulty.** Session-start hook reads `~/.chiron/profile.json`, surfaces recurring weaknesses based on tag frequency, optionally adjusts intensity based on `voice_level`. Separate sub-project.
+
+---
+
+## Phase 7 — v0.2.1 drill sizing config (in progress)
+
+Second feature of **Bundle A — Voice & tuning**. Extends `~/.chiron/config.json` with drill sizing overrides read by `/challenge`. Non-breaking schema extension; no new commands.
+
+- [x] `.claude/skills/challenge/SKILL.md` — drill sizing block rewritten to read config `drill` object with fallback + clamping + silent invalid-value handling
+- [x] `.claude/skills/level/SKILL.md` — "Tuning other config fields" section added, documenting the drill fields for users
+- [x] `plugin.json` version bumped to `0.2.1`
+- [x] `marketplace.json` version bumped to `0.2.1`
+- [x] `README.md` — Configuration section expanded with full v0.2.1 schema and field documentation
+- [x] `CHANGELOG.md` — `## [0.2.1]` section with feature, validation rules, and explicit out-of-scope notes
+- [ ] `claude plugins validate` passes
+- [ ] Uninstall + reinstall chiron; verify drill config override in a fresh session
+- [ ] Commit as `v0.2.1: drill sizing config fields`
+- [ ] Git tag `v0.2.1`
+- [ ] Push main + tag
+- [ ] Create GitHub Release from v0.2.1 tag
+
+**Exit criteria:** `/challenge` reads drill sizing from `~/.chiron/config.json` when present; falls back to hardcoded defaults when missing or invalid. Invalid values silently clamp or fall back without crashing. `voice_level` (from v0.2.0) continues working unchanged alongside the new `drill` object. GitHub Release v0.2.1 is published.
+
+### Remaining Bundle A feature
+
+- **v0.2.2 — profile read-loop with level-aware difficulty.** Session-start hook reads `~/.chiron/profile.json`, surfaces recurring weaknesses, optionally adjusts intensity per `voice_level`. Separate sub-project — brainstorm → plan → implementation cycle.
 
 **🎯 MVP COMPLETE when Phase 5 exit criteria are met.**
 

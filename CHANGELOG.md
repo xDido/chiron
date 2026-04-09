@@ -6,6 +6,47 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.2.1] — 2026-04-09
+
+### Added — drill sizing tunables in config
+
+Non-breaking schema extension to `~/.chiron/config.json`. `/challenge` now reads a new `drill` object for per-install drill sizing overrides:
+
+```json
+{
+  "schema_version": 1,
+  "voice_level": "default",
+  "drill": {
+    "max_lines_changed": 20,
+    "max_functions_touched": 1,
+    "time_minutes_min": 5,
+    "time_minutes_max": 15
+  }
+}
+```
+
+- **`drill.max_lines_changed`** — max lines of change per drill (default **20**, clamped [1, 100])
+- **`drill.max_functions_touched`** — max functions touched per drill (default **1**, clamped [1, 5])
+- **`drill.time_minutes_min` / `drill.time_minutes_max`** — estimated time range (defaults 5 and 15, each clamped [1, 60], min ≤ max)
+
+**Validation:** missing fields fall back to hardcoded defaults. Invalid values (negative, zero, non-integer, out of range) silently fall back without crashing. If `time_minutes_min > time_minutes_max`, both fields fall back to defaults.
+
+### Changed
+
+- `/challenge` skill's "Drill sizing requirements" block now reads the config `drill` object at invocation time and applies user overrides. If the config file or `drill` object is missing, the v0.2.0 hardcoded defaults apply unchanged.
+- `/level` skill gains a brief "Tuning other config fields" section pointing users at direct-edit for non-voice fields.
+- `README.md` Configuration section expanded with the full v0.2.1 schema and field documentation.
+- `plugin.json` and `marketplace.json` versions bumped to `0.2.1`.
+
+### Out of scope (explicitly)
+
+- **No new slash commands.** Drill fields are edited directly in `~/.chiron/config.json`. A `/config show|set|reset` command was considered and deferred.
+- **`drill_solved` kind selection remains binary** (constraint-pass only). The v0.1 post-review decision to drop the `/10` grading threshold is preserved.
+- **No profile path override, no preferred-language field, no hint-ladder tuning.** Deferred to later sub-projects.
+- **`schema_version` stays at `1`** — the addition is non-breaking; existing v0.2.0 configs (with just `voice_level`) continue working unchanged.
+
+---
+
 ## [0.2.0] — 2026-04-09
 
 ### Added — `/level` voice dial
