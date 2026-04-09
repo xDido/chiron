@@ -40,7 +40,7 @@ chiron has an acceptance contract at [`docs/GOLDEN-TRANSCRIPT.md`](docs/GOLDEN-T
 ## Development setup
 
 ```bash
-git clone https://github.com/xDido/Chiron.git
+git clone https://github.com/xDido/chiron.git
 cd chiron
 claude plugins marketplace add ./
 claude plugins install chiron@chiron-dev
