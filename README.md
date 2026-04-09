@@ -84,18 +84,34 @@ This is opt-in via your own configuration — chiron does **not** auto-activate 
 
 ## Configuration (`~/.chiron/config.json`) *(v0.2.0+)*
 
-chiron reads one configuration file: `~/.chiron/config.json`. It's created automatically the first time you run `/level <value>`. Current schema:
+chiron reads one configuration file: `~/.chiron/config.json`. It's created automatically the first time you run `/level <value>`. Current schema (v0.2.1):
 
 ```json
 {
   "schema_version": 1,
-  "voice_level": "default"
+  "voice_level": "default",
+  "drill": {
+    "max_lines_changed": 20,
+    "max_functions_touched": 1,
+    "time_minutes_min": 5,
+    "time_minutes_max": 15
+  }
 }
 ```
 
-Edit it directly if you prefer, or let `/level` manage it. If the file is missing or corrupt, chiron silently falls back to default behavior — no errors.
+**Fields:**
 
-Future v0.2.x releases will add fields (drill sizing, grading thresholds) without breaking the schema; existing `voice_level` entries stay valid.
+- **`voice_level`** — one of `"gentle"`, `"default"`, `"strict"`. Managed by `/level`. Affects voice tone, hint ladder progression, and refusal behavior.
+- **`drill`** *(new in v0.2.1)* — drill sizing overrides for `/challenge`. Every field is optional; missing fields fall back to hardcoded defaults. Invalid values (negative, zero, non-integer, out of range) silently fall back without crashing.
+  - `drill.max_lines_changed` — max lines of change per drill (default **20**, clamped [1, 100])
+  - `drill.max_functions_touched` — max functions touched per drill (default **1**, clamped [1, 5])
+  - `drill.time_minutes_min` — estimated minimum time (default **5**, clamped [1, 60])
+  - `drill.time_minutes_max` — estimated maximum time (default **15**, clamped [1, 60])
+  - If `time_minutes_min > time_minutes_max`, both fields silently fall back to defaults.
+
+Edit the file directly with any text editor, or use `/level` to manage `voice_level`. If the file is missing or corrupt, chiron silently falls back to default behavior — no errors.
+
+Future v0.2.x releases will add more fields (grading thresholds, hint tuning, etc.) without breaking the schema; existing entries stay valid.
 
 **Not to be confused with `~/.chiron/profile.json`** — that file is the append-only drill log written by `/challenge`. They're independent files with different schemas and lifecycles.
 
