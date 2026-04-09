@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 3 — Go language pack (written; ready to commit)
+**Current status:** Phase 4 — Verification (next)
 
 ---
 
@@ -76,9 +76,11 @@ The initial language. Enables `/challenge` to work on Go code and validates the 
 - [x] `commands/challenge.md` step 3 updated to reference the inlined section instead of trying to load `docs/languages/go.md` at runtime
 - [x] `docs/languages/_template.md` — community contribution template for future languages
 - [x] `docs/CONTRIBUTING-LANGUAGE-PACKS.md` — detailed authoring guide (step-by-step, quality bar, seed-writing tips, testing procedure)
-- [ ] Phase 3 committed
+- [x] Phase 3 committed (commit `21bbd4e` "phase 3: Go language pack (comprehensive)")
 
-**Exit criteria:** `/challenge tests/fixtures/go/worker_pool_bad.go` generates a concrete drill grounded in specific lines, maps to the `go:shared-input-channel` seed, grades attempts with `/10`, writes a valid profile entry. The command file is fully self-contained (no runtime file-loading dependencies).
+**Phase 3 complete ✅**
+
+**Exit criteria met:** the command file is fully self-contained (no runtime file-loading dependencies). `/challenge tests/fixtures/go/worker_pool_bad.go` should produce concrete drills grounded in specific lines — this is verified end-to-end in Phase 4.
 
 ---
 
