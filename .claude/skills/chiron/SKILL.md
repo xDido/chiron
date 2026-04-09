@@ -2,7 +2,7 @@
 name: chiron
 description: Apply teach-first Socratic mentor treatment to a coding request. Questions before code, graduated hints via an L0-L4 ladder, idiom callouts. Defers to CLAUDE.md and AGENTS.md when they conflict.
 user-invocable: true
-argument-hint: the coding request you'd normally send to Claude
+argument-hint: "[request]"
 ---
 
 # /chiron — Socratic mentor mode for one coding request
