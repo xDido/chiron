@@ -6,6 +6,53 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.3.0] — 2026-04-09
+
+### Added — Bundle B teach commands (`/explain`, `/postmortem`, `/tour`)
+
+Three new user-invocable slash commands extending chiron's teach-first philosophy:
+
+- **`/explain <question>`** — compare 2–3 approaches with pros/cons and a qualified recommendation. For *"which way should I..."* questions (complements `/chiron` which handles *"how do I..."* questions). Every response ends with a recommendation — no fence-sitting allowed. If the user says *"just tell me which one"*, `/explain` ships the recommendation directly without the full comparison.
+
+- **`/postmortem [optional summary]`** — session-end review. Analyzes recent chiron activity in the conversation and produces a 3-section report: session summary, `/10` scores across 5 axes from `go-mentor.md` (design thinking, code quality, idioms, testing, engineering maturity), and one concrete thing to practice next time. Graceful degradation if no recent chiron activity is found. **Read-only in v0.3.0** — scores are not persisted.
+
+- **`/tour <topic>`** — structured preamble before a coding task. 3 sections: read-this-first doc pointers (1–3), key concepts (2–4), common junior mistakes (2–4). Text-only preamble; no code examples. Routes *"how do I"* questions to `/chiron` and *"which way"* questions to `/explain`. Never fakes doc pointers — describes the resource without a URL if uncertain.
+
+### Architecture
+
+All three commands follow the established user-invocable skill pattern from v0.2.0:
+
+- `.claude/skills/{explain,postmortem,tour}/SKILL.md` with `user-invocable: true` frontmatter
+- Each reads `~/.chiron/config.json` at invocation time for the current `voice_level`
+- Each has a "Level rules" section applying `gentle`/`default`/`strict` voice tuning
+- All three are **read-only** — no profile.json writes, no new config fields
+
+### Invariants preserved
+
+- **Anti-pattern #2** (never refuse to ship) applies to all three:
+  - `/explain just tell me` gives a direct recommendation
+  - `/postmortem just the scores` skips the summary, goes straight to scores + one-to-practice
+  - `/tour` ships the preamble when the topic is valid
+- **No moralizing** at any level. `/postmortem strict` is terse and specific, never cruel.
+- **CLAUDE.md / AGENTS.md overrides** win at every level.
+- **All three route wrong-command-type gracefully** — `/explain` routes implementation questions to `/chiron`, `/tour` routes "how do I" questions to `/chiron` or `/explain`.
+- **`/postmortem` degrades gracefully** when no chiron activity is found (doesn't invent a session).
+
+### Changed
+
+- `plugin.json` and `marketplace.json` versions bumped to `0.3.0`.
+- `README.md` Usage section gains three new command entries.
+
+### Not in 0.3.0 (deferred)
+
+- **Profile persistence for `/postmortem` scores** — deferred. v0.3.x can add this if session-score history over time proves useful.
+- **Custom `/postmortem` axes** — hardcoded to the five from `go-mentor.md`. No per-user customization in v0.3.0.
+- **Code examples in `/tour`** — intentionally text-only. If users want implementation, that's `/chiron`'s job.
+- **Agent variants of these commands** — `chiron-reviewer` as an agent is still Bundle D, deferred.
+- **Bundle A v0.2.2** (profile read-loop with session-start hook) — still remaining in Bundle A.
+
+---
+
 ## [0.2.1] — 2026-04-09
 
 ### Added — drill sizing tunables in config
