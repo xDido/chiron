@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 7 — v0.2.1 drill sizing config (shipped locally; tag + push + release pending)
+**Current status:** Phase 8 — v0.3.0 Bundle B teach commands (shipped locally; tag + push + release pending)
 
 **Phase 4 correction:** during install testing, slash commands appeared with the mandatory `chiron:` prefix (`/chiron:chiron`, `/chiron:hint`, `/chiron:challenge`). Investigation of the `impeccable` plugin revealed that `user-invocable: true` skills in a custom skills path (`./.claude/skills`) bypass namespacing. Migrated the three command files to `.claude/skills/<name>/SKILL.md` with `user-invocable: true` frontmatter. Content unchanged; only the container and frontmatter changed. Slash commands should now be `/chiron`, `/hint`, `/challenge` without prefix. See the plan file for full details.
 
@@ -175,7 +175,36 @@ Second feature of **Bundle A — Voice & tuning**. Extends `~/.chiron/config.jso
 
 ### Remaining Bundle A feature
 
-- **v0.2.2 — profile read-loop with level-aware difficulty.** Session-start hook reads `~/.chiron/profile.json`, surfaces recurring weaknesses, optionally adjusts intensity per `voice_level`. Separate sub-project — brainstorm → plan → implementation cycle.
+- **v0.2.2 — profile read-loop with level-aware difficulty.** Session-start hook reads `~/.chiron/profile.json`, surfaces recurring weaknesses, optionally adjusts intensity per `voice_level`. Separate sub-project — brainstorm → plan → implementation cycle. **Still pending** (user chose Bundle B instead after v0.2.1).
+
+---
+
+## Phase 8 — v0.3.0 Bundle B teach commands (in progress)
+
+Three new user-invocable skills extending chiron's teach-first philosophy. All three are read-only, follow the established skill pattern, integrate with `voice_level` from config.
+
+- [x] `.claude/skills/explain/SKILL.md` — `/explain <question>`: 2–3 approaches with pros/cons/recommendation, never fence-sit
+- [x] `.claude/skills/postmortem/SKILL.md` — `/postmortem`: session-end 3-section review with `/10` scoring across 5 axes from `go-mentor.md`, graceful degradation if no recent chiron activity
+- [x] `.claude/skills/tour/SKILL.md` — `/tour <topic>`: structured "read first / key concepts / junior mistakes" preamble, text-only
+- [x] `plugin.json` version bumped to `0.3.0`
+- [x] `marketplace.json` version bumped to `0.3.0`
+- [x] `README.md` — three new commands added to Usage section
+- [x] `CHANGELOG.md` — `## [0.3.0]` section with feature, architecture, invariants, and deferrals
+- [ ] `claude plugins validate` passes
+- [ ] Uninstall + reinstall chiron; test all three commands in a fresh session
+- [ ] Commit as `v0.3.0: Bundle B teach commands (/explain, /postmortem, /tour)`
+- [ ] Git tag `v0.3.0`
+- [ ] Push main + tag
+- [ ] Create GitHub Release from v0.3.0 tag
+
+**Exit criteria:** All three commands function in a fresh session. `/explain` produces 2–3 approaches with a qualified recommendation. `/postmortem` reviews recent chiron activity and outputs the 3-section format with 5-axis scores. `/tour` produces the 3-section preamble format. All three respect `voice_level` from config, preserve anti-patterns (never refuse, never moralize), and don't write to profile.json. `claude plugins validate` passes clean. GitHub Release v0.3.0 is published.
+
+### Remaining work after v0.3.0
+
+- **Bundle A v0.2.2** — profile read-loop (the biggest single feature remaining; needs a session-start hook)
+- **Bundle D** — `chiron-reviewer` agent, pre-edit hook
+- **Bundle E** — Rust / TypeScript / Python / Zig language packs
+- **Post-release polish:** hero GIFs, GitHub Releases for v0.2.0/v0.2.1/v0.3.0, beta tester recruitment
 
 **🎯 MVP COMPLETE when Phase 5 exit criteria are met.**
 

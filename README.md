@@ -72,6 +72,41 @@ Every response shows all three levels with `→` marking the currently active on
 
 **All three levels preserve the core invariants:** never refuse to ship when asked, never moralize, never pollute artifacts. `strict` is firm, not mean.
 
+### `/explain <question>` — compare 2–3 approaches *(v0.3.0)*
+
+When you're facing a *"which way should I..."* question, `/explain` surfaces 2–3 named approaches with pros/cons and a qualified recommendation. Complements `/chiron` (which handles *"how do I..."* questions).
+
+```
+/explain error handling in Go: return errors vs panic vs typed errors
+/explain REST vs gRPC for this internal service
+/explain goroutines vs worker pool for this fan-out
+```
+
+Every response ends with a recommendation — no fence-sitting. If you just want the answer without the comparison, say *"just tell me which one"* and `/explain` will ship the recommendation directly.
+
+### `/postmortem [optional summary]` — session-end review *(v0.3.0)*
+
+Run at the end of a coding session to get a 3-section review: what you worked on, a `/10` score across 5 axes (design thinking, code quality, idioms, testing, engineering maturity), and one concrete thing to practice next. Read-only in v0.3.0 — scores aren't persisted yet.
+
+```
+/postmortem
+/postmortem fan-out worker pool implementation
+```
+
+Graceful degradation: if there's no recent chiron activity in the conversation, `/postmortem` tells you to run a `/chiron` or `/challenge` session first.
+
+### `/tour <topic>` — structured preamble before a task *(v0.3.0)*
+
+Before diving into a new topic, `/tour` gives you a 3-section preamble: read-this-first doc pointers, key concepts, common junior mistakes. From `go-mentor.md`'s *"Before each task"* pattern.
+
+```
+/tour errgroup
+/tour Go channels
+/tour async/await in TypeScript
+```
+
+Text-only — no code examples. Intentionally brief. If you want a tutorial or implementation guidance, follow up with `/chiron` after reading the tour.
+
 ## Pervasive mode (optional)
 
 If you want chiron voice across every coding request in a project without typing `/chiron` each time, paste this into your project's `CLAUDE.md`:
