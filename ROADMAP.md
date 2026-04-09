@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 2 — Commands (three files written and post-review edits applied; ready to commit)
+**Current status:** Phase 3 — Go language pack (written; ready to commit)
 
 ---
 
@@ -53,29 +53,32 @@ The three opt-in entry points chiron offers to users. Each command file is self-
 
 - [x] `commands/chiron.md` — `/chiron <request>` — Socratic voice for a single coding request. Inlines voice (A+B blend), decision tree, L0–L4 ladder, anti-patterns, 4 failure-mode rules.
 - [x] `commands/hint.md` — `/hint` — stateless rung advancer. Re-reads the most recent turn, identifies current rung, emits the next one.
-- [x] `commands/challenge.md` — `/challenge <file>` — hero drill generator. Seeded pass (to be inlined in Phase 3), eyeball fallback. Grades attempts with `/10`. Writes to `~/.chiron/profile.json`.
+- [x] `commands/challenge.md` — `/challenge <file>` — hero drill generator. Seeded pass, eyeball fallback. Grades attempts with `/10`. Writes to `~/.chiron/profile.json`.
 - [x] **Post-review corrections applied** — tightened `/chiron` decision tree step 4 ("already knows" criterion), dropped `/10` threshold from `drill_solved` (constraint-pass only). See `plans/mossy-crunching-hopcroft.md` for the rationale.
-- [ ] Phase 2 committed
+- [x] Phase 2 committed (commit `ef71c2f` "phase 2: command entry points")
 
-**Exit criteria:** Each command demos in isolation. `/chiron` matches the golden transcript's first two turns in shape. `/hint` advances a rung. `/challenge` generates seeded drills (note: Phase 3 will inline the seeds into `commands/challenge.md` to avoid runtime file-loading dependency).
+**Phase 2 complete ✅**
 
 ---
 
-## Phase 3 — Go language pack
+## Phase 3 — Go language pack (in progress)
 
-The initial language. Enables `/challenge` to work on Go code and validates the pack contribution shape for future languages.
+The initial language. Enables `/challenge` to work on Go code and validates the pack contribution shape for future languages. Scope expanded from the original "5 idioms + 5 anti-patterns" to **comprehensive** per user request.
 
-- [ ] `docs/languages/go.md`
-  - 5 canonical idioms (stdlib primitives + architectural patterns)
-  - 5 common pitfalls (anti-patterns)
-  - Mental-model deltas (things that work differently from C-family defaults)
-  - Stdlib "read this first" pointers
-  - `## Challenge seeds` section with at least 3 seeds, including `go:shared-input-channel`
-- [ ] `tests/fixtures/go/worker_pool_bad.go` — hero demo input, intentionally contains the ranging-inside-goroutine bug that matches the `go:shared-input-channel` seed signal
-- [ ] `docs/languages/_template.md` — community contribution template
-- [ ] `docs/CONTRIBUTING-LANGUAGE-PACKS.md` — detailed authoring guide
+- [x] `docs/languages/go.md` — human-readable source
+  - 12 stdlib anchors + 4 meta-resources (Effective Go, Go Proverbs, Go Memory Model, Code Review Comments)
+  - **30 idioms** (15 stdlib primitives, 5 architectural patterns, 10 design principles)
+  - **25 anti-patterns** across 6 categories (concurrency, error handling, resource handling, type/interface, tests, package structure)
+  - **25 mental-model deltas** for engineers coming from C-family languages
+  - **16 challenge seeds** with full Signal + Drill format
+- [x] `tests/fixtures/go/worker_pool_bad.go` — hero fixture compiling as real Go code, documents 4 intentional bugs matching seeds (`go:shared-input-channel`, `go:goroutine-leak`, unbuffered channel coordination, `go:errgroup-with-context`)
+- [x] Seeds + idiom tag list inlined into `commands/challenge.md` as `# Go language pack (inlined)` section — runtime source of truth
+- [x] `commands/challenge.md` step 3 updated to reference the inlined section instead of trying to load `docs/languages/go.md` at runtime
+- [x] `docs/languages/_template.md` — community contribution template for future languages
+- [x] `docs/CONTRIBUTING-LANGUAGE-PACKS.md` — detailed authoring guide (step-by-step, quality bar, seed-writing tips, testing procedure)
+- [ ] Phase 3 committed
 
-**Exit criteria:** `/challenge tests/fixtures/go/worker_pool_bad.go` generates a concrete drill grounded in specific lines, maps to the seed, grades attempts with `/10`, writes a valid profile entry.
+**Exit criteria:** `/challenge tests/fixtures/go/worker_pool_bad.go` generates a concrete drill grounded in specific lines, maps to the `go:shared-input-channel` seed, grades attempts with `/10`, writes a valid profile entry. The command file is fully self-contained (no runtime file-loading dependencies).
 
 ---
 
