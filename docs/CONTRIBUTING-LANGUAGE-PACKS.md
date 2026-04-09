@@ -1,6 +1,6 @@
 # Contributing a language pack to chiron
 
-This guide explains how to add a new language pack to chiron. The v0.1 release ships with Go only. Community contributions for Rust, TypeScript, Python, and other languages are welcome.
+This guide explains how to add a new language pack to chiron. chiron v0.4.0 ships with six bundled packs (Go, Rust, Python, JavaScript, TypeScript, Java). Community contributions for additional languages — C#, Kotlin, Swift, Ruby, Zig, Elixir, and anything else — are most welcome.
 
 A new language pack is usually a **single PR** that touches two files plus a hero fixture. This guide walks you through it end to end.
 

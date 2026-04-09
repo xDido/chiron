@@ -6,6 +6,92 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.4.0] — 2026-04-09
+
+### Added — Bundle E language packs (Rust, Python, JavaScript, TypeScript, Java)
+
+`/challenge` now ships with **comprehensive language packs for six languages** — up from one (Go) in v0.3.1. The new packs match the Go pack in depth and shape.
+
+#### Rust pack — `docs/languages/rust.md`
+
+- **12 stdlib/ecosystem anchors** — `Result`, `Option`, `Iterator`, `std::sync`, `tokio`, `serde`, `thiserror`, `anyhow`, `clap`, `tracing`, `cargo`, plus meta-resources
+- **30 idioms** — `?` operator, iterator chains, `thiserror`/`anyhow`, `Arc<Mutex<T>>`, `tokio::spawn`/`select!`, newtypes, builder pattern, `unsafe` with `SAFETY:` comments, `#[must_use]`, and more
+- **25 anti-patterns** — `.unwrap()` everywhere, `.clone()` to fight the borrow checker, `String` vs `&str` confusion, holding locks across `.await`, blocking calls in async, `.as` truncation, and more
+- **25 mental-model deltas** — ownership, borrowing, lifetimes, traits vs interfaces, structural vs nominal typing, `Drop` semantics, monomorphization, and more
+- **17 challenge seeds** — `rust:unwrap-everywhere`, `rust:question-mark-operator`, `rust:string-vs-str`, `rust:vec-vs-slice`, `rust:iterator-chains`, `rust:collect-result`, `rust:clone-to-appease-borrow-checker`, `rust:thiserror-library`, `rust:lock-across-await`, `rust:blocking-call-in-async`, `rust:forgot-to-await`, `rust:early-return-let-else`, `rust:derive-default`, `rust:arc-mutex-overuse`, `rust:iterator-next-unwrap`, `rust:as-cast-truncation`, `rust:newtype-invariant`
+- **Hero fixture** — `tests/fixtures/rust/borrow_checker_bad.rs` with 5 intentional bugs matching at least one seed each
+
+#### Python pack — `docs/languages/python.md`
+
+- **12 stdlib/ecosystem anchors** — `pathlib`, `typing`, `dataclasses`, `contextlib`, `functools`, `itertools`, `asyncio`, `concurrent.futures`, `logging`, `pytest`, `pydantic`, `ruff`
+- **30 idioms** — comprehensions, f-strings, `with` context managers, `pathlib.Path`, generators, `enumerate`/`zip`, `@dataclass`, `@property`, type hints, `Protocol`, EAFP, `asyncio.gather`, `pytest` fixtures/parametrize, `pyproject.toml`, and more
+- **25 anti-patterns** — mutable default arguments, bare `except:`, `==` vs `is`, `os.path` legacy, `open()` without encoding, string concat in loops, blocking calls in async, `assert` in production, wildcard imports, plain dicts for structured data, and more
+- **25 mental-model deltas** — names vs variables, mutable vs immutable, the GIL, duck typing, generator laziness, `None` singleton, closures capturing references, module singletons, and more
+- **17 challenge seeds** — `py:mutable-default-arg`, `py:string-concat-loop`, `py:comprehension`, `py:bare-except`, `py:os-path-legacy`, `py:open-no-encoding`, `py:open-without-with`, `py:type-hints`, `py:dataclass`, `py:f-string`, `py:blocking-in-async`, `py:forgot-await`, `py:is-vs-equal`, `py:dict-instead-of-dataclass`, `py:assert-in-production`, `py:print-debugging-in-prod`, `py:logging-over-print`
+- **Hero fixture** — `tests/fixtures/python/worker_pool_bad.py` with 7 intentional bugs
+
+#### JavaScript pack — `docs/languages/javascript.md`
+
+- **11 stdlib/ecosystem anchors** — `Array` methods, `Promise`, `async/await`, `fetch`, `Map`/`Set`, `JSON`, `AbortController`, Node `fs/promises`, `path`, `url`, ESM modules
+- **30 idioms** — `const`/`let` over `var`, arrow functions, destructuring, default params, array methods, spread operator, optional chaining, nullish coalescing, async/await, `Promise.all`/`allSettled`, `AbortController`, template literals, ESM imports, `Map`/`Set`, custom error classes, `Error.cause`, and more
+- **25 anti-patterns** — `var`, `==` vs `===`, `||` truthiness trap, forgotten `await`, unhandled rejections, serial awaits, callback hell, `for...in` on arrays, mutating arguments, prototype pollution, `typeof` quirks, floating-point equality, `throw "string"`, empty `catch`, and more
+- **25 mental-model deltas** — single-threaded event loop, closures, `this` semantics, type coercion, Promise states, prototype-based inheritance, reference equality, module top-level execution, and more
+- **17 challenge seeds** — `js:var-in-new-code`, `js:loose-equality`, `js:or-truthiness-trap`, `js:callback-hell`, `js:serial-await`, `js:forgotten-await`, `js:for-in-array`, `js:array-methods`, `js:strict-equality`, `js:mutate-arguments`, `js:unhandled-rejection`, `js:throw-string`, `js:empty-catch`, `js:fs-promises`, `js:template-literal`, `js:const-by-default`, `js:optional-chaining`
+- **Hero fixture** — `tests/fixtures/javascript/fetch_all_bad.js` with 8 intentional bugs
+
+#### TypeScript pack — `docs/languages/typescript.md`
+
+- **9 TypeScript-specific anchors** — TypeScript Handbook, Utility Types, Generics, Narrowing, Modules, `tsconfig.json`, `strict` mode, `import type`, `satisfies` operator
+- **30 idioms** — `strict: true` in tsconfig, `interface` vs `type`, `readonly`, `as const`, `satisfies`, generic constraints, `keyof`/indexed access, utility types (`Partial`/`Pick`/`Omit`/`Record`), discriminated unions, type guards, exhaustiveness checks with `never`, `unknown` over `any`, `import type`, runtime validation with Zod, phantom types, and more
+- **25 anti-patterns** — `any` everywhere, `as` assertion escapes, `@ts-ignore` without explanation, `!` non-null abuse, unconstrained generics, runtime imports for types, JSON without validation, numeric enums, default exports, and more
+- **25 mental-model deltas** — superset of JS (not runtime), structural typing, type erasure, narrowing scope, exhaustiveness, conditional types, `infer`, and more
+- **17 challenge seeds** — `ts:any-everywhere`, `ts:as-assertion-escape`, `ts:non-null-assertion-abuse`, `ts:ts-ignore-no-explanation`, `ts:unconstrained-generic`, `ts:discriminated-union`, `ts:exhaustive-never`, `ts:strict-disabled`, `ts:catch-unknown`, `ts:json-no-validation`, `ts:partial-required-readonly`, `ts:import-type`, `ts:default-export`, `ts:numeric-enum`, `ts:as-const`, `ts:type-guard-is`, `ts:no-unchecked-indexed-access`
+- **Hero fixture** — `tests/fixtures/typescript/api_response_bad.ts` with 7 intentional bugs
+- **JavaScript seeds also apply** — `/challenge` on a `.ts` file consults both packs
+
+#### Java pack — `docs/languages/java.md`
+
+- **11 stdlib/ecosystem anchors** — `Optional`, `java.util.stream`, `java.util.concurrent`, `CompletableFuture`, `java.nio.file.Path`, `java.time`, Records, Sealed classes, Pattern matching, JUnit 5, SLF4J
+- **30 idioms** — records, `final` fields, sealed interfaces, builder pattern, `Optional` returns, `Objects.requireNonNull`, try-with-resources, stream pipelines, `Collectors.groupingBy`, `List.of`/`Map.of`, `ExecutorService`, `CompletableFuture`, `ConcurrentHashMap`, `Path` over `File`, JUnit 5, AssertJ, constructor injection, SLF4J parameterized logging, pattern matching, switch expressions, `var`, text blocks, and more
+- **25 anti-patterns** — returning `null`, null-checking everywhere, resource leaks, `String` `==`, string concat in loops, modifying collections during iteration, raw types, `Arrays.asList` mutability confusion, `equals` without `hashCode`, unsynchronized shared state, `SimpleDateFormat` sharing, raw `new Thread()`, swallowed `InterruptedException`, `java.util.Date` in new code, log string concat, `System.out.println`, and more
+- **25 mental-model deltas** — reference vs primitive, type erasure, checked exceptions, `null`, `equals`/`hashCode` contract, immutability of Strings, autoboxing, static, inner classes, `final` semantics, virtual threads (Java 21), JVM shutdown hooks, and more
+- **17 challenge seeds** — `java:null-return`, `java:null-collection-return`, `java:try-with-resources`, `java:string-concat-loop`, `java:string-equals-equals`, `java:record`, `java:var-local`, `java:switch-expression`, `java:pattern-matching-instanceof`, `java:raw-type`, `java:simpledateformat-sharing`, `java:legacy-date`, `java:unsynchronized-shared`, `java:raw-thread`, `java:log-string-concat`, `java:swallowed-interrupt`, `java:collection-of`
+- **Hero fixture** — `tests/fixtures/java/UserService_bad.java` with 8 intentional bugs
+
+### Changed — `/challenge` language detection
+
+Step 2 of `.claude/skills/challenge/SKILL.md` expanded to route new extensions:
+
+- `.go` → Go
+- `.rs` → Rust
+- `.py` → Python
+- `.js`, `.mjs`, `.cjs` → JavaScript
+- `.ts`, `.tsx` → TypeScript (consults both TS and JS packs)
+- `.java` → Java
+- Anything else → community-contribution message
+
+### Changed — plugin metadata
+
+- `plugin.json` keywords expanded from `["mentor", "teach", "socratic", "drills", "learning", "go"]` to include all six languages
+- `plugin.json` and `marketplace.json` version bumped to `0.4.0`
+
+### Not changed
+
+- **`/chiron`, `/hint`, `/level`, `/explain`, `/postmortem`, `/tour`** — language-agnostic commands, no changes
+- **Go pack** — unchanged; still the reference implementation
+- **Voice, anti-patterns, hint ladder, failure modes, config schema** — all v0.3.1 invariants preserved
+- **Profile schema** — unchanged; new language tags slot in under the existing `<lang>:<idiom>` format
+
+### Verification
+
+- All 5 hero fixtures exist and parse as their respective languages
+- `claude plugins validate .` passes both manifests
+- `/challenge` on a `.rs` / `.py` / `.js` / `.ts` / `.java` file produces drills grounded in specific lines, mapped to at least one seed tag per language
+- `/challenge` on a `.go` file behaves identically to v0.3.1 (regression guard)
+- `/challenge foo.zig` still responds with the community-contribution message
+
+---
+
 ## [0.3.1] — 2026-04-09
 
 ### Changed — terser response formats across all skills

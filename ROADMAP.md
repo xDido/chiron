@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 8 — v0.3.1 terser response formats (shipped locally; tag + push + release pending)
+**Current status:** Phase 9 — v0.4.0 Bundle E language packs (shipped locally; tag + push + release pending)
 
 **Phase 4 correction:** during install testing, slash commands appeared with the mandatory `chiron:` prefix (`/chiron:chiron`, `/chiron:hint`, `/chiron:challenge`). Investigation of the `impeccable` plugin revealed that `user-invocable: true` skills in a custom skills path (`./.claude/skills`) bypass namespacing. Migrated the three command files to `.claude/skills/<name>/SKILL.md` with `user-invocable: true` frontmatter. Content unchanged; only the container and frontmatter changed. Slash commands should now be `/chiron`, `/hint`, `/challenge` without prefix. See the plan file for full details.
 
@@ -201,12 +201,76 @@ Three new user-invocable skills extending chiron's teach-first philosophy. All t
 
 ### Remaining work after v0.3.0
 
-- **Bundle A v0.2.2** — profile read-loop (the biggest single feature remaining; needs a session-start hook)
+- **Bundle A v0.2.2** — profile read-loop (shelved after brainstorming — hook complexity outweighed value)
 - **Bundle D** — `chiron-reviewer` agent, pre-edit hook
-- **Bundle E** — Rust / TypeScript / Python / Zig language packs
-- **Post-release polish:** hero GIFs, GitHub Releases for v0.2.0/v0.2.1/v0.3.0, beta tester recruitment
+- **Bundle E** — Rust / Python / JavaScript / TypeScript / Java language packs → **shipped in v0.4.0 (Phase 9)**
+- **Post-release polish:** hero GIFs, GitHub Releases for v0.2.0/v0.2.1/v0.3.0/v0.4.0, beta tester recruitment
 
 **🎯 MVP COMPLETE when Phase 5 exit criteria are met.**
+
+---
+
+## Phase 9 — v0.4.0 Bundle E language packs (in progress)
+
+Five comprehensive language packs shipped together: Rust, Python, JavaScript, TypeScript, and Java. Expands `/challenge` from one supported language (Go) to six. Each pack matches the Go pack's density — stdlib anchors, 25–30 idioms, 20–25 anti-patterns, mental-model deltas, and 12–17 challenge seeds.
+
+**Scope decision:** comprehensive packs, not starter packs. The user chose "match Go pack scale" during brainstorming.
+
+**Release strategy:** single v0.4.0 commit with all 5 packs plus `/challenge` expansion. No intermediate per-language releases.
+
+### Rust
+
+- [x] `docs/languages/rust.md` — 12 anchors, 30 idioms, 25 anti-patterns, 25 mental-model deltas, 17 seeds
+- [x] `tests/fixtures/rust/borrow_checker_bad.rs` — hero fixture with 5 intentional bugs
+
+### Python
+
+- [x] `docs/languages/python.md` — 12 anchors, 30 idioms, 25 anti-patterns, 25 mental-model deltas, 17 seeds
+- [x] `tests/fixtures/python/worker_pool_bad.py` — hero fixture with 7 intentional bugs
+
+### JavaScript
+
+- [x] `docs/languages/javascript.md` — 11 anchors, 30 idioms, 25 anti-patterns, 25 mental-model deltas, 17 seeds
+- [x] `tests/fixtures/javascript/fetch_all_bad.js` — hero fixture with 8 intentional bugs
+
+### TypeScript (inherits JS seeds)
+
+- [x] `docs/languages/typescript.md` — 9 TS-specific anchors, 30 TS-specific idioms, 25 TS anti-patterns, 25 mental-model deltas, 17 TS seeds
+- [x] `tests/fixtures/typescript/api_response_bad.ts` — hero fixture with 7 intentional bugs
+
+### Java
+
+- [x] `docs/languages/java.md` — 11 anchors, 30 idioms, 25 anti-patterns, 25 mental-model deltas, 17 seeds
+- [x] `tests/fixtures/java/UserService_bad.java` — hero fixture with 8 intentional bugs
+
+### `/challenge` skill + plugin metadata
+
+- [x] `.claude/skills/challenge/SKILL.md` — step 2 language detection expanded for `.rs` / `.py` / `.js` / `.mjs` / `.cjs` / `.ts` / `.tsx` / `.java`
+- [x] `.claude/skills/challenge/SKILL.md` — 5 new inlined `# <Language> language pack (inlined)` sections appended with idiom tag list + challenge seeds for each new language
+- [x] `plugin.json` — version bumped to `0.4.0`; keywords expanded to include `rust`, `python`, `javascript`, `typescript`, `java`
+- [x] `marketplace.json` — version bumped to `0.4.0`
+- [x] `README.md` — Language packs section now lists 6 supported languages with a table; roadmap deferral list updated
+- [x] `CHANGELOG.md` — `## [0.4.0]` section with per-pack detail and verification notes
+- [x] `ROADMAP.md` — this section
+
+### Pending
+
+- [ ] `claude plugins validate .` passes both manifests
+- [ ] Uninstall + reinstall chiron; `/challenge` on each hero fixture in a fresh session
+- [ ] `/challenge` on a `.go` file (regression guard)
+- [ ] `/challenge foo.zig` still returns community-contribution message
+- [ ] Commit as `v0.4.0: Bundle E language packs (Rust, Python, JavaScript, TypeScript, Java)`
+- [ ] Git tag `v0.4.0`
+- [ ] Push main + tag
+- [ ] Create GitHub Release from v0.4.0 tag
+
+**Exit criteria:** All 5 language packs render correctly. All 5 hero fixtures are syntactically valid for their language. `/challenge` on each fixture produces drills grounded in specific lines, mapped to at least one seed tag for that language. Go regression test passes unchanged. `claude plugins validate` passes clean. GitHub Release v0.4.0 is published.
+
+### Remaining work after v0.4.0
+
+- **Bundle D** — `chiron-reviewer` agent, pre-edit hook (next major feature bundle)
+- **Additional language packs** — C#, Kotlin, Swift, Ruby, Zig, Elixir — all deferred to community contributions
+- **Post-release polish:** hero GIFs recording session for README, GitHub Releases catch-up for v0.2.0 through v0.4.0
 
 ---
 
@@ -239,13 +303,13 @@ After v0.1.0 ships, chiron must pass a validation gate before any v0.2 work begi
 
 Sequence will be decided based on validation gate feedback. Likely candidates in rough priority order:
 
-- **`/explain`** — compare 2+ approaches with trade-offs side-by-side
-- **`/postmortem`** — session-end `/10` scoring across design, code quality, idioms, testing, engineering maturity
-- **Profile read-loop** — on session start, surface recurring weaknesses (tags with ≥3 `struggle`/`drill_gaveup` entries in the last 14 days)
-- **Rust language pack** (community contribution preferred)
-- **`/tour`** — structured "before each task" preamble (read-this-first, key concepts, common mistakes)
-- **`chiron-reviewer` agent** — review user code the way a senior engineer would
-- **TypeScript / Python / Zig language packs** (community contributions preferred)
-- **`/level`** — gentle / default / strict voice dial
+- ~~**`/explain`**~~ — **shipped in v0.3.0**
+- ~~**`/postmortem`**~~ — **shipped in v0.3.0**
+- ~~**`/tour`**~~ — **shipped in v0.3.0**
+- ~~**`/level`**~~ — **shipped in v0.2.0**
+- ~~**Rust / Python / JavaScript / TypeScript / Java language packs**~~ — **shipped in v0.4.0**
+- **Profile read-loop** — on session start, surface recurring weaknesses (tags with ≥3 `struggle`/`drill_gaveup` entries in the last 14 days). Shelved after brainstorming (hook complexity outweighed value) but candidate for revisit.
+- **`chiron-reviewer` agent** — review user code the way a senior engineer would (Bundle D)
 - **Pre-edit hook** — strict-mode guardrails that block `Write`/`Edit` until Socratic questioning completes (opt-in, arrives with `/level strict`)
+- **Additional language packs** — C#, Kotlin, Swift, Ruby, Zig, Elixir (community contributions preferred)
 - **Session-start hook** — automatically surface profile insights at session start

@@ -49,16 +49,21 @@ If the target file cannot be read, respond with a clear error message (include t
 
 Detect the language from the file extension:
 
-- `.go` → Go (supported in v0.1)
-- `.rs`, `.ts`, `.tsx`, `.py`, `.zig`, other → respond:
+- `.go` → Go
+- `.rs` → Rust
+- `.py` → Python
+- `.js`, `.mjs`, `.cjs` → JavaScript
+- `.ts`, `.tsx` → TypeScript (TypeScript pack + JavaScript pack both apply)
+- `.java` → Java
+- Any other extension → respond:
 
-  > chiron v0.1 only ships with a Go language pack. Community contributions for other languages are welcomed — see `docs/CONTRIBUTING-LANGUAGE-PACKS.md`.
+  > chiron ships with language packs for Go, Rust, Python, JavaScript, TypeScript, and Java. Community contributions for other languages are welcomed — see `docs/CONTRIBUTING-LANGUAGE-PACKS.md`.
 
   Then stop.
 
 ## Step 3 — Language pack is inlined below
 
-The Go language pack (idiom tag list + challenge seeds) lives in the **"Go language pack (inlined)"** section at the bottom of this file. Use it as the reference for steps 4–5 below. Do NOT try to read `docs/languages/go.md` at runtime — that file is a human-readable mirror for contributors, not a runtime dependency.
+The language packs (idiom tag list + challenge seeds for each supported language) live in the **"<Language> language pack (inlined)"** sections at the bottom of this file. Use the section matching the detected language as the reference for steps 4–5 below. For TypeScript files, also consult the JavaScript pack — TypeScript files can match JS seeds. Do NOT try to read `docs/languages/*.md` at runtime — those files are human-readable mirrors for contributors, not runtime dependencies.
 
 Each challenge seed in the inlined section has this shape:
 
@@ -69,8 +74,6 @@ Each challenge seed in the inlined section has this shape:
 - Task: <what the user should change>
 - Constraint: <what makes this a drill, not a rewrite>
 ```
-
-For languages other than Go, the inlined pack is empty — step 2 routes non-Go files to a "community contribution" response and stops before this step is reached.
 
 ## Step 4 — Seeded pass
 
@@ -487,3 +490,1021 @@ When no seed matches the target file, the step 5 eyeball fallback looks for inst
 **Drill:**
 - **Task:** add `i := i` (or `tc := tc`) at the top of the loop body to capture per iteration. Alternatively, pass the variable as a function argument.
 - **Constraint:** no behavior change once the bug is fixed; the goroutines/closures must see the per-iteration value.
+
+---
+
+# Rust language pack (inlined)
+
+This is the runtime source of truth for chiron's Rust knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/rust.md`.
+
+## Rust idiom tag list (for eyeball fallback reference)
+
+### Ownership and error handling
+
+- `rust:question-mark-operator` — `?` for error propagation through `Result`/`Option`
+- `rust:match-early-return` — `?` or `let ... else` over nested `match`
+- `rust:if-let` — single-pattern match via `if let` / `while let`
+- `rust:iterator-chains` — `.filter/.map/.collect` over hand-rolled loops
+- `rust:collect-result` — `collect::<Result<Vec<_>, _>>()` for fail-fast aggregation
+- `rust:from-into` — `From`/`Into` for ergonomic conversions
+- `rust:derive-default` — `#[derive(Default)]` for zero-value construction
+- `rust:derive-common-traits` — derive `Debug`, `Clone`, `PartialEq`, etc. on public types
+
+### Trait-based design
+
+- `rust:traits-for-behavior` — traits express behavior; structs hold data
+- `rust:impl-trait-return` — `impl Trait` to hide concrete return types
+- `rust:where-bounds` — complex generic bounds in `where` clauses
+- `rust:asref-into-params` — `AsRef<Path>`, `Into<String>` for flexible parameters
+
+### Error handling
+
+- `rust:thiserror-library` — `#[derive(thiserror::Error)]` enums for libraries
+- `rust:anyhow-context` — `anyhow::Result` + `.context(...)` for applications
+- `rust:error-enum-over-box-dyn` — named enums over `Box<dyn Error>` for public APIs
+
+### Memory and shared state
+
+- `rust:arc-mutex` — `Arc<Mutex<T>>` for shared mutable state across threads
+- `rust:rc-refcell` — `Rc<RefCell<T>>` for single-threaded interior mutability
+- `rust:scoped-threads` — `std::thread::scope` for borrow-based parallelism
+
+### Async
+
+- `rust:tokio-spawn-await` — tokio tasks and `JoinHandle::await`
+- `rust:tokio-select` — `tokio::select!` for concurrent branches
+- `rust:tokio-mpsc` — `tokio::sync::mpsc` channels for actor-style concurrency
+
+### Build and style
+
+- `rust:cfg-test-module` — `#[cfg(test)] mod tests { ... }`
+- `rust:tests-dir` — integration tests in `tests/`
+- `rust:cargo-workspace` — workspace `Cargo.toml` for multi-crate projects
+- `rust:clippy-in-ci` — `cargo clippy -- -D warnings` in CI
+- `rust:rustfmt-in-ci` — `cargo fmt --check` in CI
+- `rust:newtype-invariant` — newtype wrapper structs for domain invariants
+- `rust:builder-pattern` — builder for optional configuration
+- `rust:unsafe-safety-comment` — `// SAFETY:` comment on every `unsafe` block
+- `rust:must-use` — `#[must_use]` on result-returning functions
+
+## Rust challenge seeds
+
+### `rust:unwrap-everywhere`
+
+**Signal:** Multiple `.unwrap()` calls in non-test code on `Result` or `Option` values that could reasonably fail (I/O, parsing, network, map lookups).
+
+**Drill:**
+- **Task:** replace `.unwrap()` with `?` propagation and add context via `thiserror` variants or `.context(...)`.
+- **Constraint:** no new `.unwrap()` or `.expect(...)` introduced; the function must return `Result<T, E>` for some `E` that can describe each failure site.
+
+### `rust:question-mark-operator`
+
+**Signal:** Nested `match` expressions on `Result`/`Option` where every non-happy arm returns an error early.
+
+**Drill:**
+- **Task:** replace the nested match with `?` propagation.
+- **Constraint:** no behavior change; the happy path must move to the base indentation level.
+
+### `rust:string-vs-str`
+
+**Signal:** A function parameter typed `String` whose body only uses it via `.as_str()`, `.chars()`, `.len()`, `.contains(...)`, or similar non-owning methods.
+
+**Drill:**
+- **Task:** change the parameter type to `&str`.
+- **Constraint:** callers that currently pass a `String` should still work without modification (via deref coercion).
+
+### `rust:vec-vs-slice`
+
+**Signal:** A function parameter typed `Vec<T>` (or `&Vec<T>`) whose body only reads from the collection (`.iter()`, `.len()`, indexing).
+
+**Drill:**
+- **Task:** change the parameter type to `&[T]`.
+- **Constraint:** the function must work on arrays, vectors, and slice views; no loss of functionality.
+
+### `rust:iterator-chains`
+
+**Signal:** A `for` loop that builds a `Vec` with `.push(...)` based on a conditional or transformation.
+
+**Drill:**
+- **Task:** rewrite using `.iter().filter(...).map(...).collect()`.
+- **Constraint:** no intermediate `Vec` allocations beyond the final result.
+
+### `rust:collect-result`
+
+**Signal:** A loop that iterates over items, calls a fallible operation on each, and accumulates results in a `Vec` while tracking errors manually.
+
+**Drill:**
+- **Task:** rewrite as `let results: Result<Vec<_>, _> = xs.iter().map(f).collect();`.
+- **Constraint:** the first error must short-circuit the collection, matching the manual version's behavior.
+
+### `rust:clone-to-appease-borrow-checker`
+
+**Signal:** A function with multiple `.clone()` calls on large types (`Vec<_>`, `String`, user structs) where the cloned value is only read immediately after.
+
+**Drill:**
+- **Task:** restructure to borrow instead of clone.
+- **Constraint:** remove at least one `.clone()` call without introducing lifetime annotations more complex than the elision rules handle.
+
+### `rust:thiserror-library`
+
+**Signal:** A library-style module (not a `main.rs`) uses `Box<dyn Error>`, `anyhow::Error`, or ad-hoc `String` errors in public function signatures.
+
+**Drill:**
+- **Task:** define an error enum with `#[derive(thiserror::Error, Debug)]` describing the concrete failure cases, and update the function signatures to return `Result<T, YourError>`.
+- **Constraint:** at least two variants, each with a `#[error("...")]` message; `#[from]` used where conversion is free.
+
+### `rust:lock-across-await`
+
+**Signal:** An `.await` call inside a scope where a `std::sync::MutexGuard` or `RwLockGuard` is still held.
+
+**Drill:**
+- **Task:** restructure so the guard is dropped before the `.await`, OR migrate to `tokio::sync::Mutex` if the guarded section genuinely spans the async operation.
+- **Constraint:** no change in observable behavior; no new deadlock risk.
+
+### `rust:blocking-call-in-async`
+
+**Signal:** An `async fn` body that calls `std::fs::*`, `std::net::*`, or `std::thread::sleep`, or invokes a known-blocking library.
+
+**Drill:**
+- **Task:** replace with the async equivalent (`tokio::fs`, `tokio::net`, `tokio::time::sleep`), or wrap the blocking call in `tokio::task::spawn_blocking`.
+- **Constraint:** the function remains `async fn`; no blocking call on the async runtime thread.
+
+### `rust:forgot-to-await`
+
+**Signal:** An expression statement `foo_async_fn(args);` where `foo_async_fn` returns a future and its result isn't awaited or stored.
+
+**Drill:**
+- **Task:** add `.await` (and `?` if the result is a `Result`).
+- **Constraint:** no new behavior; the future was supposed to run and produce a side effect.
+
+### `rust:early-return-let-else`
+
+**Signal:** A `match` expression with a happy arm that continues execution and a single fallback arm that returns early.
+
+**Drill:**
+- **Task:** rewrite using `let ... else` for the early-return case.
+- **Constraint:** no behavior change; the happy path must move to the base indentation level.
+
+### `rust:derive-default`
+
+**Signal:** A struct with a manually-implemented `fn new() -> Self` that initializes every field to its own type's zero/default value.
+
+**Drill:**
+- **Task:** remove the `new` method and add `#[derive(Default)]`, then use `Struct::default()` or `..Default::default()` at construction sites.
+- **Constraint:** all fields must have `Default` implementations; no behavior change at call sites.
+
+### `rust:arc-mutex-overuse`
+
+**Signal:** A single-threaded program (no `std::thread::spawn`, no `tokio::spawn`) that wraps state in `Arc<Mutex<T>>`.
+
+**Drill:**
+- **Task:** replace with owned state (`&mut T`) or `Rc<RefCell<T>>` if shared mutation is genuinely needed.
+- **Constraint:** no behavior change; the code must still compile and run correctly.
+
+### `rust:iterator-next-unwrap`
+
+**Signal:** `iter.next().unwrap()` where `iter` could reasonably be empty.
+
+**Drill:**
+- **Task:** replace with `.ok_or(...)?` or pattern-match explicitly.
+- **Constraint:** the function returns an error (or `Option`) instead of panicking on the empty case.
+
+### `rust:as-cast-truncation`
+
+**Signal:** An `as` cast between integer types where the source has a wider range than the destination (e.g., `usize as u32`, `i64 as i32`, `u32 as u8`).
+
+**Drill:**
+- **Task:** replace with `try_from(...)?` or explicit range checks.
+- **Constraint:** no silent truncation; oversized values produce an error.
+
+### `rust:newtype-invariant`
+
+**Signal:** Multiple function parameters of the same primitive type (`u64`, `String`) representing different conceptual entities (user ID, post ID, email, name).
+
+**Drill:**
+- **Task:** wrap at least two of them in distinct newtypes.
+- **Constraint:** the types must be distinct at the type level (a `UserId` cannot be passed where a `PostId` is expected).
+
+---
+
+# Python language pack (inlined)
+
+This is the runtime source of truth for chiron's Python knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/python.md`.
+
+## Python idiom tag list (for eyeball fallback reference)
+
+### Control flow and data
+
+- `py:comprehension` — list/dict/set comprehensions over `for`/`append` loops
+- `py:f-string` — f-strings over `%`/`.format(...)`
+- `py:with-context-manager` — `with` for any resource that needs cleanup
+- `py:pathlib` — `pathlib.Path` over `os.path`
+- `py:generator` — `yield`-based generators for lazy iteration
+- `py:enumerate` — `enumerate(xs)` over manual index counting
+- `py:zip-parallel` — `zip(xs, ys, strict=True)` for parallel iteration
+- `py:itertools` — `chain`, `groupby`, `islice`, `tee` for composable iteration
+
+### Data structures
+
+- `py:dataclass` — `@dataclass(frozen=True)` for immutable records
+- `py:property` — `@property` for computed attributes
+- `py:named-tuple` — `typing.NamedTuple` for simple records
+
+### Typing
+
+- `py:type-hints` — annotations on all public functions
+- `py:protocol` — `Protocol` for structural subtyping
+- `py:optional-type` — `X | None` for missing values
+
+### Error handling
+
+- `py:specific-except` — narrow `except` clauses, not bare `except:`
+- `py:eafp` — try/except over pre-condition checks
+- `py:context-manager-cleanup` — context managers over try/finally
+- `py:custom-exception` — domain-specific exception hierarchies
+
+### Async
+
+- `py:asyncio-gather` — concurrent I/O via `asyncio.gather`
+- `py:async-with` — async context managers for async resources
+- `py:asyncio-queue` — producer/consumer with bounded queues
+
+### Testing
+
+- `py:pytest-fixture` — `@pytest.fixture` for test setup/teardown
+- `py:pytest-parametrize` — table tests via `@pytest.mark.parametrize`
+- `py:pytest-monkeypatch` — `monkeypatch` for test isolation
+
+### Performance and packaging
+
+- `py:lru-cache` — `functools.lru_cache` for memoization
+- `py:pyproject-toml` — `pyproject.toml` for package metadata
+- `py:venv` — virtual environments for every project
+- `py:formatter` — `ruff` or `black` as the formatter
+- `py:logging-over-print` — `logging` module instead of `print`
+- `py:module-singleton` — module-level singletons over global state
+
+## Python challenge seeds
+
+### `py:mutable-default-arg`
+
+**Signal:** A function signature contains a mutable default argument — `def f(x=[])`, `def f(x={})`, or `def f(x=set())`.
+
+**Drill:**
+- **Task:** replace the mutable default with `None` and initialize inside the function body.
+- **Constraint:** no behavior change for callers that pass the argument explicitly; the bug when callers omit it must be gone.
+
+### `py:string-concat-loop`
+
+**Signal:** A `for` loop body contains `s += ...` or `s = s + ...` where `s` is a string accumulator built up across iterations.
+
+**Drill:**
+- **Task:** rewrite using `"".join(...)` over a generator or list comprehension.
+- **Constraint:** no intermediate string allocations inside the loop.
+
+### `py:comprehension`
+
+**Signal:** A `for` loop whose only body is `result.append(...)` or `result[key] = value`, building up a result collection based on transformation or filtering of the input.
+
+**Drill:**
+- **Task:** rewrite as a list / dict / set comprehension.
+- **Constraint:** the result must be identical; the comprehension must fit on one or two lines.
+
+### `py:bare-except`
+
+**Signal:** A `try` block with a bare `except:` or `except Exception:` clause that catches more than necessary.
+
+**Drill:**
+- **Task:** narrow the `except` to the specific exception(s) the code can meaningfully handle.
+- **Constraint:** any unexpected exception must propagate unchanged.
+
+### `py:os-path-legacy`
+
+**Signal:** Uses of `os.path.join`, `os.path.expanduser`, `os.path.exists`, `os.path.dirname`, or `os.path.basename` in a file that does not already use `pathlib`.
+
+**Drill:**
+- **Task:** convert to `pathlib.Path` operations (`/` operator for join, `Path.home()` for home, `.exists()`, `.parent`, `.name`).
+- **Constraint:** no mixed string-path operations remain in the function; use `Path` throughout.
+
+### `py:open-no-encoding`
+
+**Signal:** A text-mode `open(...)` call (no `"b"` in the mode) without an `encoding=` keyword argument.
+
+**Drill:**
+- **Task:** add `encoding="utf-8"` (or the appropriate encoding for the context).
+- **Constraint:** if the file is binary, switch to `"rb"`/`"wb"` mode and remove encoding entirely.
+
+### `py:open-without-with`
+
+**Signal:** An `open(...)` call assigned to a variable, with a corresponding `.close()` call later (or no close at all) — not wrapped in a `with` block.
+
+**Drill:**
+- **Task:** wrap in a `with` block; remove the explicit `.close()`.
+- **Constraint:** the file handle must be guaranteed closed on all exit paths.
+
+### `py:type-hints`
+
+**Signal:** A public function (no leading underscore) with no type annotations on its parameters or return type.
+
+**Drill:**
+- **Task:** add complete type hints using 3.10+ syntax (built-in generics like `list[int]`, `X | None`).
+- **Constraint:** annotations must match the actual behavior; optional parameters must use `X | None`, not `Optional[X]`, if targeting 3.10+.
+
+### `py:dataclass`
+
+**Signal:** A class with an `__init__` that only stores its parameters as attributes, no other methods, used as a data container.
+
+**Drill:**
+- **Task:** convert to `@dataclass` (or `@dataclass(frozen=True)` if the fields shouldn't change).
+- **Constraint:** all callers must still work; field order must be preserved for positional construction.
+
+### `py:f-string`
+
+**Signal:** String formatting via `%` (`"%s, %d" % (...)`) or `.format(...)` in a context where f-strings would work.
+
+**Drill:**
+- **Task:** rewrite as an f-string.
+- **Constraint:** no behavior change; keep any format specifiers (`:.2f`, `:>10`) intact.
+
+### `py:blocking-in-async`
+
+**Signal:** An `async def` function body that calls `time.sleep`, `requests.get`, `open(...).read()`, or other known-blocking operations.
+
+**Drill:**
+- **Task:** replace with the async equivalent (`asyncio.sleep`, `httpx.AsyncClient`, `aiofiles`), or wrap in `asyncio.to_thread(...)`.
+- **Constraint:** the function remains `async def`; no blocking call on the event loop.
+
+### `py:forgot-await`
+
+**Signal:** An expression statement `some_coroutine(args)` where `some_coroutine` is defined with `async def` and the result is discarded or passed to a non-awaiting context.
+
+**Drill:**
+- **Task:** add `await` before the call.
+- **Constraint:** the enclosing function becomes `async` if it isn't already.
+
+### `py:is-vs-equal`
+
+**Signal:** `is` used to compare to a literal integer, string, tuple, or any non-singleton value. Examples: `x is 5`, `name is "alice"`, `point is (1, 2)`.
+
+**Drill:**
+- **Task:** replace `is` / `is not` with `==` / `!=` — except when comparing to `None`, `True`, or `False`.
+- **Constraint:** `is None` / `is not None` stays; all other value comparisons use `==`.
+
+### `py:dict-instead-of-dataclass`
+
+**Signal:** A function that constructs a dict with a fixed set of keys used as a record, passed around to other functions that access specific keys.
+
+**Drill:**
+- **Task:** define a `@dataclass` (or `TypedDict` if you genuinely need dict shape) and use it instead.
+- **Constraint:** the call sites must benefit from attribute access; add at least one type hint on a function parameter using the new type.
+
+### `py:assert-in-production`
+
+**Signal:** An `assert` statement in non-test code where the condition is an input validation check (not a development invariant).
+
+**Drill:**
+- **Task:** replace with an explicit `if ... : raise ValueError(...)` or similar.
+- **Constraint:** the check must still run under `python -O`, which strips assertions.
+
+### `py:print-debugging-in-prod`
+
+**Signal:** `print(...)` calls in a library module (not a `__main__` block) used for logging or debug output.
+
+**Drill:**
+- **Task:** replace with a module-level `logger = logging.getLogger(__name__)` and appropriate `logger.debug/info/warning/error` calls.
+- **Constraint:** each log call uses the right level; no bare `print` remains in library code.
+
+### `py:logging-over-print`
+
+**Signal:** A script or library module with multiple `print(...)` statements used for operational output (progress, errors, warnings).
+
+**Drill:**
+- **Task:** introduce a module logger and convert `print` calls to leveled log calls.
+- **Constraint:** at least two different log levels used appropriately; use `logger.exception(...)` inside `except` blocks.
+
+---
+
+# JavaScript language pack (inlined)
+
+This is the runtime source of truth for chiron's JavaScript knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/javascript.md`. These seeds also apply to TypeScript files (`.ts`, `.tsx`).
+
+## JavaScript idiom tag list (for eyeball fallback reference)
+
+### Variables and scope
+
+- `js:const-by-default` — `const` unless reassigned; never `var`
+- `js:arrow-function` — arrow functions for callbacks with lexical `this`
+- `js:destructuring-params` — destructure objects in function signatures
+- `js:default-params` — native default parameter syntax
+
+### Arrays and objects
+
+- `js:array-methods` — `.map/.filter/.reduce/.find` over `for` loops
+- `js:spread-copy` — `[...arr]` / `{...obj}` for shallow copies
+- `js:destructuring-assignment` — destructuring with defaults and rest patterns
+- `js:optional-chaining` — `?.` for safe deep property access
+- `js:nullish-coalescing` — `??` for null/undefined defaults
+- `js:computed-property` — `{ [key]: value }` for dynamic keys
+
+### Async
+
+- `js:async-await` — `async/await` over `.then` chains
+- `js:promise-all` — `Promise.all` for parallel work
+- `js:promise-all-settled` — `Promise.allSettled` for partial failures
+- `js:try-catch-await` — `try/catch` around `await`
+- `js:abort-controller` — `AbortController` for cancellation
+
+### Strings
+
+- `js:template-literal` — backticks with `${}` over concatenation
+- `js:string-includes` — `.includes(...)` over `.indexOf(...) !== -1`
+
+### Modules and iteration
+
+- `js:esm-imports` — ES modules over CommonJS
+- `js:for-of` — `for...of` over `for...in` for arrays
+
+### Data modeling
+
+- `js:map-over-object` — `Map` for dynamic key-value stores
+- `js:set-uniqueness` — `Set` for uniqueness and membership
+- `js:object-freeze` — `Object.freeze` for immutable config
+
+### Errors
+
+- `js:custom-error-class` — `Error` subclasses with `.name`
+- `js:error-cause` — `new Error(msg, { cause: err })` for wrapping
+
+### Node-specific
+
+- `js:fs-promises` — `node:fs/promises` over callback `fs`
+- `js:path-join` — `path.join` / `path.resolve` for filesystem paths
+- `js:graceful-shutdown` — SIGINT/SIGTERM signal handlers
+
+### Tooling
+
+- `js:strict-equality` — `===` / `!==` by default
+- `js:eslint-prettier-ci` — ESLint + Prettier in CI
+- `js:structured-logging` — `pino`/`winston` in services, not `console.log`
+
+## JavaScript challenge seeds
+
+### `js:var-in-new-code`
+
+**Signal:** `var` declaration in a file that does not exclusively target legacy browsers (ES5-only projects are the exception).
+
+**Drill:**
+- **Task:** replace `var` with `const` (default) or `let` (if reassigned).
+- **Constraint:** no behavior change; hoisting semantics change but must not affect the observable result — verify with a quick read of the block scope.
+
+### `js:loose-equality`
+
+**Signal:** `==` or `!=` comparison anywhere except `x == null` (the single legitimate use, which checks both `null` and `undefined`).
+
+**Drill:**
+- **Task:** replace with `===` or `!==`.
+- **Constraint:** no behavior change for the intended path; any existing reliance on coercion must be made explicit.
+
+### `js:or-truthiness-trap`
+
+**Signal:** `x || defaultValue` pattern where `x` could legitimately be `0`, `""`, or `false` as a valid value.
+
+**Drill:**
+- **Task:** replace with `??` (nullish coalescing).
+- **Constraint:** the fallback must only trigger when `x` is `null` or `undefined`, not on any falsy value.
+
+### `js:callback-hell`
+
+**Signal:** 3+ nested callbacks, each handling an error case.
+
+**Drill:**
+- **Task:** rewrite using `async/await`, with errors handled in a single `try/catch`.
+- **Constraint:** no behavior change; the error path must still propagate.
+
+### `js:serial-await`
+
+**Signal:** Multiple `await` statements in a function where the awaited expressions are independent (no data flow from one to the next).
+
+**Drill:**
+- **Task:** collect the promises and `await Promise.all([...])`.
+- **Constraint:** the results must be destructured in the same order; error handling must still work.
+
+### `js:forgotten-await`
+
+**Signal:** A call to a function declared `async` (or known to return a Promise) whose result is used as a plain value — e.g., `.name` on the result, pass to a sync function, or implicit return of a Promise from a non-async context.
+
+**Drill:**
+- **Task:** add `await` and, if needed, make the enclosing function `async`.
+- **Constraint:** no dangling unhandled promises; callers of the enclosing function should still work.
+
+### `js:for-in-array`
+
+**Signal:** `for (const key in arrayVariable)` where the target is an array.
+
+**Drill:**
+- **Task:** replace with `for (const item of arrayVariable)` or an array method (`.forEach`, `.map`).
+- **Constraint:** no prototype-key leakage; iteration covers all array elements exactly once.
+
+### `js:array-methods`
+
+**Signal:** A `for` loop that pushes into a result array based on a conditional or transformation.
+
+**Drill:**
+- **Task:** rewrite using `.filter(...).map(...)` or `.reduce(...)`.
+- **Constraint:** the resulting array must be identical; the loop body must be expressible as pure transformations.
+
+### `js:strict-equality`
+
+**Signal:** A `.eslintrc` or project style that allows `==` together with multiple actual uses of `==` in production code.
+
+**Drill:**
+- **Task:** convert all non-`== null` uses to `===`.
+- **Constraint:** any surviving `==` must be the legitimate `x == null` shorthand, and commented as such.
+
+### `js:mutate-arguments`
+
+**Signal:** A function body that calls a mutating array method (`.sort`, `.reverse`, `.splice`, `.push`, `.pop`, `.shift`, `.unshift`) on a parameter and then returns the mutated value.
+
+**Drill:**
+- **Task:** copy before mutating — `[...arr].sort()`, `arr.slice().reverse()`, etc.
+- **Constraint:** the caller's array must be unchanged after the function returns.
+
+### `js:unhandled-rejection`
+
+**Signal:** A call to an `async` function or `.then` chain whose returned Promise is neither awaited nor has a `.catch` attached.
+
+**Drill:**
+- **Task:** add `await` (preferred) or a `.catch(handler)`.
+- **Constraint:** no "unhandled promise rejection" warning in test runs; errors must be logged or propagated.
+
+### `js:throw-string`
+
+**Signal:** `throw "..."` or `throw someString` anywhere in the code.
+
+**Drill:**
+- **Task:** replace with `throw new Error("...")` (or a custom error class).
+- **Constraint:** callers that `catch (err)` must see an `Error` instance with a `.message` and stack trace.
+
+### `js:empty-catch`
+
+**Signal:** A `catch` block with empty body (`catch {}`, `catch (e) {}`).
+
+**Drill:**
+- **Task:** log the error, handle it meaningfully, or re-throw.
+- **Constraint:** no error silently disappears; if the intent is "ignore," add an explicit comment explaining why.
+
+### `js:fs-promises`
+
+**Signal:** Callback-style `fs.readFile`, `fs.writeFile`, or other callback-based `node:fs` calls in a file that could use `async/await`.
+
+**Drill:**
+- **Task:** import from `node:fs/promises` and rewrite with `await`.
+- **Constraint:** error handling via `try/catch` instead of error-first callbacks.
+
+### `js:template-literal`
+
+**Signal:** String concatenation with `+` involving 2+ variables or expressions, used to build a message or path.
+
+**Drill:**
+- **Task:** rewrite as a template literal with `${...}` interpolation.
+- **Constraint:** no behavior change; multi-line strings use the backtick form if the original used `"\n"` concatenation.
+
+### `js:const-by-default`
+
+**Signal:** `let` declarations whose variable is never reassigned in the current scope.
+
+**Drill:**
+- **Task:** change `let` to `const`.
+- **Constraint:** no behavior change; if the variable is genuinely reassigned later, leave it as `let`.
+
+### `js:optional-chaining`
+
+**Signal:** `x && x.y && x.y.z` (or deeper) manual safety chains.
+
+**Drill:**
+- **Task:** rewrite using optional chaining: `x?.y?.z`.
+- **Constraint:** equivalent safety; `undefined` at any level still yields `undefined` instead of a `TypeError`.
+
+---
+
+# TypeScript language pack (inlined)
+
+This is the runtime source of truth for chiron's TypeScript knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/typescript.md`. **TypeScript files also match JavaScript seeds** — consult both packs when running `/challenge` on a `.ts`/`.tsx` file.
+
+## TypeScript idiom tag list (for eyeball fallback reference)
+
+### Type declarations
+
+- `ts:strict-tsconfig` — `"strict": true` in `tsconfig.json`
+- `ts:interface-vs-type` — `interface` for object shapes, `type` for unions/intersections
+- `ts:readonly` — `readonly` fields and `ReadonlyArray<T>` parameters
+- `ts:as-const` — `as const` for literal types
+- `ts:satisfies` — `satisfies` operator to check without widening (TS 4.9+)
+
+### Generics
+
+- `ts:generic-constraint` — constrain type parameters with `extends`
+- `ts:multi-generic` — multiple type parameters
+- `ts:keyof-indexed-access` — `keyof T` and `T[K]`
+
+### Utility types
+
+- `ts:partial-required-readonly` — `Partial`, `Required`, `Readonly`
+- `ts:pick-omit-record` — `Pick`, `Omit`, `Record`
+- `ts:returntype-parameters` — `ReturnType` and `Parameters`
+
+### Narrowing
+
+- `ts:discriminated-union` — tagged unions with a literal discriminant field
+- `ts:type-guard-is` — custom type guards with `x is Type`
+- `ts:in-operator-narrowing` — `"key" in obj` narrowing
+- `ts:exhaustive-never` — `never` default branch for exhaustiveness
+
+### Unknown over any
+
+- `ts:unknown-over-any` — `unknown` for external input
+- `ts:catch-unknown` — `catch (e: unknown)` with narrowing
+
+### Modules
+
+- `ts:import-type` — `import type` for type-only imports
+- `ts:export-type` — `export type` for re-exporting types
+
+### Error types
+
+- `ts:custom-error-class` — subclasses with typed properties
+
+### Runtime validation
+
+- `ts:runtime-validation` — Zod/io-ts for data crossing the I/O boundary
+
+### Tooling
+
+- `ts:eslint-prettier-ci` — typescript-eslint + Prettier in CI
+- `ts:tsc-noemit-ci` — `tsc --noEmit` in CI
+
+### Strict dials
+
+- `ts:no-unchecked-indexed-access` — makes `arr[0]` return `T | undefined`
+- `ts:exact-optional-property-types` — `{x?: T}` rejects `{x: undefined}`
+- `ts:no-implicit-override` — `override` keyword required
+
+### Advanced types
+
+- `ts:awaited-type` — `Awaited<T>` for promise unwrapping
+- `ts:conditional-types` — `T extends U ? X : Y`
+- `ts:template-literal-types` — template literal type construction
+- `ts:typed-builder` — builders with phantom types
+
+## TypeScript challenge seeds
+
+### `ts:any-everywhere`
+
+**Signal:** A file contains 3+ explicit uses of `any` as a type annotation (parameters, return types, variables, casts).
+
+**Drill:**
+- **Task:** replace at least half of the `any` uses with `unknown`, a proper type, or a Zod/type-guard validator.
+- **Constraint:** no runtime behavior change; at least one `unknown` must be narrowed via a type guard before use.
+
+### `ts:as-assertion-escape`
+
+**Signal:** A `value as SomeType` assertion in a context where the source is `unknown`, `any`, or a function return, and the target is a domain type (not a narrowing within a union).
+
+**Drill:**
+- **Task:** replace the assertion with a type guard function or runtime validator; narrow instead of assert.
+- **Constraint:** the cast is gone; the new code path rejects invalid input at runtime with a clear error.
+
+### `ts:non-null-assertion-abuse`
+
+**Signal:** A `!` non-null assertion on a value that is genuinely `T | undefined` — map lookups, array indexing, optional chaining results.
+
+**Drill:**
+- **Task:** narrow the value explicitly with an `if (x === undefined) throw ...` or similar guard.
+- **Constraint:** no `!` assertion remains on that path; the missing case is handled with a clear error.
+
+### `ts:ts-ignore-no-explanation`
+
+**Signal:** `@ts-ignore` comment without an adjacent explanation comment or tracking reference.
+
+**Drill:**
+- **Task:** replace with `@ts-expect-error` and add a comment explaining why.
+- **Constraint:** the new form will error if the underlying TS error becomes valid — helps the team notice when the ignore is no longer needed.
+
+### `ts:unconstrained-generic`
+
+**Signal:** A function generic `<T>` whose body uses `obj[key]` or `.length` or other property access without constraining `T`.
+
+**Drill:**
+- **Task:** add a constraint like `T extends { length: number }` or `K extends keyof T`.
+- **Constraint:** the constrained version compiles; the unconstrained version produced `any`-typed property access.
+
+### `ts:discriminated-union`
+
+**Signal:** A union of object types without a shared discriminant field (e.g., `type X = { value: string } | { error: Error }` — narrowing requires checking for key existence each time).
+
+**Drill:**
+- **Task:** add a `kind` (or similar) discriminant field to each variant; update consumers to narrow on `kind`.
+- **Constraint:** narrowing becomes a simple `switch (x.kind)` — no more `"error" in x` checks.
+
+### `ts:exhaustive-never`
+
+**Signal:** A `switch` over a discriminated union that covers all current variants but has no exhaustive default branch.
+
+**Drill:**
+- **Task:** add a `default: { const _e: never = value; return _e; }` branch (or equivalent).
+- **Constraint:** adding a new variant must cause a compile error in this function.
+
+### `ts:strict-disabled`
+
+**Signal:** A `tsconfig.json` with `"strict": false`, or missing, or one or more individual strict flags disabled.
+
+**Drill:**
+- **Task:** enable `strict: true`. Fix the first wave of errors that appear (narrow/propagate, don't silence).
+- **Constraint:** `tsc --noEmit` must pass after the change; no new `any`, `@ts-ignore`, or `!` assertions introduced.
+
+### `ts:catch-unknown`
+
+**Signal:** A `catch (e)` clause where `e` is used as `e.message` or `e.name` without narrowing.
+
+**Drill:**
+- **Task:** narrow with `if (e instanceof Error) { ... } else { ... }` before accessing `.message`.
+- **Constraint:** `catch (e)` (or `catch (e: unknown)`) must not reference `.message` or other `Error` methods without narrowing.
+
+### `ts:json-no-validation`
+
+**Signal:** `JSON.parse(...)` result assigned to a typed variable via annotation or `as`, without validation.
+
+**Drill:**
+- **Task:** parse as `unknown` and validate with a type guard function or Zod schema.
+- **Constraint:** the declared type is only reached after runtime validation; invalid input produces a clear error.
+
+### `ts:partial-required-readonly`
+
+**Signal:** A function parameter `Patch<User>`-shaped as `{ id?: number; name?: string; ... }` manually written out instead of using `Partial<User>`.
+
+**Drill:**
+- **Task:** replace the manual all-optional type with `Partial<User>`.
+- **Constraint:** every field optional, no duplication of field definitions.
+
+### `ts:import-type`
+
+**Signal:** A module's `import { X, Y, Z } from "..."` statement where X and Z are only used in type positions (parameters, returns, generics) but Y is used at runtime.
+
+**Drill:**
+- **Task:** split into `import type { X, Z } from "..."` and `import { Y } from "..."`.
+- **Constraint:** no runtime import of type-only names; bundler should strip X and Z from the output.
+
+### `ts:default-export`
+
+**Signal:** A module with a `export default class X { ... }` or `export default function X() {}` and no named exports.
+
+**Drill:**
+- **Task:** convert to a named export.
+- **Constraint:** imports must update to `import { X } from "..."`; no renaming at the import site.
+
+### `ts:numeric-enum`
+
+**Signal:** A `enum Foo { A, B, C }` definition (numeric enum, default values).
+
+**Drill:**
+- **Task:** replace with a string union or `as const` object.
+- **Constraint:** runtime behavior preserved; the new form narrows cleanly in discriminated unions.
+
+### `ts:as-const`
+
+**Signal:** A mutable const array/object literal used as a source of literal types via `typeof arr[number]` that widens to `string` or `number`.
+
+**Drill:**
+- **Task:** add `as const` to freeze the literal types.
+- **Constraint:** the derived type narrows from `string` to the exact literal union; the const itself is readonly.
+
+### `ts:type-guard-is`
+
+**Signal:** A function that checks a value's shape at runtime and returns `boolean`, used in an `if` block whose body requires narrowing — but the function is not declared with an `x is Type` predicate.
+
+**Drill:**
+- **Task:** change the return type annotation from `boolean` to `value is SomeType`.
+- **Constraint:** consumers no longer need an `as` cast after the check; narrowing flows automatically.
+
+### `ts:no-unchecked-indexed-access`
+
+**Signal:** A `tsconfig.json` with `strict: true` but `noUncheckedIndexedAccess: false` (or unset), AND code that accesses arrays/records via index without null checks.
+
+**Drill:**
+- **Task:** enable `noUncheckedIndexedAccess: true` in tsconfig; fix the resulting errors by narrowing each unchecked access.
+- **Constraint:** `tsc --noEmit` passes; no `!` non-null assertions introduced as a workaround.
+
+---
+
+# Java language pack (inlined)
+
+This is the runtime source of truth for chiron's Java knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/java.md`.
+
+## Java idiom tag list (for eyeball fallback reference)
+
+### Data modeling
+
+- `java:record` — records for immutable data carriers (Java 14+)
+- `java:final-fields` — `final` fields by default
+- `java:sealed-interface` — sealed types for closed hierarchies (Java 17+)
+- `java:builder` — builder pattern for complex construction
+
+### Null handling
+
+- `java:optional-return` — `Optional<T>` for possibly-absent return values
+- `java:requireNonNull` — `Objects.requireNonNull` for precondition checks
+
+### Error handling
+
+- `java:try-with-resources` — automatic resource cleanup
+- `java:custom-exception` — domain-specific exception classes
+- `java:specific-catch` — narrow catch clauses
+
+### Stream API
+
+- `java:stream-pipeline` — `stream().map().filter().toList()`
+- `java:collectors-groupingby` — `Collectors.groupingBy` for aggregation
+- `java:stream-of` — `Stream.of` / `IntStream.range`
+
+### Collections
+
+- `java:collection-of` — `List.of` / `Map.of` / `Set.of` for immutable literals
+- `java:collection-copyof` — `List.copyOf` / `Map.copyOf` for defensive copies
+
+### Concurrency
+
+- `java:executor-service` — `ExecutorService` over raw `Thread`
+- `java:completablefuture` — `CompletableFuture` for async composition
+- `java:concurrent-hashmap` — `ConcurrentHashMap` for shared state
+
+### Path and I/O
+
+- `java:nio-path` — `java.nio.file.Path` over `java.io.File`
+- `java:standard-charsets-utf8` — `StandardCharsets.UTF_8` explicitly
+
+### Testing
+
+- `java:junit5` — JUnit 5 `@Test` / `@ParameterizedTest`
+- `java:assertj` — AssertJ for fluent assertions
+
+### Dependency injection
+
+- `java:constructor-injection` — constructor DI with `final` fields
+
+### Logging
+
+- `java:slf4j-parameterized` — SLF4J placeholders (`{}`)
+
+### Pattern matching
+
+- `java:pattern-matching-instanceof` — `if (obj instanceof String s)`
+- `java:switch-expression` — switch expressions with arrow syntax
+
+### Tooling
+
+- `java:maven-or-gradle` — pick one build tool
+- `java:static-analysis-ci` — Checkstyle/Spotless/Error Prone in CI
+
+### Other
+
+- `java:var-local` — `var` for local type inference (Java 10+)
+- `java:text-block` — text blocks for multi-line strings (Java 15+)
+- `java:empty-collection-return` — empty collection, never null
+
+## Java challenge seeds
+
+### `java:null-return`
+
+**Signal:** A non-void method returns `null` explicitly from one or more branches, and the return type is a single object (not a collection).
+
+**Drill:**
+- **Task:** change the return type to `Optional<T>` and wrap returns with `Optional.ofNullable`.
+- **Constraint:** no `null` returned from the method; callers must be updated to handle the `Optional`.
+
+### `java:null-collection-return`
+
+**Signal:** A method whose return type is a `List`, `Set`, or `Map` returns `null` from at least one branch.
+
+**Drill:**
+- **Task:** replace `null` with `List.of()` / `Set.of()` / `Map.of()`.
+- **Constraint:** no `null` returned from a collection-valued method; caller iteration must not need a null guard.
+
+### `java:try-with-resources`
+
+**Signal:** A resource implementing `AutoCloseable` (FileReader, BufferedReader, InputStream, Connection, Statement) is opened and explicitly closed in a `finally` block or not closed at all.
+
+**Drill:**
+- **Task:** refactor to try-with-resources.
+- **Constraint:** no explicit `.close()` in a `finally`; the resource is guaranteed to close on all exit paths.
+
+### `java:string-concat-loop`
+
+**Signal:** A `for`, `while`, or enhanced-for loop body contains `s += ...` or `s = s + ...` where `s` is a `String` built up across iterations.
+
+**Drill:**
+- **Task:** rewrite using `StringBuilder` or `String.join(...)`.
+- **Constraint:** no intermediate `String` allocations inside the loop; the final result is identical.
+
+### `java:string-equals-equals`
+
+**Signal:** `==` or `!=` comparison where one operand is a `String` type.
+
+**Drill:**
+- **Task:** replace with `.equals(...)` or `Objects.equals(...)`.
+- **Constraint:** null-safety preserved; if the left operand could be null, prefer `"literal".equals(variable)` or `Objects.equals`.
+
+### `java:record`
+
+**Signal:** A final or effectively-immutable class with only constructor, accessors (getters), and possibly `equals`/`hashCode`/`toString` — no setters, no business logic.
+
+**Drill:**
+- **Task:** convert to a record.
+- **Constraint:** all call sites still work (accessor method name changes from `getName()` to `name()` — update callers).
+
+### `java:var-local`
+
+**Signal:** A local variable declaration like `ArrayList<User> users = new ArrayList<User>();` or `HashMap<String, Integer> map = new HashMap<>();` where the type is clearly visible on the right side.
+
+**Drill:**
+- **Task:** replace with `var`.
+- **Constraint:** only apply when the right-hand side makes the type obvious — not on method return assignments where the type isn't clear.
+
+### `java:switch-expression`
+
+**Signal:** A `switch` statement that assigns a value to a variable (or returns) via a series of `case X: result = ...; break;` branches.
+
+**Drill:**
+- **Task:** convert to a switch expression using `case X -> ...;` arrows.
+- **Constraint:** no fall-through possible; no explicit `break`; the expression form returns the value directly.
+
+### `java:pattern-matching-instanceof`
+
+**Signal:** A pattern of `if (obj instanceof SomeType) { SomeType x = (SomeType) obj; ... }`.
+
+**Drill:**
+- **Task:** merge into `if (obj instanceof SomeType x) { ... }`.
+- **Constraint:** no separate cast; the variable `x` is bound only inside the `if` body.
+
+### `java:raw-type`
+
+**Signal:** Use of a generic class without a type parameter — `List users = ...`, `Map config = ...`, `new ArrayList()`.
+
+**Drill:**
+- **Task:** add the type parameter everywhere.
+- **Constraint:** no unchecked warnings remain; no casts needed at usage sites.
+
+### `java:simpledateformat-sharing`
+
+**Signal:** A `SimpleDateFormat` field or static field, or the same instance passed across threads.
+
+**Drill:**
+- **Task:** replace with `DateTimeFormatter` from `java.time`, stored as a `private static final`.
+- **Constraint:** no `SimpleDateFormat` remaining in thread-visible scope; no thread-safety issues.
+
+### `java:legacy-date`
+
+**Signal:** Uses of `java.util.Date`, `java.util.Calendar`, or `java.text.SimpleDateFormat` in new code.
+
+**Drill:**
+- **Task:** migrate to `java.time` types (`Instant`, `LocalDate`, `LocalDateTime`, `ZonedDateTime`, `Duration`, `DateTimeFormatter`).
+- **Constraint:** no `java.util.Date` or `Calendar` remains in the touched code; time zones are explicit where relevant.
+
+### `java:unsynchronized-shared`
+
+**Signal:** A class field updated by multiple threads via methods like `count++`, `value = newValue`, or similar multi-step operations, without `synchronized`, `AtomicX`, or `volatile`.
+
+**Drill:**
+- **Task:** switch to an `AtomicLong`/`AtomicInteger`/`AtomicReference` with CAS-style updates, OR synchronize the methods.
+- **Constraint:** no data race remains; updates are visible across threads.
+
+### `java:raw-thread`
+
+**Signal:** `new Thread(runnable).start()` in application code (not test code or a framework hook).
+
+**Drill:**
+- **Task:** replace with submission to an `ExecutorService`.
+- **Constraint:** the executor lifecycle is managed via try-with-resources (Java 19+) or explicit `shutdown()`.
+
+### `java:log-string-concat`
+
+**Signal:** A call like `log.info("user " + name + " did X")` or `log.debug("value=" + value)` — string concat in an SLF4J logger call.
+
+**Drill:**
+- **Task:** convert to SLF4J parameterized form: `log.info("user {} did X", name)`.
+- **Constraint:** no `+` concat remains in the log call; concatenation cost is gone when the level is disabled.
+
+### `java:swallowed-interrupt`
+
+**Signal:** `catch (InterruptedException e)` with an empty body or a body that doesn't re-interrupt and doesn't propagate.
+
+**Drill:**
+- **Task:** add `Thread.currentThread().interrupt();` or propagate the exception.
+- **Constraint:** the interrupt signal is not lost; thread cancellation works correctly.
+
+### `java:collection-of`
+
+**Signal:** Immutable-intent collections built via `new ArrayList<>(Arrays.asList(...))`, multiple `.add()` calls on a fresh list, or `Collections.unmodifiableList(new ArrayList<>(...))`.
+
+**Drill:**
+- **Task:** replace with `List.of(...)`, `Set.of(...)`, or `Map.of(...)`.
+- **Constraint:** the resulting collection is immutable; no mutation is possible after construction.
