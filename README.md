@@ -13,23 +13,29 @@
 
 ## Install
 
-**Option A — directly from GitHub** (recommended once you're comfortable):
+Inside Claude Code, run:
 
-```bash
-claude plugins marketplace add xDido/chiron
-claude plugins install chiron@chiron-dev
+```
+/plugin marketplace add xDido/chiron
+/plugin install chiron@chiron
 ```
 
-**Option B — from a local clone** (for development or offline install):
+That's it — no clone required. Claude Code fetches `.claude-plugin/marketplace.json` from GitHub directly.
+
+**Offline / development install** (from a local clone):
 
 ```bash
 git clone https://github.com/xDido/chiron.git
-cd chiron
-claude plugins marketplace add ./
-claude plugins install chiron@chiron-dev
 ```
 
-Verify: `claude plugins list` should show `chiron@chiron-dev` as enabled.
+Then in Claude Code:
+
+```
+/plugin marketplace add /absolute/path/to/chiron
+/plugin install chiron@chiron
+```
+
+Verify with `/plugin` — `chiron@chiron` should show as enabled.
 
 ## Usage
 
