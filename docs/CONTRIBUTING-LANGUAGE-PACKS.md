@@ -25,13 +25,13 @@ Every pack has content in **two files**, both maintained together:
 | File                                                                 | Role                                                                                                                                                           | Size                       |
 | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
 | `docs/languages/<lang>.md`                                           | Human-readable reference. Full idiom explanations, all anti-patterns, mental-model deltas, stdlib anchors. Read by contributors and users, not by the runtime. | Large (500+ lines typical) |
-| `commands/challenge.md` § "&lt;Language&gt; language pack (inlined)" | Runtime source of truth. Just the idiom tag list (for eyeball fallback) and the full seeds (for pattern matching). No prose explanations.                      | ~200 lines per language    |
+| `.claude/skills/challenge/SKILL.md` § "&lt;Language&gt; language pack (inlined)" | Runtime source of truth. Just the idiom tag list (for eyeball fallback) and the full seeds (for pattern matching). No prose explanations.                      | ~200 lines per language    |
 
 **Both files must be kept in sync.** The docs file explains the content; the command file runs the command. A contribution PR touches both. If they drift, the runtime behavior drifts from the documentation.
 
 ## Why two files?
 
-Because commands in Claude Code can't reliably load external files from the plugin directory at runtime. The command must be self-contained. At the same time, we want a readable reference document for contributors and users — hence the docs mirror. See [the plan file](https://github.com/<owner>/chiron/blob/main/plans/mossy-crunching-hopcroft.md#cross-check-results-completed) (cross-check #3) for the full reasoning behind this decision.
+Because commands in Claude Code can't reliably load external files from the plugin directory at runtime. The command must be self-contained. At the same time, we want a readable reference document for contributors and users — hence the docs mirror. See the implementation plan file (cross-check #3 and the Phase 4 install-phase correction) for the full reasoning behind this decision — it's stored outside the public repo at `~/.claude/plans/mossy-crunching-hopcroft.md`.
 
 ---
 
@@ -75,9 +75,9 @@ The hero fixture serves two purposes:
 1. Proof that your pack works end-to-end: `/challenge tests/fixtures/<lang>/<file>` should produce a real drill.
 2. Material for the README hero GIF if the language becomes the primary demo.
 
-### 4. Mirror into `commands/challenge.md`
+### 4. Mirror into `.claude/skills/challenge/SKILL.md`
 
-Copy the **idiom tag list** and the **full challenge seeds** (not the explanations, not the mental-model deltas) into `commands/challenge.md`. Add them as a new section at the end of the file:
+Copy the **idiom tag list** and the **full challenge seeds** (not the explanations, not the mental-model deltas) into `.claude/skills/challenge/SKILL.md`. Add them as a new section at the end of the file:
 
 ```markdown
 # <Language> language pack (inlined)
@@ -95,7 +95,7 @@ This is the runtime source of truth for chiron's <Language> knowledge...
 
 The human-readable docs stay in `docs/languages/<lang>.md`. Only the tags and seeds go into the command file.
 
-### 5. Update language detection in `commands/challenge.md`
+### 5. Update language detection in `.claude/skills/challenge/SKILL.md`
 
 Find step 2 of the command ("Language detection"). Add your language's file extension:
 
@@ -114,7 +114,8 @@ In `README.md`, find the "Roadmap" section and remove your language from the "co
 Install the plugin locally:
 
 ```bash
-claude plugins install /path/to/chiron
+claude plugins marketplace add ./
+claude plugins install chiron@chiron-dev
 ```
 
 Run the three verification steps:
@@ -142,7 +143,7 @@ If the fallback fires too often, your seed signals are too narrow. If seeds fire
 Against `main`, with these files changed:
 
 - `docs/languages/<lang>.md` (new)
-- `commands/challenge.md` (modified — new inlined section + language detection update)
+- `.claude/skills/challenge/SKILL.md` (modified — new inlined section + language detection update)
 - `tests/fixtures/<lang>/<file>.<ext>` (new)
 - `README.md` (modified — roadmap update)
 

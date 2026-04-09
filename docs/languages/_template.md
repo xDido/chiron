@@ -1,12 +1,12 @@
 # &lt;language&gt; language pack
 
-> **This is a template.** Copy this file to `docs/languages/<language>.md` (e.g., `rust.md`, `typescript.md`, `python.md`) and fill it in. Then mirror the seed list + idiom tag list into the "<language> language pack (inlined)" section of `commands/challenge.md`. See [`../CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the full authoring guide.
+> **This is a template.** Copy this file to `docs/languages/<language>.md` (e.g., `rust.md`, `typescript.md`, `python.md`) and fill it in. Then mirror the seed list + idiom tag list into the "<language> language pack (inlined)" section of `.claude/skills/challenge/SKILL.md`. See [`../CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the full authoring guide.
 >
 > Delete this quote block once you're ready to submit. The rest of this file is the structure your pack should follow.
 
-Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for &lt;language&gt;. This file is the **human-readable reference** for chiron's &lt;language&gt; knowledge base. The content is mirrored into `commands/challenge.md` at runtime for the `/challenge` command's seeded pass.
+Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for &lt;language&gt;. This file is the **human-readable reference** for chiron's &lt;language&gt; knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.
 
-**Contributors:** when adding idioms or seeds here, also update the corresponding section in `commands/challenge.md`. See [`../CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide.
+**Contributors:** when adding idioms or seeds here, also update the corresponding section in `.claude/skills/challenge/SKILL.md`. See [`../CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide.
 
 ---
 
@@ -147,7 +147,7 @@ Before submitting the pack:
 - [ ] Each drill is ≤20 lines of change, ≤1 function, 5–15 minutes of work
 - [ ] Each drill can be stated in one sentence
 - [ ] At least one seed is verified against a hero fixture file you committed in `tests/fixtures/<lang>/`
-- [ ] The idiom list and seeds are mirrored into `commands/challenge.md` under a new `# <Language> language pack (inlined)` section
+- [ ] The idiom list and seeds are mirrored into `.claude/skills/challenge/SKILL.md` under a new `# <Language> language pack (inlined)` section
 - [ ] The README roadmap is updated to note the language is no longer deferred
 
 See [`../CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the full submission process.

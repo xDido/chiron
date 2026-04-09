@@ -40,13 +40,13 @@ chiron has an acceptance contract at [`docs/GOLDEN-TRANSCRIPT.md`](docs/GOLDEN-T
 ## Development setup
 
 ```bash
-git clone https://github.com/Dido/chiron.git
+git clone https://github.com/xDido/Chiron.git
 cd chiron
 claude plugins marketplace add ./
 claude plugins install chiron@chiron-dev
 ```
 
-Verify: `claude plugins list` should show `chiron@chiron-dev` as enabled. After making changes to command files, run `claude plugins update chiron` to reload.
+Verify: `claude plugins list` should show `chiron@chiron-dev` as enabled. After making changes to skill files, run `claude plugins update chiron` to reload.
 
 Test your changes with the three commands (`/chiron`, `/challenge`, `/hint`) in a fresh Claude Code session. For language pack work, create a test fixture in `tests/fixtures/<language>/` and verify `/challenge <fixture>` finds your seeds and generates correct drills.
 

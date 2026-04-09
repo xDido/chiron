@@ -1,8 +1,8 @@
 # Go language pack
 
-Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for Go. This file is the **human-readable reference** for chiron's Go knowledge base. The content is mirrored into `commands/challenge.md` at runtime for the `/challenge` command's seeded pass.
+Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for Go. This file is the **human-readable reference** for chiron's Go knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.
 
-**Contributors:** when adding idioms or seeds here, also update the corresponding section in `commands/challenge.md`. See [`CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide.
+**Contributors:** when adding idioms or seeds here, also update the corresponding section in `.claude/skills/challenge/SKILL.md`. See [`CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide.
 
 ---
 
@@ -1238,6 +1238,6 @@ When adding a new seed to this pack:
 2. **Write the Signal** in prose or pseudo-regex — concrete enough that a reader can verify a match by inspection.
 3. **Write the Drill** with Task + Constraint — task is what to change, constraint is what makes it bounded (measurable, finite).
 4. **Keep it small.** Drills must be ≤20 lines of change, ≤1 function touched, 5–15 minutes of focused work.
-5. **Mirror into `commands/challenge.md`.** The runtime source of truth is the command file; this document is the human-readable mirror and the contribution-PR target.
+5. **Mirror into `.claude/skills/challenge/SKILL.md`.** The runtime source of truth is the command file; this document is the human-readable mirror and the contribution-PR target.
 
 See [`../CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the full authoring guide including how the signal is pattern-matched at runtime, how to write a good hero fixture for your language, and how contributors test their pack locally.

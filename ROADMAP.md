@@ -53,9 +53,9 @@ Scaffolding the repo so it's buildable and contributable from day one.
 
 The three opt-in entry points chiron offers to users. Each command file is self-contained: voice directive, decision tree, anti-patterns, and failure-mode rules are inlined to avoid the skill auto-trigger problem.
 
-- [x] `commands/chiron.md` — `/chiron <request>` — Socratic voice for a single coding request. Inlines voice (A+B blend), decision tree, L0–L4 ladder, anti-patterns, 4 failure-mode rules.
-- [x] `commands/hint.md` — `/hint` — stateless rung advancer. Re-reads the most recent turn, identifies current rung, emits the next one.
-- [x] `commands/challenge.md` — `/challenge <file>` — hero drill generator. Seeded pass, eyeball fallback. Grades attempts with `/10`. Writes to `~/.chiron/profile.json`.
+- [x] `.claude/skills/chiron/SKILL.md` — `/chiron <request>` — Socratic voice for a single coding request. Inlines voice (A+B blend), decision tree, L0–L4 ladder, anti-patterns, 4 failure-mode rules. *(Originally built as `commands/chiron.md` in Phase 2; migrated to user-invocable skill in Phase 4 correction.)*
+- [x] `.claude/skills/hint/SKILL.md` — `/hint` — stateless rung advancer. Re-reads the most recent turn, identifies current rung, emits the next one.
+- [x] `.claude/skills/challenge/SKILL.md` — `/challenge <file>` — hero drill generator. Seeded pass, eyeball fallback. Grades attempts with `/10`. Writes to `~/.chiron/profile.json`.
 - [x] **Post-review corrections applied** — tightened `/chiron` decision tree step 4 ("already knows" criterion), dropped `/10` threshold from `drill_solved` (constraint-pass only). See `plans/mossy-crunching-hopcroft.md` for the rationale.
 - [x] Phase 2 committed (commit `ef71c2f` "phase 2: command entry points")
 
@@ -74,8 +74,8 @@ The initial language. Enables `/challenge` to work on Go code and validates the 
   - **25 mental-model deltas** for engineers coming from C-family languages
   - **16 challenge seeds** with full Signal + Drill format
 - [x] `tests/fixtures/go/worker_pool_bad.go` — hero fixture compiling as real Go code, documents 4 intentional bugs matching seeds (`go:shared-input-channel`, `go:goroutine-leak`, unbuffered channel coordination, `go:errgroup-with-context`)
-- [x] Seeds + idiom tag list inlined into `commands/challenge.md` as `# Go language pack (inlined)` section — runtime source of truth
-- [x] `commands/challenge.md` step 3 updated to reference the inlined section instead of trying to load `docs/languages/go.md` at runtime
+- [x] Seeds + idiom tag list inlined into `.claude/skills/challenge/SKILL.md` as `# Go language pack (inlined)` section — runtime source of truth
+- [x] `.claude/skills/challenge/SKILL.md` step 3 updated to reference the inlined section instead of trying to load `docs/languages/go.md` at runtime
 - [x] `docs/languages/_template.md` — community contribution template for future languages
 - [x] `docs/CONTRIBUTING-LANGUAGE-PACKS.md` — detailed authoring guide (step-by-step, quality bar, seed-writing tips, testing procedure)
 - [x] Phase 3 committed (commit `21bbd4e` "phase 3: Go language pack (comprehensive)")
