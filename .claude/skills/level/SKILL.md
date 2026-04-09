@@ -137,6 +137,19 @@ Do not moralize. Do not suggest the user *"try harder to type correctly"*. Just 
 
 ---
 
+## Tuning other config fields *(v0.2.1+)*
+
+`/level` only manages the `voice_level` field. Other fields in `~/.chiron/config.json` (drill sizing as of v0.2.1, future tunables in later releases) can be edited directly with any text editor. See the README Configuration section for the current schema and field documentation.
+
+Drill sizing fields added in v0.2.1:
+
+- `drill.max_lines_changed` — default 20, clamped [1, 100]
+- `drill.max_functions_touched` — default 1, clamped [1, 5]
+- `drill.time_minutes_min` — default 5, clamped [1, 60]
+- `drill.time_minutes_max` — default 15, clamped [1, 60]
+
+Invalid values silently fall back to defaults — no crashes.
+
 ## Cross-platform note
 
 `~/.chiron/config.json` expands correctly on Linux, macOS, and Windows (via bash). Same mechanism as `~/.chiron/profile.json` — verified in v0.1. Use forward slashes in paths.

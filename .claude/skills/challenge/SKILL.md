@@ -110,10 +110,14 @@ Present each drill in this exact format:
 
 **Drill sizing requirements (enforce strictly):**
 
-- **≤20 lines of change** per drill
-- **≤1 function touched** per drill
-- **5–15 minutes of focused engineering work**
-- **Expressible in one sentence** — if the task can't be stated in a single sentence, the drill is too big; narrow it or split it
+Drill sizing is tunable via `~/.chiron/config.json` (v0.2.1+). Read the `drill` object from the config at the start of this step. Apply user overrides with fallback to hardcoded defaults. Every field is independently optional — partial override is supported.
+
+- **Max lines changed** — `drill.max_lines_changed` (default **20**, clamped to the range [1, 100]). Invalid values (non-integer, zero, negative, or >100) silently fall back to 20.
+- **Max functions touched** — `drill.max_functions_touched` (default **1**, clamped to [1, 5]). Invalid values silently fall back to 1.
+- **Time range** — `drill.time_minutes_min` to `drill.time_minutes_max` (defaults **5** and **15**, each clamped to [1, 60]). If `time_minutes_min > time_minutes_max` after reading, fall back BOTH fields to defaults (5 and 15). Invalid individual values fall back to their own defaults.
+- **Expressible in one sentence** — quality check, NOT tunable. If the task can't be stated in a single sentence, the drill is too big; narrow it or split it.
+
+If `~/.chiron/config.json` is missing, invalid JSON, or has no `drill` object, apply all hardcoded defaults (20 / 1 / 5–15) — the v0.2.0 behavior. Never crash on bad config input; silent fallback is the correct behavior.
 
 After all drills, close with:
 
