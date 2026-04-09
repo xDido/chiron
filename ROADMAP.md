@@ -115,15 +115,15 @@ Ship v0.1.0.
 - [ ] Hero GIFs recorded *(user action: needs terminal recorder)*
   - Clip A: `/chiron` Socratic walkthrough (matches the golden transcript opening)
   - Clip B: `/challenge` drill on `.claude/skills/challenge/` against `tests/fixtures/go/worker_pool_bad.go`
-- [x] README finalized with install URL (xDido/Chiron) and GIF placeholder
+- [x] README finalized with install URL (xDido/chiron) and GIF placeholder
 - [x] CHANGELOG.md with v0.1.0 release notes
-- [x] All URLs and paths updated to `xDido/Chiron` and `.claude/skills/*`
+- [x] All URLs and paths updated to `xDido/chiron` and `.claude/skills/*`
 - [x] Git tag `v0.1.0` created locally (commit `bbcca7f` "phase 5: release polish")
 - [ ] GitHub repo pushed (local is ahead of `origin/main`)
 - [ ] Git tag `v0.1.0` pushed (`git push origin v0.1.0`)
 - [ ] GitHub Release created from the tag, paste CHANGELOG v0.1.0 section as release notes
 
-**Exit criteria:** `https://github.com/xDido/Chiron` shows a v0.1.0 release with working install instructions. Hero GIFs can be added in a subsequent v0.1.1 polish commit if desired.
+**Exit criteria:** `https://github.com/xDido/chiron` shows a v0.1.0 release with working install instructions. Hero GIFs can be added in a subsequent v0.1.1 polish commit if desired.
 
 **🎯 MVP COMPLETE when Phase 5 exit criteria are met.**
 

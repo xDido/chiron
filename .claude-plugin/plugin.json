@@ -6,8 +6,8 @@
     "name": "Dido",
     "email": "adhaithaam@gmail.com"
   },
-  "homepage": "https://github.com/xDido/Chiron",
-  "repository": "https://github.com/xDido/Chiron",
+  "homepage": "https://github.com/xDido/chiron",
+  "repository": "https://github.com/xDido/chiron",
   "license": "MIT",
   "keywords": ["mentor", "teach", "socratic", "drills", "learning", "go"],
   "skills": "./.claude/skills"

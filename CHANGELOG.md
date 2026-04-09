@@ -78,15 +78,15 @@ Strict content with neutral framing. Clarifying questions are invitations, not i
 **Option A — directly from GitHub:**
 
 ```bash
-claude plugins marketplace add xDido/Chiron
+claude plugins marketplace add xDido/chiron
 claude plugins install chiron@chiron-dev
 ```
 
 **Option B — from a local clone (development / offline):**
 
 ```bash
-git clone https://github.com/xDido/Chiron.git
-cd Chiron
+git clone https://github.com/xDido/chiron.git
+cd chiron
 claude plugins marketplace add ./
 claude plugins install chiron@chiron-dev
 ```
