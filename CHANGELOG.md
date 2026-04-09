@@ -6,6 +6,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.2.0] — 2026-04-09
+
+### Added — `/level` voice dial
+
+- **`/level gentle | default | strict`** — new user-invocable slash command for switching chiron's voice level on demand. Persists globally to `~/.chiron/config.json` across sessions and projects. Three levels tune voice tone, hint ladder progression speed, and how chiron responds to "just write it" requests:
+  - **gentle** — warmer, more encouraging; L4 (full solution) offered after one attempt
+  - **default** — A+B blend (v0.1 baseline); L4 after L3 attempt + request, or 2 genuine attempts, or explicit request
+  - **strict** — sharper, more demanding; L4 requires 2+ genuine attempts or explicit "just write it"
+- **`~/.chiron/config.json`** — new per-user config file with stable schema (`schema_version: 1`, `voice_level`). Reserved `schema_version` field enables future non-breaking additions (drill sizing, grading thresholds, other tunables).
+- **All three existing skills (`/chiron`, `/challenge`, `/hint`) now read `~/.chiron/config.json`** at invocation time to pick up the configured level. If the file is missing or invalid, they silently fall back to default — no errors.
+- **Three-level list format** in every `/level` response, with `→` marker pointing at the currently active level. Makes the active level immediately visible regardless of command variant.
+
+### Invariants preserved at every level
+
+- **Anti-pattern #2** (never refuse to ship when asked) applies to all three levels. `strict` is NOT an excuse to refuse — *"just write it"* always ships.
+- **No moralizing** at any level. Strict is firm about the code, never insulting.
+- **L0–L4 rung definitions are unchanged** — only progression speed varies per level.
+- **CLAUDE.md / AGENTS.md overrides** — user instructions win at every level.
+
+### Changed
+
+- `plugin.json` version bumped to `0.2.0`.
+- `/chiron`, `/challenge`, `/hint` skill files gain a "Current level" section near the top (reads the config) and a "Level rules" section near the end (inlined per-level rules). Content additions only — no existing v0.1 rules changed or relaxed.
+- `/challenge` grading tone adjusts per level (gentle softens the "points lost" framing; strict is terse and direct). The `/10` rubric itself is unchanged — only phrasing varies.
+
+### Deferred
+
+- **User config file expansion** (drill sizing, grading threshold, other fields) — v0.2.1.
+- **Profile read-loop integration** with level-aware drill difficulty — v0.2.2.
+- **Pre-edit hook** for strict-mode guardrails — v0.3 or later.
+- **Additional language packs** (Rust, TypeScript, Python, Zig) — separate Bundle E, community contributions welcome.
+
+### Acknowledgments
+
+v0.2.0 continues the impeccable-inspired user-invocable skill pattern from v0.1 — `/level` is implemented as a user-invocable skill at `.claude/skills/level/SKILL.md`, invoked without the `chiron:` prefix.
+
+---
+
 ## [0.1.0] — 2026-04-09
 
 ### Initial public release
