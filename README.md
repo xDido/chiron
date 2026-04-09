@@ -18,14 +18,14 @@
 **Option A — directly from GitHub** (recommended once you're comfortable):
 
 ```bash
-claude plugins marketplace add xDido/Chiron
+claude plugins marketplace add xDido/chiron
 claude plugins install chiron@chiron-dev
 ```
 
 **Option B — from a local clone** (for development or offline install):
 
 ```bash
-git clone https://github.com/xDido/Chiron.git
+git clone https://github.com/xDido/chiron.git
 cd chiron
 claude plugins marketplace add ./
 claude plugins install chiron@chiron-dev
