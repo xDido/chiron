@@ -9,5 +9,6 @@
   "homepage": "https://github.com/Dido/chiron",
   "repository": "https://github.com/Dido/chiron",
   "license": "MIT",
-  "keywords": ["mentor", "teach", "socratic", "drills", "learning", "go"]
+  "keywords": ["mentor", "teach", "socratic", "drills", "learning", "go"],
+  "skills": "./.claude/skills"
 }
