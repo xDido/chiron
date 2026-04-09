@@ -7,23 +7,25 @@
 
 **chiron never auto-activates.** It only fires when you explicitly type one of its slash commands. This is by design: a plugin should not change your default coding-assistant behavior without your consent.
 
-> *Hero GIFs go here.*
-> *Clip A — `/chiron` Socratic walkthrough.*
-> *Clip B — `/challenge` drill on real Go code.*
+<!-- Hero GIFs: two ~30s clips will be embedded here before v0.1.0 release -->
+<!--   Clip A: /chiron Socratic walkthrough (matches the golden transcript opening) -->
+<!--   Clip B: /challenge drill on tests/fixtures/go/worker_pool_bad.go -->
+
+*Once recorded, embed as `![alt](path/to/gif.gif)` after this line.*
 
 ## Install
 
 **Option A — directly from GitHub** (recommended once you're comfortable):
 
 ```bash
-claude plugins marketplace add Dido/chiron
+claude plugins marketplace add xDido/Chiron
 claude plugins install chiron@chiron-dev
 ```
 
 **Option B — from a local clone** (for development or offline install):
 
 ```bash
-git clone https://github.com/Dido/chiron.git
+git clone https://github.com/xDido/Chiron.git
 cd chiron
 claude plugins marketplace add ./
 claude plugins install chiron@chiron-dev
@@ -73,7 +75,7 @@ The plugin's job is not to make you feel smart. It's to make you think like a se
 
 ## Respect for `CLAUDE.md` / `AGENTS.md`
 
-If your project's `CLAUDE.md` or `AGENTS.md` contains instructions that conflict with chiron's behavior (e.g., *"don't use Socratic questioning, just write the code"*), **your instructions win**. Every chiron command file states this deferral explicitly at the top.
+If your project's `CLAUDE.md` or `AGENTS.md` contains instructions that conflict with chiron's behavior (e.g., *"don't use Socratic questioning, just write the code"*), **your instructions win**. Every chiron skill file states this deferral explicitly at the top.
 
 ## Language packs
 
