@@ -1,7 +1,7 @@
 {
-  "name": "chiron-dev",
+  "name": "chiron",
   "metadata": {
-    "description": "Local development marketplace for the chiron plugin"
+    "description": "Teach-first mentor mode for Claude Code. Socratic questions before code, drills from your own source."
   },
   "owner": {
     "name": "Dido",

@@ -111,11 +111,11 @@ In `README.md`, find the "Roadmap" section and remove your language from the "co
 
 ### 7. Test your pack locally
 
-Install the plugin locally:
+Install the plugin locally. In Claude Code:
 
-```bash
-claude plugins marketplace add ./
-claude plugins install chiron@chiron-dev
+```
+/plugin marketplace add /absolute/path/to/chiron
+/plugin install chiron@chiron
 ```
 
 Run the three verification steps:
