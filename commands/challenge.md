@@ -292,6 +292,7 @@ When no seed matches the target file, the step 5 eyeball fallback looks for inst
 - `go:interface-at-consumer` — interfaces defined where they're used, not where implemented
 - `go:explicit-di` — dependency injection via constructor parameters, no framework
 - `go:package-by-feature` — packages organized by domain, not technical layer
+- `go:reduce-hot-path-allocs` — minimize allocations in benchmark-proven hot paths (profile first)
 - `go:composition-over-inheritance` — struct embedding instead of inheritance
 
 ## Go challenge seeds
@@ -314,7 +315,7 @@ When no seed matches the target file, the step 5 eyeball fallback looks for inst
 
 ### `go:errgroup-with-context`
 
-**Signal:** A function spawns multiple goroutines for concurrent work and uses `sync.WaitGroup` for coordination, with manual error collection (shared error variable under a mutex, manual error channel, first-error tracking).
+**Signal:** A function spawns multiple goroutines for concurrent work and uses `sync.WaitGroup` for coordination, with manual error collection (shared error variable, manual error channel, first-error tracking).
 
 **Drill:**
 - **Task:** replace the WaitGroup + manual error collection with `errgroup.Group` using `WithContext`.
@@ -390,7 +391,7 @@ When no seed matches the target file, the step 5 eyeball fallback looks for inst
 
 **Drill:**
 - **Task:** wrap the table body in `t.Run(tc.name, func(t *testing.T) { ... })`.
-- **Constraint:** each case must have a distinct, human-readable name; failures must report which case failed.
+- **Constraint:** each case must have a distinct, human-readable name; failures must report which case failed (via `-run` or `-v` output).
 
 ### `go:small-interface`
 

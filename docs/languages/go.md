@@ -1218,9 +1218,9 @@ Each seed is a pre-authored drill that `/challenge` pattern-matches against sour
 
 **Drill:**
 - **Task:** remove the explicit mutex initialization — the zero value is already correct.
-- **Constraint:** verify the type still works without the constructor (or the constructor is simpler).
+- **Constraint:** verify the type still works without the constructor (or that the constructor is simpler).
 
-### `go:early-loop-variable-capture`
+### `go:loop-variable-capture`
 
 **Signal:** In a codebase that might be pre-Go-1.22, a `for` loop captures its loop variable inside a goroutine or closure without shadowing.
 
