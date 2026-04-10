@@ -12,15 +12,18 @@ allowed-tools: Read, Grep, Glob, LS, Bash
 
 Check if `.chiron-context.md` exists in the project root.
 
-**If it exists:** Read it. Use the project info, structure, config, and patterns as your working context. Skip codebase exploration and config file reads — the context file has what you need. Proceed to the next step.
+**If it exists:** Read it. This file is your complete project reference. **DO NOT read additional files, scan the codebase, or re-read config files.** The only file you should read beyond `.chiron-context.md` is the specific file the user mentions in their request (if any). Proceed to the next step.
 
-**If it does NOT exist:** Do a quick project scan before proceeding:
+**If it does NOT exist:** Generate it now with a thorough project scan:
+
 1. Read `~/.chiron/config.json` if it exists (for voice level and drill config)
-2. List the project root directory (1 level deep)
-3. Read `package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, or equivalent if present
-4. Identify the primary language(s), framework(s), test runner, and build system
-5. Note 2–3 key architectural patterns you observe
-6. Write all findings to `.chiron-context.md` in the project root using this format:
+2. Use Glob to map the full project structure: `**/*.{go,rs,py,js,ts,java,cs,kt,swift,md,json,yaml,yml,toml}` (limit to first 200 results)
+3. Use LS to list the top 2 levels of directories
+4. Read the project manifest (`package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, `*.csproj`, `build.gradle`, `Package.swift`, or equivalent)
+5. Read the README.md if it exists (first 100 lines)
+6. Read 2-3 key source files (entry points, main handlers, or core modules) to understand patterns
+7. Read any existing CLAUDE.md, AGENTS.md, or .cursorrules for project conventions
+8. Write all findings to `.chiron-context.md` using the format below, then proceed
 
 ```markdown
 # Chiron project context
@@ -32,16 +35,29 @@ Auto-generated — delete this file to force a refresh on next invocation.
 - **Framework:** <detected frameworks>
 - **Test runner:** <detected test runner>
 - **Build:** <detected build system>
+- **Package manager:** <npm/yarn/pnpm/go modules/cargo/maven/etc.>
 
-## Structure
-<top-level directories with one-line descriptions>
+## Dependencies (key libraries)
+<top 10-15 most important dependencies with one-line descriptions>
+
+## Directory structure
+<full tree, 2 levels deep, with one-line descriptions for each directory>
+
+## Entry points
+<main files, CLI entry points, HTTP server setup, etc. with file paths>
+
+## Architecture overview
+<3-5 sentences describing the architecture: monolith vs microservices, API style, data layer, etc.>
+
+## Key patterns and conventions
+<5-10 patterns observed: error handling style, naming conventions, test patterns, DI approach, etc.>
 
 ## Chiron config
 - **Voice level:** <from ~/.chiron/config.json, or "default" if missing>
 - **Drill sizing:** <from config, or "20 lines / 1 function / 5-15 min" if missing>
 
-## Key patterns observed
-<2-3 architectural patterns you noticed>
+## Project conventions (from config files)
+<any relevant instructions from CLAUDE.md, AGENTS.md, .cursorrules — or "none found">
 ```
 
 ## The user's request

@@ -7,7 +7,7 @@ description: Set or show chiron's voice level (gentle, default, or strict). Pers
 
 ## Step 0 — Load project context
 
-Check if `.chiron-context.md` exists in the project root. **If it exists:** read it and use it as your working context. **If not:** do a quick project scan (list root, read config, identify language/framework) and write `.chiron-context.md` (see the chiron skill for the format template).
+Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files.** **If not:** generate it with a thorough scan (see the chiron skill for the full scan steps and format template).
 
 **Important:** When this command changes the voice level, update BOTH `~/.chiron/config.json` (global persistence) AND the "Chiron config" section in `.chiron-context.md` (project cache).
 
