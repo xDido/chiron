@@ -1,6 +1,6 @@
 ---
 name: postmortem
-description: Session-end review of recent chiron activity. Scores across 5 axes (design thinking, code quality, idioms, testing, engineering maturity) from go-mentor.md and names one concrete thing to practice next time. Read-only in v0.3.0 — does not persist scores.
+description: Session-end review of recent chiron activity. Scores across 5 axes (design thinking, code quality, idioms, testing, engineering maturity) and names one concrete thing to practice next time. Read-only in v0.3.0 — does not persist scores.
 user-invocable: true
 argument-hint: "[optional session summary]"
 ---
@@ -27,7 +27,7 @@ Before applying the behavior below, read `~/.chiron/config.json` if it exists. A
 
 ## What this command does
 
-Reviews the current VS Code Copilot conversation's recent chiron activity and presents a session-end report. Based on the *"After each session"* pattern from `go-mentor.md`:
+Reviews the current VS Code Copilot conversation's recent chiron activity and presents a session-end report. Based on chiron's *"After each session"* pattern:
 
 1. **Session summary** — 2–3 sentences recapping what was worked on
 2. **Scores** — `/10` across 5 axes
@@ -45,7 +45,7 @@ Stop there. **Do not invent a session to review.** If the user is new to chiron 
 
 If `$ARGUMENTS` contains a user-supplied summary (e.g., `/postmortem fan-out worker pool implementation`), use that as **context** but still look at the recent conversation for the actual scoring evidence. The arguments are a hint about what the user cared about — not a substitute for evidence.
 
-## The 5 scoring axes (from go-mentor.md)
+## The 5 scoring axes
 
 | Axis | What you're scoring |
 |------|---------------------|

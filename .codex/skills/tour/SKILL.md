@@ -1,6 +1,6 @@
 ---
 name: tour
-description: Structured "before each task" preamble for a coding topic. Presents read-this-first doc pointers, key concepts, and common junior mistakes. From go-mentor.md's session preamble pattern — gives you the mental model before you start writing code. For topic overviews, NOT tutorials.
+description: Structured "before each task" preamble for a coding topic. Presents read-this-first doc pointers, key concepts, and common junior mistakes. From chiron's session preamble pattern — gives you the mental model before you start writing code. For topic overviews, NOT tutorials.
 ---
 
 # $tour — structured preamble for a coding topic
@@ -31,7 +31,7 @@ Given a coding topic or concept, produce a structured preamble covering:
 2. **Key concepts** — 2–4 mental models or facts the user needs before writing code
 3. **Common junior mistakes** — 2–4 pitfalls that look correct but are subtly wrong
 
-Based on the *"Before each task"* section in `go-mentor.md`. The output is a reading and mental-prep list — **NOT a tutorial or a solution.**
+Based on chiron's *"Before each task"* pattern. The output is a reading and mental-prep list — **NOT a tutorial or a solution.**
 
 ## Decision tree
 
@@ -99,7 +99,7 @@ The 3-section structure is the same at every level. Only the phrasing and the "C
 ### `default`
 
 - A+B blend (v0.1 baseline). Neutral, structured.
-- Mistakes section header: ***"Common junior mistakes"*** (matches `go-mentor.md`)
+- Mistakes section header: ***"Common junior mistakes"***
 - Close: *"Ready to write it? Run `$chiron ...`"*
 
 ### `strict`

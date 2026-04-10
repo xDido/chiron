@@ -269,7 +269,7 @@ Three new user-invocable slash commands extending chiron's teach-first philosoph
 
 - **`/explain <question>`** — compare 2–3 approaches with pros/cons and a qualified recommendation. For *"which way should I..."* questions (complements `/chiron` which handles *"how do I..."* questions). Every response ends with a recommendation — no fence-sitting allowed. If the user says *"just tell me which one"*, `/explain` ships the recommendation directly without the full comparison.
 
-- **`/postmortem [optional summary]`** — session-end review. Analyzes recent chiron activity in the conversation and produces a 3-section report: session summary, `/10` scores across 5 axes from `go-mentor.md` (design thinking, code quality, idioms, testing, engineering maturity), and one concrete thing to practice next time. Graceful degradation if no recent chiron activity is found. **Read-only in v0.3.0** — scores are not persisted.
+- **`/postmortem [optional summary]`** — session-end review. Analyzes recent chiron activity in the conversation and produces a 3-section report: session summary, `/10` scores across 5 axes (design thinking, code quality, idioms, testing, engineering maturity), and one concrete thing to practice next time. Graceful degradation if no recent chiron activity is found. **Read-only in v0.3.0** — scores are not persisted.
 
 - **`/tour <topic>`** — structured preamble before a coding task. 3 sections: read-this-first doc pointers (1–3), key concepts (2–4), common junior mistakes (2–4). Text-only preamble; no code examples. Routes *"how do I"* questions to `/chiron` and *"which way"* questions to `/explain`. Never fakes doc pointers — describes the resource without a URL if uncertain.
 
@@ -301,7 +301,7 @@ All three commands follow the established user-invocable skill pattern from v0.2
 ### Not in 0.3.0 (deferred)
 
 - **Profile persistence for `/postmortem` scores** — deferred. v0.3.x can add this if session-score history over time proves useful.
-- **Custom `/postmortem` axes** — hardcoded to the five from `go-mentor.md`. No per-user customization in v0.3.0.
+- **Custom `/postmortem` axes** — hardcoded to five axes. No per-user customization in v0.3.0.
 - **Code examples in `/tour`** — intentionally text-only. If users want implementation, that's `/chiron`'s job.
 - **Agent variants of these commands** — `chiron-reviewer` as an agent is still Bundle D, deferred.
 - **Bundle A v0.2.2** (profile read-loop with session-start hook) — still remaining in Bundle A.
