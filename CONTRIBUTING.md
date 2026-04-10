@@ -4,7 +4,7 @@ Thanks for your interest in contributing. chiron is a small, opinionated plugin 
 
 ## 1. Language packs
 
-The biggest contribution opportunity. chiron ships six bundled language packs (Go, Rust, Python, JavaScript, TypeScript, Java). Community contributions for additional languages (Zig, C#, Kotlin, Swift, Ruby, Elixir, etc.) are most welcome. A new language is typically a single-file PR against `docs/languages/<language>.md` plus a mirror into `.claude/skills/challenge/SKILL.md`.
+The biggest contribution opportunity. chiron ships nine bundled language packs (Go, Rust, Python, JavaScript, TypeScript, Java, C#, Kotlin, Swift). Community contributions for additional languages (Zig, Ruby, Elixir, etc.) are most welcome. A new language is typically a single-file PR against `docs/languages/<language>.md` plus a mirror into `.claude/skills/challenge/SKILL.md`.
 
 See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the detailed authoring guide. Use [`docs/languages/_template.md`](docs/languages/_template.md) as a starting point.
 

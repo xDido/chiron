@@ -176,7 +176,7 @@ If your project's `CLAUDE.md` or `AGENTS.md` contains instructions that conflict
 
 ## Language packs
 
-chiron ships with comprehensive language packs for six languages. Run `/challenge path/to/file.<ext>` on any supported file:
+chiron ships with comprehensive language packs for nine languages. Run `/challenge path/to/file.<ext>` on any supported file:
 
 | Language | Extensions | Pack |
 |----------|------------|------|
@@ -186,22 +186,25 @@ chiron ships with comprehensive language packs for six languages. Run `/challeng
 | JavaScript | `.js`, `.mjs`, `.cjs` | [`docs/languages/javascript.md`](docs/languages/javascript.md) |
 | TypeScript | `.ts`, `.tsx` | [`docs/languages/typescript.md`](docs/languages/typescript.md) |
 | Java | `.java` | [`docs/languages/java.md`](docs/languages/java.md) |
+| C# | `.cs` | [`docs/languages/csharp.md`](docs/languages/csharp.md) |
+| Kotlin | `.kt`, `.kts` | [`docs/languages/kotlin.md`](docs/languages/kotlin.md) |
+| Swift | `.swift` | [`docs/languages/swift.md`](docs/languages/swift.md) |
 
 Each pack includes: stdlib anchors, 25–30 idioms, 20–25 common anti-patterns, mental-model deltas, and 12–17 challenge seeds. TypeScript files also match JavaScript seeds — both packs are consulted.
 
-**Want to add Zig, C#, Kotlin, Swift, Ruby, or something else?** See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide and start from [`docs/languages/_template.md`](docs/languages/_template.md). A new language pack is usually a single-file PR against `docs/languages/<lang>.md` plus a mirror into `.claude/skills/challenge/SKILL.md`.
+**Want to add Zig, Ruby, Elixir, or something else?** See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide and start from [`docs/languages/_template.md`](docs/languages/_template.md). A new language pack is usually a single-file PR against `docs/languages/<lang>.md` plus a mirror into `.claude/skills/challenge/SKILL.md`.
 
 ## Roadmap
 
 chiron's development roadmap from empty repo to v0.1 MVP lives in [`ROADMAP.md`](ROADMAP.md). It tracks phase-by-phase progress (scaffolding → commands → language pack → verification → public release) and lists v0.2+ candidate features that are intentionally not in v0.1.
 
-**Shipped:** `/chiron`, `/hint`, `/challenge`, `/level`, `/explain`, `/postmortem`, `/tour` — and six language packs (Go, Rust, Python, JavaScript, TypeScript, Java).
+**Shipped:** `/chiron`, `/hint`, `/challenge`, `/level`, `/explain`, `/postmortem`, `/tour` — and nine language packs (Go, Rust, Python, JavaScript, TypeScript, Java, C#, Kotlin, Swift).
 
 **On deck:**
 
 - `chiron-reviewer` agent — review your code the way a senior engineer would
 - Pre-edit hook for strict-mode guardrails
-- Additional language packs (C#, Kotlin, Swift, Ruby, Zig — community-driven)
+- Additional language packs (Ruby, Zig, Elixir — community-driven)
 
 See [`ROADMAP.md`](ROADMAP.md) for the full history and future bundles.
 

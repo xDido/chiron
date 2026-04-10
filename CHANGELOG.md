@@ -6,6 +6,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.5.0] — 2026-04-10
+
+### Added — Bundle F language packs (C#, Kotlin, Swift)
+
+`/challenge` expands from six supported languages to **nine**. Each new pack matches the existing packs in density.
+
+#### C# pack — `docs/languages/csharp.md`
+
+- 12 stdlib/ecosystem anchors (LINQ, async/await, Task, Span, Records, Pattern matching, Nullable refs, IDisposable, DI container, xUnit, FluentAssertions, Microsoft.Extensions.Logging)
+- 30 idioms — records, switch expressions, nullable reference types, LINQ pipelines, `async/await` + `ConfigureAwait(false)`, `Task.WhenAll`, `CancellationToken`, `using` declarations, `await using`, primary constructor DI, structured logging, xUnit `[Theory]`, sealed classes, `IOptions<T>`, and more
+- 25 anti-patterns — `.Result`/`.Wait()` deadlocks, `async void`, serial awaits, missing `CancellationToken`, string concat in loops, interpolated log messages, `HttpClient` as short-lived, `DateTime.Now`, `lock(this)`, broad `catch (Exception)`, `throw ex`, public `List<T>`, and more
+- 25 mental-model deltas — value types vs reference types, nullable opt-in, properties as getter/setter sugar, `var` vs `dynamic`, `yield return`, `Task` vs thread, generics reified, extension methods, and more
+- 17 challenge seeds
+- Hero fixture: `tests/fixtures/csharp/OrderService_bad.cs` (9 intentional bugs)
+
+#### Kotlin pack — `docs/languages/kotlin.md`
+
+- 12 stdlib/ecosystem anchors (null safety, coroutines, scope functions, sealed classes, data classes, extensions, collections, Flow, delegation, Kotest, Ktor/Spring Boot)
+- 30 idioms — `val` by default, safe call `?.`, Elvis `?:`, `?.let {}`, `requireNotNull`, data classes, sealed classes, `object` singletons, scope functions (`let`/`apply`/`run`/`also`), extension functions/properties, read-only collections, `suspend` functions, structured concurrency, `async`/`await`, `withContext`, `Flow`, `StateFlow`, `by lazy`, interface delegation, `Result<T>`, trailing lambdas, and more
+- 25 anti-patterns — `!!` abuse, platform types from Java interop, `GlobalScope`, `runBlocking` in production, blocking in coroutines, catching `CancellationException`, `var` abuse, mutable collection APIs, data class with `var`, Java-style getters, `.first()` on empty, scope function overuse, catching `Throwable`, and more
+- 25 mental-model deltas — null safety in type system, everything is an expression, no checked exceptions, smart casts, `when` vs `switch`, primary constructors, `object` keyword, extension function dispatch, `Unit`/`Nothing`, operator overloading, inline/reified, and more
+- 17 challenge seeds
+- Hero fixture: `tests/fixtures/kotlin/UserRepository_bad.kt` (8 intentional bugs)
+
+#### Swift pack — `docs/languages/swift.md`
+
+- 12 stdlib/ecosystem anchors (Optional, Result, async/await, Actors, Codable, Protocols, Generics, Swift Standard Library, Swift Testing, XCTest, Foundation, Swift Package Manager)
+- 30 idioms — `struct` by default, `let` by default, `guard let`/`if let`, nil-coalescing `??`, optional chaining, enums with associated values, exhaustive `switch`, protocol-oriented programming, protocol extensions, `async`/`await`, `async let`, `TaskGroup`, actors, `@MainActor`, `Codable`, property wrappers, opaque/existential types (`some`/`any`), `[weak self]`, `defer`, and more
+- 25 anti-patterns — force unwrap `!`, `as!` forced cast, `try!`, `class` over `struct`, blocking in async, unstructured `Task`, `DispatchQueue.main.async` instead of `@MainActor`, strong self capture, silent catch, `NSString` usage, `print` in production, `Any`/`AnyObject` escape hatches, and more
+- 25 mental-model deltas — value types are common, optionals are a type, no null, ARC + retain cycles, protocol vs interface, extensions, sum-type enums, exhaustive switch, `guard`, reified generics, structured concurrency, actors, `@MainActor`, key paths, result builders, and more
+- 17 challenge seeds
+- Hero fixture: `tests/fixtures/swift/ProfileLoader_bad.swift` (10 intentional bugs)
+
+### Changed — `/challenge` language detection
+
+Step 2 expanded to route new extensions:
+
+- `.cs` → C#
+- `.kt`, `.kts` → Kotlin
+- `.swift` → Swift
+- Community-contribution message now lists nine shipped languages
+
+### Changed — plugin metadata
+
+- `plugin.json` keywords expanded to include `csharp`, `kotlin`, `swift`
+- `plugin.json` and `marketplace.json` version bumped to `0.5.0`
+
+### Not changed
+
+- **All existing packs** (Go, Rust, Python, JavaScript, TypeScript, Java) — unchanged
+- **`/chiron`, `/hint`, `/level`, `/explain`, `/postmortem`, `/tour`** — language-agnostic, no changes
+- **Voice, anti-patterns, hint ladder, config schema, profile schema** — all v0.4.0 invariants preserved
+
+---
+
 ## [0.4.0] — 2026-04-09
 
 ### Added — Bundle E language packs (Rust, Python, JavaScript, TypeScript, Java)

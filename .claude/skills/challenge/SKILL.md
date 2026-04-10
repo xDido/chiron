@@ -55,9 +55,12 @@ Detect the language from the file extension:
 - `.js`, `.mjs`, `.cjs` → JavaScript
 - `.ts`, `.tsx` → TypeScript (TypeScript pack + JavaScript pack both apply)
 - `.java` → Java
+- `.cs` → C#
+- `.kt`, `.kts` → Kotlin
+- `.swift` → Swift
 - Any other extension → respond:
 
-  > chiron ships with language packs for Go, Rust, Python, JavaScript, TypeScript, and Java. Community contributions for other languages are welcomed — see `docs/CONTRIBUTING-LANGUAGE-PACKS.md`.
+  > chiron ships with language packs for Go, Rust, Python, JavaScript, TypeScript, Java, C#, Kotlin, and Swift. Community contributions for other languages are welcomed — see `docs/CONTRIBUTING-LANGUAGE-PACKS.md`.
 
   Then stop.
 
@@ -1508,3 +1511,633 @@ This is the runtime source of truth for chiron's Java knowledge. The canonical h
 **Drill:**
 - **Task:** replace with `List.of(...)`, `Set.of(...)`, or `Map.of(...)`.
 - **Constraint:** the resulting collection is immutable; no mutation is possible after construction.
+
+---
+
+# C# language pack (inlined)
+
+This is the runtime source of truth for chiron's C# knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/csharp.md`.
+
+## C# idiom tag list (for eyeball fallback reference)
+
+### Language primitives
+
+- `csharp:record` — records for immutable DTOs (C# 9+)
+- `csharp:switch-expression` — switch as expression with arrow syntax
+- `csharp:nullable-reference-types` — `#nullable enable` + `?` annotations
+- `csharp:target-typed-new` — `new()` with inferred type
+- `csharp:file-scoped-namespace` — single namespace per file (C# 10+)
+- `csharp:global-using` — `global using` declarations
+
+### LINQ and collections
+
+- `csharp:linq` — `Where`/`Select`/`OrderBy`/`GroupBy` over manual loops
+- `csharp:readonly-collection-api` — `IReadOnlyList<T>` / `IEnumerable<T>` at API boundaries
+- `csharp:async-enumerable` — `IAsyncEnumerable<T>` + `await foreach`
+- `csharp:span` — `Span<T>` / `ReadOnlySpan<T>` for zero-alloc slicing
+
+### Async and concurrency
+
+- `csharp:async-await` — task-based async all the way down
+- `csharp:configure-await-false` — `.ConfigureAwait(false)` in libraries
+- `csharp:task-whenall` — parallel awaits with `Task.WhenAll`
+- `csharp:cancellation-token` — propagate `CancellationToken` through async methods
+
+### Resource management
+
+- `csharp:using-declaration` — `using var x = ...;` without nesting
+- `csharp:await-using` — `await using` for `IAsyncDisposable`
+
+### Dependency injection
+
+- `csharp:primary-constructor-di` — primary constructors for DI (C# 12+)
+- `csharp:di-registration` — `IServiceCollection` registration patterns
+
+### Error handling
+
+- `csharp:custom-exception` — domain exception classes
+- `csharp:specific-catch` — narrow catch clauses
+
+### Logging
+
+- `csharp:structured-logging` — message templates with placeholders
+
+### Testing
+
+- `csharp:xunit-theory` — `[Theory]` + `[InlineData]` for parametrized tests
+- `csharp:fluent-assertions` — fluent assertion chains
+
+### Immutability
+
+- `csharp:readonly-struct` — small immutable value types
+- `csharp:init-only-setters` — `init` setters for immutable properties
+
+### Time and performance
+
+- `csharp:datetimeoffset-utcnow` — `DateTimeOffset.UtcNow` over `DateTime.Now`
+- `csharp:stringbuilder` — `StringBuilder` in loop-based concatenation
+
+### Design
+
+- `csharp:sealed-by-default` — seal classes not designed for inheritance
+- `csharp:top-level-statements` — `Program.cs` without boilerplate
+- `csharp:ioptions` — `IOptions<T>` for typed configuration binding
+
+## C# challenge seeds
+
+### `csharp:task-result-wait`
+
+**Signal:** A call to `.Result`, `.Wait()`, or `.GetAwaiter().GetResult()` on a `Task<T>` inside a method that could be made async, outside of program-entry-point code.
+
+**Drill:**
+- **Task:** propagate `async` up the call chain, return `Task<T>`, and replace `.Result` with `await`.
+- **Constraint:** no `.Result` / `.Wait()` / `.GetAwaiter().GetResult()` remains in the affected code path.
+
+### `csharp:async-void`
+
+**Signal:** A method declared `async void` that is NOT an event handler (not matching the `EventHandler` / `(object sender, EventArgs e)` signature).
+
+**Drill:**
+- **Task:** change the return type from `void` to `Task`. Update callers to `await` it.
+- **Constraint:** exceptions thrown from the method must be observable by callers via the returned `Task`.
+
+### `csharp:serial-await`
+
+**Signal:** Multiple consecutive `await` statements where the awaited expressions are independent (no data flow between them).
+
+**Drill:**
+- **Task:** start all tasks first, then `await Task.WhenAll(...)`.
+- **Constraint:** each task is started before any `await`; results are destructured after `WhenAll` completes.
+
+### `csharp:missing-cancellation-token`
+
+**Signal:** A public async method without a `CancellationToken` parameter, OR a method that has one but fails to pass it to inner `await` calls.
+
+**Drill:**
+- **Task:** add `CancellationToken ct = default` as the last parameter (or thread an existing one through) and pass it to every inner async call that accepts one.
+- **Constraint:** all inner async calls accept and receive the token; the method can be canceled mid-flight.
+
+### `csharp:string-concat-loop`
+
+**Signal:** A `for`, `foreach`, or `while` loop body contains `s += ...` or `s = s + ...` where `s` is a `string` accumulator.
+
+**Drill:**
+- **Task:** replace with `StringBuilder` or `string.Join(...)`.
+- **Constraint:** no intermediate `string` allocations inside the loop.
+
+### `csharp:interpolated-log-message`
+
+**Signal:** A `_logger.Log*` / `ILogger.Log*` call with an interpolated string argument (`$"..."`).
+
+**Drill:**
+- **Task:** convert to a message template with `{Placeholder}` tokens and separate arguments.
+- **Constraint:** no `$"..."` in the log call; placeholder names describe the fields.
+
+### `csharp:record`
+
+**Signal:** A class with only a constructor that assigns parameters to read-only properties, no business logic, used as a DTO. No `Equals` / `GetHashCode` override.
+
+**Drill:**
+- **Task:** convert to a `record` (or `record struct` if value-type semantics are desired).
+- **Constraint:** all call sites still work; value equality via `Equals` / `==` is now free.
+
+### `csharp:switch-expression`
+
+**Signal:** A `switch` statement that assigns a variable or returns based on a series of `case X: ... break;` branches with no fall-through.
+
+**Drill:**
+- **Task:** convert to a switch expression using `=>` arrows.
+- **Constraint:** no `break`; the expression form returns the value directly; exhaustiveness is visible.
+
+### `csharp:using-declaration`
+
+**Signal:** A `using (...)` block where the scope is the entire method body (or close to it) — unnecessary nesting.
+
+**Drill:**
+- **Task:** convert to a `using` declaration (`using var x = ...;` without the block).
+- **Constraint:** disposal still happens at the same point; indentation reduces.
+
+### `csharp:nullable-reference-types`
+
+**Signal:** A file or project without `#nullable enable` (or `<Nullable>enable</Nullable>` in `.csproj`), combined with multiple places where a reference-type return could legitimately be null.
+
+**Drill:**
+- **Task:** enable nullable reference types, annotate the returns and parameters with `?` where null is valid, narrow with `is not null` where needed.
+- **Constraint:** zero nullable warnings after the annotations; no `!` non-null suppression operators introduced as a workaround.
+
+### `csharp:httpclient-short-lived`
+
+**Signal:** A `new HttpClient()` inside a method body (not a field or a singleton), typically inside `using (var client = new HttpClient())` patterns.
+
+**Drill:**
+- **Task:** inject `IHttpClientFactory` via the constructor and use `factory.CreateClient()`.
+- **Constraint:** no `new HttpClient()` remains; the DI container is responsible for the client lifecycle.
+
+### `csharp:datetime-now`
+
+**Signal:** Uses of `DateTime.Now` in non-UI code (logging, persistence, comparison with UTC values).
+
+**Drill:**
+- **Task:** replace with `DateTimeOffset.UtcNow` (or inject an `IClock` / `TimeProvider` for testability).
+- **Constraint:** no `DateTime.Now` remains in the touched code; timestamps are unambiguous.
+
+### `csharp:catch-exception`
+
+**Signal:** A `catch (Exception)` or `catch (Exception ex)` block that either does nothing or logs + swallows without re-throwing.
+
+**Drill:**
+- **Task:** narrow to the specific exception type(s) this code can handle; let everything else propagate.
+- **Constraint:** no `catch (Exception)` remains unless paired with `throw;`.
+
+### `csharp:throw-ex`
+
+**Signal:** A `throw ex;` (with the variable) inside a `catch` block.
+
+**Drill:**
+- **Task:** change to bare `throw;`.
+- **Constraint:** the original stack trace is preserved.
+
+### `csharp:public-list`
+
+**Signal:** A class exposes `public List<T> X { get; set; }` or `public List<T> X { get; }` as part of its API surface.
+
+**Drill:**
+- **Task:** keep the `List<T>` as a `private readonly` field; expose `IReadOnlyList<T>` publicly.
+- **Constraint:** callers can still iterate and count; they cannot add, remove, or clear.
+
+### `csharp:lock-on-this`
+
+**Signal:** `lock (this)` or `lock (typeof(X))` anywhere in the code.
+
+**Drill:**
+- **Task:** replace with a lock on a private dedicated object (`private readonly object _lock = new();`).
+- **Constraint:** no external code can contend for the same lock.
+
+### `csharp:modify-during-iteration`
+
+**Signal:** A `foreach` loop body calls `.Remove(...)`, `.Add(...)`, or `.Clear()` on the collection being iterated.
+
+**Drill:**
+- **Task:** use `RemoveAll(predicate)`, iterate a snapshot (`.ToList()`), or build a new collection.
+- **Constraint:** no `InvalidOperationException` at runtime; semantics preserved.
+
+---
+
+# Kotlin language pack (inlined)
+
+This is the runtime source of truth for chiron's Kotlin knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/kotlin.md`.
+
+## Kotlin idiom tag list (for eyeball fallback reference)
+
+### Null safety
+
+- `kotlin:val-by-default` — `val` unless reassigned
+- `kotlin:safe-call` — `?.` short-circuit
+- `kotlin:elvis` — `?:` default values
+- `kotlin:safe-let` — `?.let { }` for conditional scope
+- `kotlin:require-not-null` — `requireNotNull` / `checkNotNull` for preconditions
+
+### Data modeling
+
+- `kotlin:data-class` — `data class` for DTOs
+- `kotlin:sealed-class` — `sealed class` / `sealed interface` for closed hierarchies
+- `kotlin:object-singleton` — `object` for thread-safe singletons
+
+### Scope functions
+
+- `kotlin:scope-let` — `let` for null-safe transformations
+- `kotlin:scope-apply` — `apply` for object initialization
+- `kotlin:scope-run` — `run` for scoped expressions
+- `kotlin:scope-also` — `also` for side effects in chains
+
+### Extensions
+
+- `kotlin:extension-function` — extension functions for behavior reuse
+- `kotlin:extension-property` — extension properties for computed values
+
+### Collections
+
+- `kotlin:readonly-collections` — `List<T>` over `MutableList<T>` at API boundaries
+- `kotlin:collection-transforms` — `map`/`filter`/`fold` functional chains
+
+### Coroutines
+
+- `kotlin:suspend-function` — `suspend` for async operations
+- `kotlin:structured-concurrency` — scope-based coroutines
+- `kotlin:coroutine-async` — `async`/`await` for parallel results
+- `kotlin:with-context` — `withContext(Dispatchers.IO)` for dispatcher switching
+- `kotlin:flow` — `Flow<T>` for cold async streams
+- `kotlin:state-flow` — `StateFlow` / `SharedFlow` for hot state
+
+### Delegation
+
+- `kotlin:by-lazy` — lazy initialization
+- `kotlin:interface-delegation` — `by` for interface delegation
+
+### Style
+
+- `kotlin:single-expression-fn` — single-expression functions with `=`
+- `kotlin:trailing-lambda` — trailing lambda convention
+
+### Error handling
+
+- `kotlin:result-type` — `Result<T>` for recoverable errors
+- `kotlin:try-catch` — specific catch clauses
+
+### Testing
+
+- `kotlin:kotest` — Kotest matcher DSL
+- `kotlin:runtest` — `runTest` for coroutine tests
+
+## Kotlin challenge seeds
+
+### `kotlin:double-bang-abuse`
+
+**Signal:** Multiple `!!` non-null assertions in the same file, particularly chained (`x!!.y!!.z!!`) or applied to values that could reasonably be null (map lookups, function returns, external API values).
+
+**Drill:**
+- **Task:** replace `!!` with safe calls (`?.`), Elvis (`?:`), or `requireNotNull`.
+- **Constraint:** at most one `!!` remains in the touched function, and it's accompanied by a comment explaining why.
+
+### `kotlin:global-scope`
+
+**Signal:** `GlobalScope.launch { ... }` or `GlobalScope.async { ... }` in production code.
+
+**Drill:**
+- **Task:** replace with a structured scope (`viewModelScope`, `lifecycleScope`, a dedicated scope field, or `coroutineScope { }` inside a suspend function).
+- **Constraint:** no `GlobalScope` reference remains; cancellation of the enclosing work cancels the coroutine.
+
+### `kotlin:run-blocking-prod`
+
+**Signal:** `runBlocking { ... }` used inside a regular (non-suspend, non-test) function to call a suspend function.
+
+**Drill:**
+- **Task:** make the caller a `suspend` function and remove the `runBlocking` wrapper.
+- **Constraint:** `runBlocking` only remains in `main` or test code; all production code paths are suspend-aware.
+
+### `kotlin:blocking-in-coroutine`
+
+**Signal:** A `suspend` function body that calls blocking I/O (`Files.readString`, `Thread.sleep`, `Socket.connect`, etc.) without wrapping in `withContext(Dispatchers.IO)`.
+
+**Drill:**
+- **Task:** wrap the blocking call in `withContext(Dispatchers.IO) { ... }`.
+- **Constraint:** no blocking call remains on the default dispatcher; the function is still `suspend`.
+
+### `kotlin:data-class-var`
+
+**Signal:** A `data class` with one or more `var` properties.
+
+**Drill:**
+- **Task:** change `var` to `val`; update call sites to use `copy(...)` for "mutations".
+- **Constraint:** no `var` remains in the data class; `equals` / `hashCode` are stable across the object's lifetime.
+
+### `kotlin:mutable-collection-api`
+
+**Signal:** A class exposes `MutableList<T>`, `MutableMap<K,V>`, or `MutableSet<T>` publicly (field, property, or function return).
+
+**Drill:**
+- **Task:** change the public type to the read-only interface (`List<T>`, `Map<K,V>`, `Set<T>`); keep the mutable form private.
+- **Constraint:** external callers can iterate and count but cannot mutate.
+
+### `kotlin:val-by-default`
+
+**Signal:** `var` local declarations whose variable is never reassigned in the current scope.
+
+**Drill:**
+- **Task:** change `var` to `val`.
+- **Constraint:** no behavior change; compiler confirms no reassignment.
+
+### `kotlin:first-on-empty`
+
+**Signal:** `.first()` or `.first { ... }` on a collection where the collection could reasonably be empty — without a surrounding null check or default.
+
+**Drill:**
+- **Task:** replace with `.firstOrNull()` and handle the null case explicitly (with Elvis, error, or return).
+- **Constraint:** no `NoSuchElementException` is possible at runtime.
+
+### `kotlin:java-style-getters`
+
+**Signal:** Kotlin class with manually-written `getX()` / `setX()` methods where a Kotlin property would do.
+
+**Drill:**
+- **Task:** convert to a Kotlin property (`var x: String` or `val x: String` with an optional custom getter).
+- **Constraint:** external Kotlin callers use `.x` instead of `.getX()`; Java interop still works via the auto-generated JVM method.
+
+### `kotlin:scope-fn-overuse`
+
+**Signal:** A chain of 3+ scope functions (`let`, `run`, `apply`, `also`, `with`) on the same value with no clear reason.
+
+**Drill:**
+- **Task:** rewrite as straight-line code.
+- **Constraint:** the result is clearer to read; scope functions are used only when they genuinely reduce noise.
+
+### `kotlin:sealed-class`
+
+**Signal:** An `open class` or `interface` hierarchy where all implementations live in the same module and are exhaustively enumerable (e.g., a `Result` type with a fixed set of states).
+
+**Drill:**
+- **Task:** convert to `sealed class` or `sealed interface`.
+- **Constraint:** at least one `when` expression over the hierarchy is now exhaustive (no `else` branch needed).
+
+### `kotlin:runblocking-in-tests`
+
+**Signal:** A test function (marked `@Test`) whose body is wrapped in `runBlocking { ... }` to call suspend code.
+
+**Drill:**
+- **Task:** replace with `runTest` from `kotlinx-coroutines-test`.
+- **Constraint:** no `runBlocking` in test code; virtual time and controlled dispatchers are available.
+
+### `kotlin:catch-throwable`
+
+**Signal:** `catch (e: Throwable)` or `catch (e: Error)` anywhere in the code.
+
+**Drill:**
+- **Task:** narrow to `catch (e: Exception)` or a specific subtype.
+- **Constraint:** `Error` subclasses propagate; only handleable exceptions are caught.
+
+### `kotlin:missing-use`
+
+**Signal:** Manual `.close()` call in a `finally` block, or no close at all, on an object that implements `Closeable` / `AutoCloseable`.
+
+**Drill:**
+- **Task:** replace with `.use { ... }`.
+- **Constraint:** cleanup happens on all exit paths; no explicit `finally` block remains for this purpose.
+
+### `kotlin:extension-side-effect`
+
+**Signal:** An extension property with a getter that performs I/O, mutation, or expensive work.
+
+**Drill:**
+- **Task:** convert to an extension function.
+- **Constraint:** property access signals "cheap read"; the side effect is moved behind a clearly-named function.
+
+### `kotlin:nullable-for-errors`
+
+**Signal:** A function returning a nullable type (`T?`) where the null return encodes a specific error condition that callers need to distinguish from other failures.
+
+**Drill:**
+- **Task:** replace with a `Result<T>` or a custom sealed class with named variants.
+- **Constraint:** each failure mode is represented as a distinct variant; callers can pattern-match on the result.
+
+### `kotlin:single-expression-fn`
+
+**Signal:** A function whose body is a single `return expression` statement.
+
+**Drill:**
+- **Task:** convert to single-expression form with `=`.
+- **Constraint:** no behavior change; function signature is unchanged.
+
+---
+
+# Swift language pack (inlined)
+
+This is the runtime source of truth for chiron's Swift knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/swift.md`.
+
+## Swift idiom tag list (for eyeball fallback reference)
+
+### Value types and immutability
+
+- `swift:struct-by-default` — `struct` over `class` unless reference semantics needed
+- `swift:let-by-default` — `let` unless reassigned
+- `swift:immutable-struct` — immutable struct with computed properties
+
+### Optionals
+
+- `swift:if-let-guard-let` — safe unwrapping without force
+- `swift:nil-coalescing` — `??` for defaults
+- `swift:optional-chaining` — `?.` short-circuit
+
+### Enums and pattern matching
+
+- `swift:enum-associated-values` — enums as sum types
+- `swift:exhaustive-switch` — compiler-enforced exhaustive matching
+- `swift:switch-where` — `where` clauses in switch cases
+
+### Protocols
+
+- `swift:protocol-oriented` — protocol-oriented programming over inheritance
+- `swift:protocol-extension` — default implementations via extensions
+- `swift:associated-type` — generic protocols with associated types
+
+### Error handling
+
+- `swift:throws-try-catch` — throwing functions and `do`/`catch`
+- `swift:result-type` — `Result<Success, Failure>` for callback APIs
+- `swift:custom-error-enum` — domain-specific error enums
+
+### Async concurrency
+
+- `swift:async-await` — async functions and await
+- `swift:async-let` — concurrent bindings with `async let`
+- `swift:task-group` — dynamic parallelism with `TaskGroup`
+- `swift:actor` — actors for isolated state
+- `swift:main-actor` — `@MainActor` for UI-thread isolation
+
+### Serialization
+
+- `swift:codable` — `Codable` for JSON encoding/decoding
+
+### Property wrappers
+
+- `swift:property-wrapper` — reusable property behavior
+
+### Generics
+
+- `swift:generic-where` — generic constraints with `where`
+- `swift:some-opaque` — `some Protocol` opaque return types
+- `swift:any-existential` — `any Protocol` existential containers
+
+### Memory management
+
+- `swift:weak-self` — `[weak self]` in long-lived closures
+
+### Testing
+
+- `swift:swift-testing` — Swift Testing framework
+
+### Build
+
+- `swift:spm-package` — Swift Package Manager manifests
+
+### Other
+
+- `swift:string-interpolation` — `\(expr)` interpolation
+- `swift:defer` — `defer` for cleanup
+
+## Swift challenge seeds
+
+### `swift:force-unwrap`
+
+**Signal:** Multiple `!` force-unwrap operators in non-test code on values that could reasonably be nil (dictionary lookups, first/last of a collection, optional chains, function returns).
+
+**Drill:**
+- **Task:** replace `!` with safe unwrapping via `guard let`, `if let`, or `??`.
+- **Constraint:** at most one `!` remains in the touched function, and it's accompanied by a comment explaining why.
+
+### `swift:force-cast`
+
+**Signal:** `as!` downcast in non-test code.
+
+**Drill:**
+- **Task:** replace with `as?` and handle the nil case (early return, default, or error).
+- **Constraint:** no `as!` remains; the function gracefully handles the cast-failure case.
+
+### `swift:force-try`
+
+**Signal:** `try!` call in non-test code.
+
+**Drill:**
+- **Task:** propagate with `try` (and mark the caller `throws`) or handle with `do`/`catch`.
+- **Constraint:** no `try!` remains; errors are handled explicitly or propagated.
+
+### `swift:blocking-in-async`
+
+**Signal:** An `async` function body that calls synchronous blocking I/O (`String(contentsOfFile:)`, `Data(contentsOf:)`, `Thread.sleep`, `DispatchSemaphore.wait`, etc.).
+
+**Drill:**
+- **Task:** replace with an async equivalent (`URLSession.shared.data`, `FileHandle.AsyncBytes`, `Task.sleep`) or wrap in `Task.detached { }` if no async alternative exists.
+- **Constraint:** the function remains `async`; no blocking call on the executor thread.
+
+### `swift:unstructured-task`
+
+**Signal:** A `Task { ... }` invocation not tied to a parent scope (top-level in a method, no storage of the task handle, no cancellation path).
+
+**Drill:**
+- **Task:** tie the task to a scope — store the `Task` reference and cancel it in `deinit`, OR convert to structured concurrency via `async let` or `TaskGroup`.
+- **Constraint:** cancellation of the owner cancels the task; no orphaned work.
+
+### `swift:strong-self-capture`
+
+**Signal:** A closure passed as a long-lived callback (completion handler, stored property, `Task { ... }` body) that uses `self.someMethod` or `self.someProperty` without `[weak self]` or `[unowned self]`.
+
+**Drill:**
+- **Task:** add `[weak self]` to the capture list and `guard let self else { return }` at the top of the closure.
+- **Constraint:** the closure no longer creates a retain cycle; the closure body behaves the same when `self` is alive.
+
+### `swift:class-over-struct`
+
+**Signal:** A `class` with only `let` properties, no inheritance, no identity semantics, no Objective-C interop — essentially an immutable data holder.
+
+**Drill:**
+- **Task:** convert to `struct`.
+- **Constraint:** all existing usages still compile; value semantics (copy on assignment) are now in effect.
+
+### `swift:non-final-class`
+
+**Signal:** A `class` declaration without the `final` keyword that is not designed for subclassing (no protected members, no extension points documented).
+
+**Drill:**
+- **Task:** mark the class `final`.
+- **Constraint:** no existing subclass breaks; compiler JIT optimizations are unlocked.
+
+### `swift:missing-await`
+
+**Signal:** A call to an `async` function whose return value is discarded or used as a non-Task value (e.g., `.name` accessed immediately after the call).
+
+**Drill:**
+- **Task:** add `await` (and `try` if the function is `throws`) at the call site; make the enclosing function `async` if needed.
+- **Constraint:** no pending `Task<T, Error>` is silently dropped; the value is properly awaited.
+
+### `swift:for-index-loop`
+
+**Signal:** A `for i in 0..<array.count` loop that accesses `array[i]` inside the body.
+
+**Drill:**
+- **Task:** replace with `for item in array` (if the index isn't needed) or `for (i, item) in array.enumerated()` (if it is).
+- **Constraint:** no subscript indexing by a manual loop variable; iteration is direct.
+
+### `swift:first-on-possibly-empty`
+
+**Signal:** `.first!` or `.last!` on a collection that could reasonably be empty.
+
+**Drill:**
+- **Task:** replace with `guard let` + error, or `??` + default.
+- **Constraint:** no crash on empty collection; the empty case is explicit.
+
+### `swift:nsstring`
+
+**Signal:** `NSString` used in pure Swift code without a specific need for Objective-C interop.
+
+**Drill:**
+- **Task:** replace with Swift `String` and call the equivalent Swift method.
+- **Constraint:** no `NSString` remains unless justified by Objective-C bridging.
+
+### `swift:print-in-production`
+
+**Signal:** `print(...)` or `NSLog(...)` in non-test, non-script code used as a logging mechanism.
+
+**Drill:**
+- **Task:** replace with `os.Logger` (or `Logger` from `swift-log`) at the appropriate level.
+- **Constraint:** no bare `print` remains in production code; log level is appropriate (debug/info/warning/error).
+
+### `swift:dispatch-main-async`
+
+**Signal:** `DispatchQueue.main.async { ... }` inside a `Task { ... }` or `async` function, particularly for UI updates.
+
+**Drill:**
+- **Task:** mark the UI code `@MainActor` and remove the explicit queue dispatch.
+- **Constraint:** the compiler enforces main-thread execution; no manual queue hopping remains.
+
+### `swift:silent-catch`
+
+**Signal:** A `do { try ... } catch { }` block with an empty body or a body that doesn't log, re-throw, or handle the error meaningfully.
+
+**Drill:**
+- **Task:** log the error with context, handle it specifically, or re-throw.
+- **Constraint:** no error silently disappears; the empty `catch` is gone.
+
+### `swift:string-concat-loop`
+
+**Signal:** A `for` loop body contains `s += ...` or `s = s + ...` where `s` is a `String` accumulator.
+
+**Drill:**
+- **Task:** replace with `.joined(separator:)` or a single interpolated expression.
+- **Constraint:** no intermediate `String` allocations inside the loop.
+
+### `swift:any-escape`
+
+**Signal:** A function parameter typed `Any` or `AnyObject` whose body uses `as?` downcasts to inspect the concrete type.
+
+**Drill:**
+- **Task:** replace with a protocol containing the needed methods, or a sum enum if the types are a fixed set.
+- **Constraint:** no `as?` downcasts in the function body; the type system expresses intent.
