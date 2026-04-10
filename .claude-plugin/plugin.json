@@ -9,5 +9,6 @@
   "homepage": "https://github.com/xDido/chiron",
   "repository": "https://github.com/xDido/chiron",
   "license": "MIT",
+  "skills": ".claude/skills/",
   "keywords": ["mentor", "teach", "socratic", "drills", "learning", "go", "Claude", "Claude Code", "AI", "LLM"]
 }
