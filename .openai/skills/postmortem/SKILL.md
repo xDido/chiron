@@ -7,7 +7,7 @@ description: Session-end review of recent chiron activity. Scores across 5 axes 
 
 ## Step 0 — Load project context
 
-Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files.** **If not:** generate it with a thorough scan (see the chiron skill for the full scan steps and format template).
+Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files.** **If not:** generate it with a comprehensive scan — map ALL source files, read ALL key files, document everything (see the chiron skill for the full 4-phase scan procedure and format template).
 
 Optional user-supplied session summary (or blank):
 
