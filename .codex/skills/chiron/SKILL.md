@@ -11,94 +11,11 @@ Check if `.chiron-context.md` exists in the project root.
 
 **If it exists:** Read it. This file is your complete project reference. **DO NOT read additional files, scan the codebase, or re-read config files.** The only file you should read beyond `.chiron-context.md` is the specific file the user mentions in their request (if any). Proceed to the next step.
 
-**If it does NOT exist:** Generate it now with a **comprehensive** project scan. This is the one-time investment that saves every future invocation. Be thorough — the goal is that after writing this file, no chiron skill ever needs to scan the codebase again.
+**If it does NOT exist:** Tell the user:
 
-### Scan procedure
+> *No project context found. Run `$teach` first — it scans your codebase once and generates `.chiron-context.md` so all chiron skills work without re-scanning.*
 
-**Phase 1 — Map the project (parallel where possible):**
-1. Read `~/.chiron/config.json` if it exists
-2. Use Glob to find all source files: `**/*.{go,rs,py,js,ts,jsx,tsx,java,cs,kt,swift,rb,ex,exs,zig}` (note the file list)
-3. Use Glob to find all config files: `**/*.{json,yaml,yml,toml,xml,env,ini,cfg}` and `**/Makefile` `**/Dockerfile` `**/docker-compose*`
-4. Use LS to list the full directory tree (3 levels deep)
-
-**Phase 2 — Read key files (read ALL of these that exist):**
-5. Project manifest: `package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, `*.csproj`, `build.gradle`, `Package.swift`, `pyproject.toml`, `requirements.txt`, `Gemfile`
-6. README.md (full file)
-7. CLAUDE.md, AGENTS.md, .cursorrules, GEMINI.md, .github/copilot-instructions.md
-8. Docker/infra: `Dockerfile`, `docker-compose.yml`, `.env.example`
-9. CI/CD: `.github/workflows/*.yml`, `Makefile`, `Justfile`
-10. Config: `tsconfig.json`, `.eslintrc*`, `prettier*`, `rustfmt.toml`, `.golangci.yml`
-
-**Phase 3 — Read source code (read ALL important source files):**
-11. Entry points: `main.go`, `cmd/*/main.go`, `src/main.*`, `app.py`, `manage.py`, `index.ts`, `server.*`, `Program.cs`, `App.kt`, `main.swift`
-12. Route/handler definitions: files containing HTTP routes, API endpoints, or controller classes
-13. Data layer: database models, repository/DAO files, migration files (read at least the latest)
-14. Core business logic: service classes, domain models, core modules
-15. Config/bootstrap: dependency injection setup, middleware registration, app configuration
-16. Test files: read 2-3 test files to understand testing patterns and conventions
-17. Types/interfaces: shared types, API contracts, protobuf/OpenAPI schemas
-
-For each file read, note: file path, purpose (1 line), key exports/functions, patterns used.
-
-**Phase 4 — Write `.chiron-context.md`:**
-
-```markdown
-# Chiron project context
-Auto-generated — delete this file to force a refresh on next invocation.
-
-## Project
-- **Name:** <project name>
-- **Languages:** <detected languages>
-- **Framework:** <detected frameworks>
-- **Test runner:** <detected test runner>
-- **Build system:** <detected build system>
-- **Package manager:** <npm/yarn/pnpm/go modules/cargo/maven/etc.>
-- **Runtime:** <Node.js version, Go version, Python version, etc.>
-
-## Dependencies (key libraries)
-<ALL important dependencies grouped by category — e.g., "HTTP: gin v1.9", "DB: sqlx v0.7", "Auth: jwt-go v5">
-
-## Directory structure
-<full tree, 3 levels deep, with descriptions for every directory>
-
-## Source file map
-<every source file with a one-line description of its purpose>
-Format: `path/to/file.go` — <what it does>
-
-## Entry points
-<main files, CLI commands, HTTP server bootstrap, background workers — with file paths and what they start>
-
-## API surface
-<HTTP routes/endpoints, gRPC services, CLI commands — with method, path, handler file, and one-line description>
-
-## Data layer
-<database/ORM models, table names, repository files, migration strategy>
-
-## Architecture overview
-<detailed description: monolith vs microservices, API style (REST/gRPC/GraphQL), authentication approach, data flow, caching strategy, message queue usage, deployment model>
-
-## Key patterns and conventions
-<ALL patterns observed:>
-- Error handling style (how errors are created, wrapped, returned, logged)
-- Naming conventions (files, functions, variables, packages)
-- Test patterns (unit vs integration, mocking approach, fixtures, table-driven)
-- Dependency injection approach
-- Logging and observability patterns
-- Code organization (by feature, by layer, hybrid)
-- State management approach
-- Authentication/authorization pattern
-- Configuration management
-
-## Infrastructure
-<Docker setup, CI/CD pipeline, deployment targets, environment variables>
-
-## Chiron config
-- **Voice level:** <from ~/.chiron/config.json, or "default" if missing>
-- **Drill sizing:** <from config, or "20 lines / 1 function / 5-15 min" if missing>
-
-## Project conventions (from config files)
-<full content from CLAUDE.md, AGENTS.md, .cursorrules — or "none found">
-```
+Then stop. Do not attempt to scan the codebase yourself — `$teach` handles that comprehensively.
 
 ## The user's request
 

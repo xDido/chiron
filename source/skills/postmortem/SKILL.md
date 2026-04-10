@@ -10,7 +10,7 @@ allowed-tools: Read, Grep, Glob, LS
 
 ## Step 0 — Load project context
 
-Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files.** **If not:** generate it with a comprehensive scan — map ALL source files, read ALL key files, document everything (see the chiron skill for the full 4-phase scan procedure and format template).
+Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files.** **If not:** tell the user: *"No project context found. Run `{{command_prefix}}teach` first."* Then stop.
 
 Optional user-supplied session summary (or blank):
 

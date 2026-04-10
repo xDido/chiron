@@ -7,7 +7,7 @@ description: Compare 2-3 approaches to a coding or design decision with trade-of
 
 ## Step 0 — Load project context
 
-Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files** unless the user's question references a specific file. **If not:** generate it with a comprehensive scan — map ALL source files, read ALL key files, document everything (see the chiron skill for the full 4-phase scan procedure and format template).
+Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files** unless the user's question references a specific file. **If not:** tell the user: *"No project context found. Run `/teach` first."* Then stop.
 
 The user's question or decision:
 
