@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 11 — v0.5.1 Pack freshness CI
+**Current status:** Phase 12 — v0.6.0 Multi-platform support
 
 **Phase 4 correction:** during install testing, slash commands appeared with the mandatory `chiron:` prefix (`/chiron:chiron`, `/chiron:hint`, `/chiron:challenge`). Investigation of the `impeccable` plugin revealed that `user-invocable: true` skills in a custom skills path (`./.claude/skills`) bypass namespacing. Migrated the three command files to `.claude/skills/<name>/SKILL.md` with `user-invocable: true` frontmatter. Content unchanged; only the container and frontmatter changed. Slash commands should now be `/chiron`, `/hint`, `/challenge` without prefix. See the plan file for full details.
 
@@ -346,6 +346,33 @@ Weekly GitHub Actions workflow that detects new language versions and opens `[pa
 **Exit criteria:** Workflow runs cleanly via manual dispatch. All 9 pack frontmatters parsed correctly. Zero false-positive issues on first run. GitHub Release v0.5.1 published.
 
 ### Remaining work after v0.5.1
+
+- **v0.6.0** — Multi-platform support → **shipped (Phase 12)**
+- **Bundle D** — `chiron-reviewer` agent, pre-edit hook (next major feature bundle)
+- **Additional language packs** — Ruby, Zig, Elixir — deferred to community contributions
+- **Post-release polish:** hero GIFs recording session for README
+
+---
+
+## Phase 12 — v0.6.0 Multi-platform support
+
+Single-source build system producing skills for 13 AI coding platforms. Same approach as impeccable (pbakaus/impeccable): source skills with `{{placeholders}}` transformed per-platform at build time.
+
+- [x] `source/skills/{name}/SKILL.md` — 7 source skills with `{{config_files}}`, `{{config_file}}`, `{{config_files_plain}}`, `{{command_prefix}}`, `{{product_name}}` placeholders
+- [x] `scripts/build.js` — build orchestrator (Bun)
+- [x] `scripts/lib/providers.js` — 13 platform configs (frontmatter fields per HARNESSES.md)
+- [x] `scripts/lib/placeholders.js` — per-platform placeholder values
+- [x] `scripts/lib/transform.js` — transformer preserving original YAML formatting
+- [x] `package.json` — `bun run build` / `bun run clean`
+- [x] Platform output directories: `.claude/`, `.cursor/`, `.gemini/`, `.codex/`, `.opencode/`, `.agents/`, `.kiro/`, `.pi/`, `.openai/`, `.trae/`, `.trae-cn/`, `.rovodev/`, `.github/`
+- [x] `plugin.json` + `marketplace.json` → `0.6.0`, description updated
+- [x] `README.md` — multi-platform install table
+- [x] `CHANGELOG.md` — `## [0.6.0]` section
+- [x] `ROADMAP.md` — this section
+
+**Exit criteria:** `bun scripts/build.js` produces 91 files (7 skills x 13 platforms). Claude Code output matches pre-build content (no regressions). Codex output uses `$` prefix. Cursor output references `.cursorrules`. Gemini output has minimal frontmatter. GitHub Release v0.6.0 published.
+
+### Remaining work after v0.6.0
 
 - **Bundle D** — `chiron-reviewer` agent, pre-edit hook (next major feature bundle)
 - **Additional language packs** — Ruby, Zig, Elixir — deferred to community contributions

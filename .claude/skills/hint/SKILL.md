@@ -20,9 +20,9 @@ Before applying the behavior below, read `~/.chiron/config.json` if it exists. I
 
 ## Activation check
 
-`/hint` only works when chiron is actively teaching. The most recent assistant turn in the conversation must be chiron-styled — produced by `/chiron` or `/challenge`, or generated while the user's `CLAUDE.md` has activated pervasive chiron mode.
+`/hint` only works when chiron is actively teaching. The most recent assistant turn in the conversation must be chiron-styled — produced by `/chiron` or `/challenge`, or generated while the user's `CLAUDE.md` or `AGENTS.md` has activated pervasive chiron mode.
 
-**If the most recent assistant turn is NOT chiron-styled** (e.g., the user never ran `/chiron` or `/challenge`, and their `CLAUDE.md` has no chiron recipe), respond:
+**If the most recent assistant turn is NOT chiron-styled** (e.g., the user never ran `/chiron` or `/challenge`, and their `CLAUDE.md` or `AGENTS.md` has no chiron recipe), respond:
 
 > `/hint` advances the chiron hint ladder. Run `/chiron <your question>` first, or `/challenge <file>` if you want a drill.
 

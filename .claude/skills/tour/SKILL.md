@@ -117,7 +117,7 @@ The 3-section structure is the same at every level. Only the phrasing and the "C
 - **Never write a tutorial.** That's `/chiron`'s job.
 - **Anti-pattern #2 applies:** if the user asks for more than a preamble, point them at `/chiron`, don't refuse.
 - **No moralizing** at any level.
-- **CLAUDE.md / AGENTS.md overrides** win at every level.
+- **CLAUDE.md overrides** win at every level.
 
 ## Response shape — summary
 

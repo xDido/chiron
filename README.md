@@ -1,6 +1,6 @@
 # chiron
 
-> Teach-first mentor mode for Claude Code.
+> Teach-first mentor mode for AI coding tools.
 > Socratic questions before code, drills from your own source.
 
 **chiron** (pronounced *KAI-ron*, hard K — the centaur who mentored Achilles, Hercules, Jason, and Asclepius) turns coding requests into deliberate practice. Instead of shipping code, it asks the questions a senior engineer would ask — then walks you through the decision, hint by hint, until you've written the answer yourself.
@@ -23,29 +23,53 @@ If you've felt the same drift — productive on paper, quietly stagnating undern
 
 ## Install
 
-Inside Claude Code, run:
+### Claude Code
 
 ```
 /plugin marketplace add xDido/chiron
 /plugin install chiron@chiron
 ```
 
-That's it — no clone required. Claude Code fetches `.claude-plugin/marketplace.json` from GitHub directly.
+That's it — no clone required. Claude Code fetches `.claude-plugin/marketplace.json` from GitHub directly. Verify with `/plugin` — `chiron@chiron` should show as enabled.
 
-**Offline / development install** (from a local clone):
+### Cursor, Gemini CLI, Codex CLI, and other platforms
+
+chiron ships pre-built skills for 13 platforms. Clone the repo and copy the matching directory into your project:
 
 ```bash
 git clone https://github.com/xDido/chiron.git
 ```
 
-Then in Claude Code:
+| Platform | Copy this directory |
+|----------|-------------------|
+| Cursor | `.cursor/skills/` |
+| Gemini CLI | `.gemini/skills/` |
+| Codex CLI | `.codex/skills/` |
+| OpenCode | `.opencode/skills/` |
+| GitHub Copilot Agents | `.agents/skills/` |
+| Kiro | `.kiro/skills/` |
+| Pi | `.pi/skills/` |
+| OpenAI | `.openai/skills/` |
+| Trae | `.trae/skills/` |
+| Trae CN | `.trae-cn/skills/` |
+| Rovo Dev | `.rovodev/skills/` |
+| VS Code Copilot | `.github/skills/` |
 
-```
-/plugin marketplace add /absolute/path/to/chiron
-/plugin install chiron@chiron
+Example for Cursor:
+
+```bash
+cp -r chiron/.cursor/skills/ your-project/.cursor/skills/
 ```
 
-Verify with `/plugin` — `chiron@chiron` should show as enabled.
+### Building from source
+
+If you modify the source skills in `source/skills/`, rebuild all platform outputs:
+
+```bash
+bun scripts/build.js
+```
+
+This generates skill files for all 13 platforms from the single source of truth in `source/skills/`.
 
 ## Usage
 

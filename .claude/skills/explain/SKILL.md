@@ -1,6 +1,6 @@
 ---
 name: explain
-description: Compare 2-3 approaches to a coding or design decision with trade-offs and a recommendation. Teach-first framing — surfaces decision complexity rather than picking for you. For "which way should I..." questions (complements /chiron which handles "how do I..." questions). Defers to CLAUDE.md and AGENTS.md.
+description: Compare 2-3 approaches to a coding or design decision with trade-offs and a recommendation. Teach-first framing — surfaces decision complexity rather than picking for you. For "which way should I..." questions (complements /chiron which handles "how do I..." questions). Defers to CLAUDE.md or AGENTS.md.
 user-invocable: true
 argument-hint: "[question]"
 ---
@@ -120,7 +120,7 @@ Read `~/.chiron/config.json` at invocation time. The level affects the voice ton
 - **Anti-pattern #2:** never refuse to ship when asked. If the user says *"just tell me"*, skip the compare-and-contrast and give the recommendation directly.
 - **No moralizing** at any level.
 - **Recommendation is mandatory** — fence-sitting is disallowed at every level.
-- **CLAUDE.md / AGENTS.md overrides** win at every level.
+- **CLAUDE.md overrides** win at every level.
 
 ## Response shape — summary
 

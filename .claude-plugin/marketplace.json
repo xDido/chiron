@@ -1,20 +1,20 @@
 {
   "name": "chiron",
   "metadata": {
-    "description": "Teach-first mentor mode for Claude Code. Socratic questions before code, drills from your own source."
+    "description": "Teach-first mentor mode for AI coding tools. Socratic questions before code, drills from your own source."
   },
   "owner": {
-    "name": "Dido",
+    "name": "Ahmed Haitham",
     "email": "adhaithaam@gmail.com"
   },
   "plugins": [
     {
       "name": "chiron",
-      "description": "Teach-first mentor mode for Claude Code. Socratic questions before code, drills from your own source.",
-      "version": "0.5.1",
+      "description": "Teach-first mentor mode for AI coding tools. Socratic questions before code, drills from your own source.",
+      "version": "0.6.0",
       "source": "./",
       "author": {
-        "name": "Dido",
+        "name": "Ahmed Haitham",
         "email": "adhaithaam@gmail.com"
       }
     }
