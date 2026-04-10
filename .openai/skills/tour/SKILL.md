@@ -5,9 +5,9 @@ description: Structured "before each task" preamble for a coding topic. Presents
 
 # /tour — structured preamble for a coding topic
 
-## Context reuse
+## Step 0 — Load project context
 
-If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
+Check if `.chiron-context.md` exists in the project root. **If it exists:** read it and use it as your working context. **If not:** do a quick project scan (list root, read config, identify language/framework) and write `.chiron-context.md` (see the chiron skill for the format template).
 
 The user's topic:
 
@@ -21,9 +21,9 @@ If the current project's `AGENTS.md` conflicts with the behavior below, follow t
 
 ---
 
-## Current level (read from ~/.chiron/config.json)
+## Current level
 
-Before applying the behavior below, read `~/.chiron/config.json` if it exists. Apply the matching voice-tone rules from the **"Level rules"** section at the end of this file. If missing or invalid, apply the `default` voice (v0.1 baseline).
+Apply the voice level from `.chiron-context.md`. If missing or unrecognized, use `default`.
 
 ---
 

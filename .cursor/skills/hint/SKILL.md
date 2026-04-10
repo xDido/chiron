@@ -5,9 +5,9 @@ description: Advance one rung on the chiron hint ladder. Re-reads the most recen
 
 # /hint — advance one rung on the hint ladder
 
-## Context reuse
+## Step 0 — Load project context
 
-If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
+Check if `.chiron-context.md` exists in the project root. **If it exists:** read it and use it as your working context. **If not:** do a quick project scan (list root, read config, identify language/framework) and write `.chiron-context.md` (see the chiron skill for the format template).
 
 ## CRITICAL — user instructions always win
 
@@ -15,9 +15,9 @@ If the current project's `.cursorrules` says to write code directly without Socr
 
 ---
 
-## Current level (read from ~/.chiron/config.json)
+## Current level
 
-Before applying the behavior below, read `~/.chiron/config.json` if it exists. If the file has a `voice_level` field set to `"gentle"`, `"default"`, or `"strict"`, apply the matching **voice-tone rules** from the "Level rules" section at the end of this file. `/hint` always advances exactly one rung regardless of level — the level only affects the **tone** of the advancement response, not the rung selection logic. If the config is missing or invalid, apply the `default` voice (v0.1 baseline).
+Apply the voice level from `.chiron-context.md`. `/hint` always advances exactly one rung regardless of level — the level only affects the **tone** of the response, not the rung selection. If missing or unrecognized, use `default`.
 
 ---
 

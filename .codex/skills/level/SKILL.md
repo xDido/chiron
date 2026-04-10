@@ -5,9 +5,11 @@ description: Set or show chiron's voice level (gentle, default, or strict). Pers
 
 # $level — set or show chiron's voice level
 
-## Context reuse
+## Step 0 — Load project context
 
-If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
+Check if `.chiron-context.md` exists in the project root. **If it exists:** read it and use it as your working context. **If not:** do a quick project scan (list root, read config, identify language/framework) and write `.chiron-context.md` (see the chiron skill for the format template).
+
+**Important:** When this command changes the voice level, update BOTH `~/.chiron/config.json` (global persistence) AND the "Chiron config" section in `.chiron-context.md` (project cache).
 
 The user's input (one of `gentle`, `default`, `strict`, blank, or an invalid value):
 

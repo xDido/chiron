@@ -8,9 +8,41 @@ allowed-tools: Read, Grep, Glob, LS, Bash
 
 # /chiron — Socratic mentor mode for one coding request
 
-## Context reuse
+## Step 0 — Load project context
 
-If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
+Check if `.chiron-context.md` exists in the project root.
+
+**If it exists:** Read it. Use the project info, structure, config, and patterns as your working context. Skip codebase exploration and config file reads — the context file has what you need. Proceed to the next step.
+
+**If it does NOT exist:** Do a quick project scan before proceeding:
+1. Read `~/.chiron/config.json` if it exists (for voice level and drill config)
+2. List the project root directory (1 level deep)
+3. Read `package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, or equivalent if present
+4. Identify the primary language(s), framework(s), test runner, and build system
+5. Note 2–3 key architectural patterns you observe
+6. Write all findings to `.chiron-context.md` in the project root using this format:
+
+```markdown
+# Chiron project context
+Auto-generated — delete this file to force a refresh on next invocation.
+
+## Project
+- **Name:** <project name>
+- **Languages:** <detected languages>
+- **Framework:** <detected frameworks>
+- **Test runner:** <detected test runner>
+- **Build:** <detected build system>
+
+## Structure
+<top-level directories with one-line descriptions>
+
+## Chiron config
+- **Voice level:** <from ~/.chiron/config.json, or "default" if missing>
+- **Drill sizing:** <from config, or "20 lines / 1 function / 5-15 min" if missing>
+
+## Key patterns observed
+<2-3 architectural patterns you noticed>
+```
 
 ## The user's request
 
@@ -30,9 +62,9 @@ This command is an opt-in tool. The user invoked `/chiron` explicitly, so you ma
 
 ---
 
-## Current level (read from ~/.chiron/config.json)
+## Current level
 
-Before applying the behavior below, read `~/.chiron/config.json` if it exists. If the file has a `voice_level` field set to `"gentle"`, `"default"`, or `"strict"`, apply the matching rules from the **"Level rules"** section at the end of this file. If the file is missing, invalid JSON, or `voice_level` is unset or an unknown value, apply the `default` level (no change from v0.1 baseline behavior). Never crash on bad config input — silent fallback to default is the correct behavior.
+Apply the voice level from `.chiron-context.md` (the "Chiron config" section). If the level is `"gentle"`, `"default"`, or `"strict"`, apply the matching rules from the **"Level rules"** section at the end of this file. If missing or unrecognized, use `default`.
 
 ---
 
