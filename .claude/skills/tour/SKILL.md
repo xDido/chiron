@@ -40,7 +40,7 @@ Based on the *"Before each task"* section in `go-mentor.md`. The output is a rea
 1. **Is the topic well-defined?** If not (e.g., `/tour async programming`), ask for specificity: *"`/tour` works best with a specific concept or primitive. Try `/tour Go channels` or `/tour async/await in JavaScript`."*
 2. **Is the "topic" actually a "how do I" question?** (e.g., `/tour how do I implement a worker pool`) Route to `/chiron`: *"This looks like a task. Try `/chiron implement a worker pool in Go` for guided help, or `/explain` if you want to compare approaches first."*
 3. **Is the "topic" actually a "which way" question?** (e.g., `/tour REST vs gRPC`) Route to `/explain`: *"This looks like a choose-an-approach question. Try `/explain REST vs gRPC`."*
-4. **Is the topic outside chiron's current language scope?** chiron ships language packs for Go, Rust, Python, JavaScript, TypeScript, and Java. If the topic is clearly Zig/C#/Kotlin/Swift/Ruby/Elixir/etc., use the model's general language knowledge but note the gap in a brief header: *"chiron doesn't ship a <language> language pack yet, but here's a general tour."*
+4. **Is the topic outside chiron's current language scope?** chiron ships language packs for Go, Rust, Python, JavaScript, TypeScript, Java, C#, Kotlin, and Swift. If the topic is clearly Zig/Ruby/Elixir/etc., use the model's general language knowledge but note the gap in a brief header: *"chiron doesn't ship a <language> language pack yet, but here's a general tour."*
 
 ## Response format — keep it terse
 
