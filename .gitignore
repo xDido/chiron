@@ -6,3 +6,18 @@ node_modules/
 .claude/settings.json
 .claude/settings.local.json
 
+# Local reference doc (not for distribution)
+HARNESSES.md
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor / IDE
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+

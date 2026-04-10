@@ -7,10 +7,6 @@
 
 **chiron never auto-activates.** It only fires when you explicitly type one of its slash commands. This is by design: a plugin should not change your default coding-assistant behavior without your consent.
 
-<!-- Hero GIFs: two ~30s clips will be embedded here before v0.1.0 release -->
-<!--   Clip A: /chiron Socratic walkthrough (matches the golden transcript opening) -->
-<!--   Clip B: /challenge drill on tests/fixtures/go/worker_pool_bad.go -->
-
 ## Why I built this
 
 I built chiron because I was shipping tasks without growing.
