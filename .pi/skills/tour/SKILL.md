@@ -1,7 +1,7 @@
 ---
 name: tour
 description: Structured "before each task" preamble for a coding topic. Presents read-this-first doc pointers, key concepts, and common junior mistakes. From chiron's session preamble pattern — gives you the mental model before you start writing code. For topic overviews, NOT tutorials.
-allowed-tools: Read, Grep, Bash
+allowed-tools: Read, Grep, Glob, LS, Bash
 ---
 
 # /tour — structured preamble for a coding topic

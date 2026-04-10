@@ -3,7 +3,7 @@ name: chiron
 description: Apply teach-first Socratic mentor treatment to a coding request. Questions before code, graduated hints via an L0-L4 ladder, idiom callouts. Defers to {{config_files_plain}} when they conflict.
 user-invocable: true
 argument-hint: "[request]"
-allowed-tools: Read, Grep, Bash
+allowed-tools: Read, Grep, Glob, LS, Bash
 ---
 
 # {{command_prefix}}chiron — Socratic mentor mode for one coding request

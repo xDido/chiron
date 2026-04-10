@@ -3,7 +3,7 @@ name: postmortem
 description: Session-end review of recent chiron activity. Scores across 5 axes (design thinking, code quality, idioms, testing, engineering maturity) and names one concrete thing to practice next time. Read-only in v0.3.0 — does not persist scores.
 user-invocable: true
 argument-hint: "[optional session summary]"
-allowed-tools: Read, Grep
+allowed-tools: Read, Grep, Glob, LS
 ---
 
 # {{command_prefix}}postmortem — session-end review and scoring

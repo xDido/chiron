@@ -3,7 +3,7 @@ name: explain
 description: Compare 2-3 approaches to a coding or design decision with trade-offs and a recommendation. Teach-first framing — surfaces decision complexity rather than picking for you. For "which way should I..." questions (complements /chiron which handles "how do I..." questions). Defers to CLAUDE.md or AGENTS.md.
 user-invocable: true
 argument-hint: "[question]"
-allowed-tools: Read, Grep, Bash
+allowed-tools: Read, Grep, Glob, LS, Bash
 ---
 
 # /explain — compare approaches with trade-offs

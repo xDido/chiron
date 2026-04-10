@@ -1,7 +1,7 @@
 ---
 name: chiron
 description: Apply teach-first Socratic mentor treatment to a coding request. Questions before code, graduated hints via an L0-L4 ladder, idiom callouts. Defers to .pi/settings.json when they conflict.
-allowed-tools: Read, Grep, Bash
+allowed-tools: Read, Grep, Glob, LS, Bash
 ---
 
 # /chiron — Socratic mentor mode for one coding request
