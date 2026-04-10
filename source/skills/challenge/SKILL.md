@@ -12,17 +12,9 @@ allowed-tools: Read, Write, Grep, Glob, LS, Bash
 
 Check if `.chiron-context.md` exists in the project root.
 
-**If it exists:** Read it. Use the project info, structure, config, and patterns as your working context. Skip codebase exploration and config file reads — the context file has what you need. Proceed to Step 1.
+**If it exists:** Read it. This file is your complete project reference. **DO NOT scan the codebase, list directories, or re-read config files.** The only additional file you read is the target source file from Step 1. Proceed to Step 1.
 
-**If it does NOT exist:** Do a quick project scan before proceeding:
-1. Read `~/.chiron/config.json` if it exists (for voice level and drill config)
-2. List the project root directory (1 level deep)
-3. Read `package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, or equivalent if present
-4. Identify the primary language(s), framework(s), test runner, and build system
-5. Note 2–3 key architectural patterns you observe
-6. Write all findings to `.chiron-context.md` in the project root (see chiron skill for the format template)
-
-Then proceed to Step 1.
+**If it does NOT exist:** Generate it now with a thorough scan — use Glob to map the project structure, LS for directory layout, read the manifest and README, read 2-3 key source files, and read any CLAUDE.md/AGENTS.md. Write the results to `.chiron-context.md` (see the chiron skill for the full format template and scan steps). Then proceed to Step 1.
 
 `{{command_prefix}}challenge` reads a source file, finds 1–3 concrete practice targets grounded in specific lines, and presents them as short drills you can complete in 5–15 minutes. Each drill is tied to an idiom from the language pack. Your attempts get graded `/10` with honest, specific feedback.
 
