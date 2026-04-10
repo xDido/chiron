@@ -3,9 +3,14 @@ name: level
 description: Set or show chiron's voice level (gentle, default, or strict). Persists to ~/.chiron/config.json across sessions. Affects voice tone, hint ladder progression, and refusal behavior — not anti-patterns or the never-refuse rule.
 user-invocable: true
 argument-hint: "[gentle|default|strict]"
+allowed-tools: Read, Write
 ---
 
 # /level — set or show chiron's voice level
+
+## Context reuse
+
+If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
 
 The user's input (one of `gentle`, `default`, `strict`, blank, or an invalid value):
 

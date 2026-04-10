@@ -5,6 +5,10 @@ description: Generate idiom drills grounded in specific lines of a source file. 
 
 # /challenge — hero feature: drills from your own code
 
+## Context reuse
+
+If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
+
 `/challenge` reads a source file, finds 1–3 concrete practice targets grounded in specific lines, and presents them as short drills you can complete in 5–15 minutes. Each drill is tied to an idiom from the language pack. Your attempts get graded `/10` with honest, specific feedback.
 
 ## Usage

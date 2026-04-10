@@ -6,6 +6,10 @@ user-invocable: true
 
 # /hint — advance one rung on the hint ladder
 
+## Context reuse
+
+If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
+
 ## CRITICAL — user instructions always win
 
 If the current project's `.github/copilot-instructions.md` says to write code directly without Socratic questioning, `/hint` is effectively a no-op — just answer whatever the user is asking normally. User instructions always override.
