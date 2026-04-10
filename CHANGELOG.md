@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.7.0] — 2026-04-10
+
+### Changed — On-demand language pack loading for `/challenge`
+
+Language packs are no longer inlined in the challenge skill. Instead, `/challenge` detects the file's language and loads only the relevant pack at runtime via the Read tool.
+
+**Before:** Every `/challenge` invocation loaded all 9 language packs (~17.5k tokens).
+**After:** Only the relevant pack is loaded on demand (~1.5k tokens per language, ~3k for TypeScript which also loads the JavaScript pack).
+
+**What changed:**
+
+- `source/skills/challenge/SKILL.md` now contains only the core execution framework (~310 lines, down from ~2143)
+- Language packs live in `source/skills/challenge/packs/{lang}.md` (9 files, ~200 lines each)
+- Build system copies pack files alongside SKILL.md to all 13 platform output directories
+- New `{{pack_path}}` placeholder resolves to the skill's output directory per platform
+- `docs/CONTRIBUTING-LANGUAGE-PACKS.md` updated for the new file layout
+
+**No user-facing behavior change.** `/challenge` works exactly as before — same drills, same grading, same seeds. The TypeScript cross-reference to JavaScript seeds is preserved.
+
+---
+
 ## [0.6.0] — 2026-04-10
 
 ### Added — Multi-platform support (13 platforms)

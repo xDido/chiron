@@ -81,7 +81,8 @@ function transformSkill(content, providerConfig, placeholders) {
 
 /**
  * Read all skills from source/skills/ directory.
- * Returns array of { name, content } objects.
+ * Returns array of { name, content, packs } objects.
+ * packs is a Map of filename → content for any files in a packs/ subdirectory.
  */
 function readSourceSkills(sourceDir) {
   const skills = [];
@@ -92,9 +93,21 @@ function readSourceSkills(sourceDir) {
     const skillFile = path.join(sourceDir, entry.name, 'SKILL.md');
     if (!fs.existsSync(skillFile)) continue;
 
+    // Check for packs/ subdirectory
+    const packsDir = path.join(sourceDir, entry.name, 'packs');
+    let packs = null;
+    if (fs.existsSync(packsDir)) {
+      packs = {};
+      for (const packFile of fs.readdirSync(packsDir)) {
+        if (!packFile.endsWith('.md')) continue;
+        packs[packFile] = fs.readFileSync(path.join(packsDir, packFile), 'utf8');
+      }
+    }
+
     skills.push({
       name: entry.name,
-      content: fs.readFileSync(skillFile, 'utf8')
+      content: fs.readFileSync(skillFile, 'utf8'),
+      packs
     });
   }
 
@@ -103,11 +116,20 @@ function readSourceSkills(sourceDir) {
 
 /**
  * Write a transformed skill to the platform's output directory.
+ * If packs is provided, also writes pack files to a packs/ subdirectory.
  */
-function writeSkill(rootDir, configDir, skillName, content) {
+function writeSkill(rootDir, configDir, skillName, content, packs) {
   const outDir = path.join(rootDir, configDir, 'skills', skillName);
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'SKILL.md'), content, 'utf8');
+
+  if (packs) {
+    const packsDir = path.join(outDir, 'packs');
+    fs.mkdirSync(packsDir, { recursive: true });
+    for (const [filename, packContent] of Object.entries(packs)) {
+      fs.writeFileSync(path.join(packsDir, filename), packContent, 'utf8');
+    }
+  }
 }
 
 module.exports = {
