@@ -1,6 +1,6 @@
 ---
 language: javascript
-last_reviewed_against: "22"
+last_reviewed_against: "25.9"
 upstream_version_source:
   type: endoflife
   product: nodejs

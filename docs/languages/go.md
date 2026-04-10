@@ -1,6 +1,6 @@
 ---
 language: go
-last_reviewed_against: "1.23"
+last_reviewed_against: "1.26"
 upstream_version_source:
   type: endoflife
   product: go
