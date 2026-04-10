@@ -6,6 +6,49 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.6.0] — 2026-04-10
+
+### Added — Multi-platform support (13 platforms)
+
+chiron now ships pre-built skills for 13 AI coding platforms, not just Claude Code. A single source of truth in `source/skills/` is transformed via `bun scripts/build.js` into platform-specific outputs.
+
+**Supported platforms:**
+
+| Platform | Directory | Command prefix |
+|----------|-----------|---------------|
+| Claude Code | `.claude/skills/` | `/` |
+| Cursor | `.cursor/skills/` | `/` |
+| Gemini CLI | `.gemini/skills/` | `/` |
+| Codex CLI | `.codex/skills/` | `$` |
+| OpenCode | `.opencode/skills/` | `/` |
+| GitHub Copilot Agents | `.agents/skills/` | `/` |
+| Kiro | `.kiro/skills/` | `/` |
+| Pi | `.pi/skills/` | `/` |
+| OpenAI | `.openai/skills/` | `/` |
+| Trae | `.trae/skills/` | `/` |
+| Trae CN | `.trae-cn/skills/` | `/` |
+| Rovo Dev | `.rovodev/skills/` | `/` |
+| VS Code Copilot | `.github/skills/` | `/` |
+
+**Build system:**
+
+- `source/skills/{name}/SKILL.md` — canonical skill files with `{{placeholder}}` tokens
+- `scripts/build.js` — transforms source → 91 output files (7 skills x 13 platforms)
+- `scripts/lib/providers.js` — platform configurations (frontmatter field support per HARNESSES.md)
+- `scripts/lib/placeholders.js` — per-platform values for config files, command prefixes, product names
+- `scripts/lib/transform.js` — transformer preserving original YAML formatting
+- `package.json` — `bun run build` / `bun run clean`
+
+**Per-platform adaptations:**
+
+- Config file references: `CLAUDE.md` / `.cursorrules` / `GEMINI.md` / `AGENTS.md` / etc.
+- Command prefix: `/` for most platforms, `$` for Codex CLI
+- Frontmatter field filtering: each platform only gets fields it supports (per Agent Skills spec)
+
+**No behavioral changes.** Existing Claude Code users see the same skills. The source architecture is new; the skill content is unchanged.
+
+---
+
 ## [0.5.1] — 2026-04-10
 
 ### Added — Pack freshness CI
