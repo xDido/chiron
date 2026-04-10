@@ -1,6 +1,6 @@
 ---
 language: python
-last_reviewed_against: "3.13"
+last_reviewed_against: "3.14"
 upstream_version_source:
   type: endoflife
   product: python

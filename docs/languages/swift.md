@@ -1,6 +1,6 @@
 ---
 language: swift
-last_reviewed_against: "5.10"
+last_reviewed_against: "6.3"
 upstream_version_source:
   type: github-release
   repo: swiftlang/swift

@@ -1,6 +1,6 @@
 ---
 language: typescript
-last_reviewed_against: "5.7"
+last_reviewed_against: "6.0"
 upstream_version_source:
   type: npm
   package: typescript

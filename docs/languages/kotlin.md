@@ -1,6 +1,6 @@
 ---
 language: kotlin
-last_reviewed_against: "2.1"
+last_reviewed_against: "2.3"
 upstream_version_source:
   type: github-release
   repo: JetBrains/kotlin

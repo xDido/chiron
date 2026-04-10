@@ -1,6 +1,6 @@
 ---
 language: rust
-last_reviewed_against: "1.85"
+last_reviewed_against: "1.94"
 upstream_version_source:
   type: endoflife
   product: rust

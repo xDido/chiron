@@ -1,6 +1,6 @@
 ---
 language: csharp
-last_reviewed_against: "12"
+last_reviewed_against: "10.0"
 upstream_version_source:
   type: endoflife
   product: dotnet
