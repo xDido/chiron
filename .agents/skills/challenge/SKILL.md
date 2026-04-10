@@ -7,9 +7,21 @@ argument-hint: "[file]"
 
 # /challenge — hero feature: drills from your own code
 
-## Context reuse
+## Step 0 — Load project context
 
-If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
+Check if `.chiron-context.md` exists in the project root.
+
+**If it exists:** Read it. Use the project info, structure, config, and patterns as your working context. Skip codebase exploration and config file reads — the context file has what you need. Proceed to Step 1.
+
+**If it does NOT exist:** Do a quick project scan before proceeding:
+1. Read `~/.chiron/config.json` if it exists (for voice level and drill config)
+2. List the project root directory (1 level deep)
+3. Read `package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, or equivalent if present
+4. Identify the primary language(s), framework(s), test runner, and build system
+5. Note 2–3 key architectural patterns you observe
+6. Write all findings to `.chiron-context.md` in the project root (see chiron skill for the format template)
+
+Then proceed to Step 1.
 
 `/challenge` reads a source file, finds 1–3 concrete practice targets grounded in specific lines, and presents them as short drills you can complete in 5–15 minutes. Each drill is tied to an idiom from the language pack. Your attempts get graded `/10` with honest, specific feedback.
 
@@ -33,9 +45,9 @@ Before anything else, check `.agents/README.md`. If user instructions conflict w
 
 ---
 
-## Current level (read from ~/.chiron/config.json)
+## Current level
 
-Before applying the behavior below, read `~/.chiron/config.json` if it exists. If the file has a `voice_level` field set to `"gentle"`, `"default"`, or `"strict"`, apply the matching rules from the **"Level rules"** section below (before the Go language pack). The level affects the voice tone of drill presentation and grading, how quickly you offer the full solution to a struggling attempt, and how you respond to `"just show me"` requests. If the config is missing, invalid JSON, or `voice_level` is unset or an unknown value, apply the `default` level (no change from v0.1 baseline behavior). Never crash on bad config input — silent fallback to default is the correct behavior.
+Apply the voice level from `.chiron-context.md` (the "Chiron config" section). The level affects voice tone of drill presentation and grading, how quickly you show the full solution, and how you respond to "just show me" requests. If missing or unrecognized, use `default`.
 
 ---
 
