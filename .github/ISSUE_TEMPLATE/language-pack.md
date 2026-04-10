@@ -7,7 +7,7 @@ labels: language-pack, enhancement
 
 ## Language
 
-<!-- Which language? e.g., Zig, C#, Kotlin, Swift, Ruby, Elixir, or something else. (Go, Rust, Python, JavaScript, TypeScript, and Java already ship in v0.4.0.) -->
+<!-- Which language? e.g., Zig, Ruby, Elixir, or something else. (Go, Rust, Python, JavaScript, TypeScript, Java, C#, Kotlin, and Swift already ship in v0.5.0.) -->
 
 ## Why this language
 

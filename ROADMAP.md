@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 9 — v0.4.0 Bundle E language packs (shipped locally; tag + push + release pending)
+**Current status:** Phase 10 — v0.5.0 Bundle F language packs (C#, Kotlin, Swift)
 
 **Phase 4 correction:** during install testing, slash commands appeared with the mandatory `chiron:` prefix (`/chiron:chiron`, `/chiron:hint`, `/chiron:challenge`). Investigation of the `impeccable` plugin revealed that `user-invocable: true` skills in a custom skills path (`./.claude/skills`) bypass namespacing. Migrated the three command files to `.claude/skills/<name>/SKILL.md` with `user-invocable: true` frontmatter. Content unchanged; only the container and frontmatter changed. Slash commands should now be `/chiron`, `/hint`, `/challenge` without prefix. See the plan file for full details.
 
@@ -268,9 +268,57 @@ Five comprehensive language packs shipped together: Rust, Python, JavaScript, Ty
 
 ### Remaining work after v0.4.0
 
+- **Bundle F** — C#, Kotlin, Swift language packs → **shipped in v0.5.0 (Phase 10)**
 - **Bundle D** — `chiron-reviewer` agent, pre-edit hook (next major feature bundle)
-- **Additional language packs** — C#, Kotlin, Swift, Ruby, Zig, Elixir — all deferred to community contributions
-- **Post-release polish:** hero GIFs recording session for README, GitHub Releases catch-up for v0.2.0 through v0.4.0
+- **Additional language packs** — Ruby, Zig, Elixir — deferred to community contributions
+- **Post-release polish:** hero GIFs recording session for README, GitHub Releases catch-up
+
+---
+
+## Phase 10 — v0.5.0 Bundle F language packs (in progress)
+
+Three more comprehensive language packs: C#, Kotlin, and Swift. Same pattern as v0.4.0 Bundle E — comprehensive density matching the Go pack.
+
+### C#
+
+- [x] `docs/languages/csharp.md` — 12 anchors, 30 idioms, 25 anti-patterns, 25 mental-model deltas, 17 seeds
+- [x] `tests/fixtures/csharp/OrderService_bad.cs` — hero fixture with 9 intentional bugs
+
+### Kotlin
+
+- [x] `docs/languages/kotlin.md` — 12 anchors, 30 idioms, 25 anti-patterns, 25 mental-model deltas, 17 seeds
+- [x] `tests/fixtures/kotlin/UserRepository_bad.kt` — hero fixture with 8 intentional bugs
+
+### Swift
+
+- [x] `docs/languages/swift.md` — 12 anchors, 30 idioms, 25 anti-patterns, 25 mental-model deltas, 17 seeds
+- [x] `tests/fixtures/swift/ProfileLoader_bad.swift` — hero fixture with 10 intentional bugs
+
+### `/challenge` skill + plugin metadata
+
+- [x] `.claude/skills/challenge/SKILL.md` — step 2 language detection expanded for `.cs` / `.kt` / `.kts` / `.swift`
+- [x] `.claude/skills/challenge/SKILL.md` — 3 new inlined pack sections appended
+- [x] `plugin.json` — version bumped to `0.5.0`; keywords expanded
+- [x] `marketplace.json` — version bumped to `0.5.0`
+- [x] `README.md` — Language packs table now lists 9 languages
+- [x] `CHANGELOG.md` — `## [0.5.0]` section with per-pack detail
+- [x] `ROADMAP.md` — this section
+
+### Pending
+
+- [ ] Stale-reference patches (tour skill, CONTRIBUTING.md, CONTRIBUTING-LANGUAGE-PACKS.md, issue template)
+- [ ] Commit as `v0.5.0: Bundle F language packs (C#, Kotlin, Swift)`
+- [ ] Git tag `v0.5.0`
+- [ ] Push main + tag
+- [ ] Create GitHub Release from v0.5.0 tag
+
+**Exit criteria:** All 3 new packs render correctly. All 3 hero fixtures are syntactically valid. `/challenge` on each fixture produces drills. All 6 Bundle E fixtures still work unchanged (regression). `claude plugins validate` passes. GitHub Release v0.5.0 is published.
+
+### Remaining work after v0.5.0
+
+- **v0.5.1** — Pack freshness CI (weekly version-check → auto-open issue)
+- **Bundle D** — `chiron-reviewer` agent, pre-edit hook
+- **Additional language packs** — Ruby, Zig, Elixir — deferred to community contributions
 
 ---
 
@@ -311,5 +359,6 @@ Sequence will be decided based on validation gate feedback. Likely candidates in
 - **Profile read-loop** — on session start, surface recurring weaknesses (tags with ≥3 `struggle`/`drill_gaveup` entries in the last 14 days). Shelved after brainstorming (hook complexity outweighed value) but candidate for revisit.
 - **`chiron-reviewer` agent** — review user code the way a senior engineer would (Bundle D)
 - **Pre-edit hook** — strict-mode guardrails that block `Write`/`Edit` until Socratic questioning completes (opt-in, arrives with `/level strict`)
-- **Additional language packs** — C#, Kotlin, Swift, Ruby, Zig, Elixir (community contributions preferred)
+- ~~**C#, Kotlin, Swift language packs**~~ — **shipped in v0.5.0**
+- **Additional language packs** — Ruby, Zig, Elixir (community contributions preferred)
 - **Session-start hook** — automatically surface profile insights at session start
