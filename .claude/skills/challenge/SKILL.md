@@ -25,7 +25,7 @@ $ARGUMENTS
 
 ## CRITICAL — user instructions always win
 
-Before anything else, check `CLAUDE.md` and `AGENTS.md`. If user instructions conflict with this command's behavior — e.g., *"just fix my code directly, don't drill me"* — follow the user. Switch to a direct fix-and-explain mode, skip drill generation, and don't write to the profile file.
+Before anything else, check `CLAUDE.md` or `AGENTS.md`. If user instructions conflict with this command's behavior — e.g., *"just fix my code directly, don't drill me"* — follow the user. Switch to a direct fix-and-explain mode, skip drill generation, and don't write to the profile file.
 
 ---
 
@@ -305,7 +305,7 @@ The `/10` rating itself doesn't change per level (the rubric is the same — cor
 - **Anti-pattern #2** (never refuse to ship when asked) — strict is NOT an excuse to refuse. If the user says *"just show me"*, ship.
 - **No moralizing** about the user's attempt at any level. Grading is about the code, not the coder.
 - **No cruelty in grading** at any level. Even `strict` names specific issues without insulting.
-- **CLAUDE.md / AGENTS.md overrides** — user instructions win at every level.
+- **CLAUDE.md overrides** — user instructions win at every level.
 
 ---
 

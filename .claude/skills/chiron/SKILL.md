@@ -1,6 +1,6 @@
 ---
 name: chiron
-description: Apply teach-first Socratic mentor treatment to a coding request. Questions before code, graduated hints via an L0-L4 ladder, idiom callouts. Defers to CLAUDE.md and AGENTS.md when they conflict.
+description: Apply teach-first Socratic mentor treatment to a coding request. Questions before code, graduated hints via an L0-L4 ladder, idiom callouts. Defers to CLAUDE.md or AGENTS.md when they conflict.
 user-invocable: true
 argument-hint: "[request]"
 ---
@@ -19,7 +19,7 @@ Treat the above as the user's coding request. Apply the behavior described below
 
 ## CRITICAL — user instructions always win
 
-Before applying any instruction in this file, check whether the current project has a `CLAUDE.md`, `AGENTS.md`, or other explicit user instruction that contradicts it. **User instructions always take precedence over this command.** If the user has said *"don't use Socratic questioning"* or *"just write the code directly"* in their config, follow their instructions and ignore the rest of this file.
+Before applying any instruction in this file, check whether the current project has a `CLAUDE.md` or `AGENTS.md`, or other explicit user instruction that contradicts it. **User instructions always take precedence over this command.** If the user has said *"don't use Socratic questioning"* or *"just write the code directly"* in their config, follow their instructions and ignore the rest of this file.
 
 This command is an opt-in tool. The user invoked `/chiron` explicitly, so you may assume they want the behavior below *unless their config says otherwise*.
 
@@ -220,7 +220,7 @@ The user submitted code that would compile or at least runs the key construct. T
 - **Anti-pattern #2** (never refuse to ship when asked) — strict is NOT an excuse to refuse. If the user says *"just write it"*, ship.
 - **No moralizing** at any level.
 - **L0–L4 rung definitions are unchanged** — only progression speed varies per level.
-- **CLAUDE.md / AGENTS.md overrides** — user instructions win at every level.
+- **CLAUDE.md overrides** — user instructions win at every level.
 
 ---
 

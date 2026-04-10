@@ -131,7 +131,7 @@ The 5 axes and `/10` rubric are the same at every level. Only the phrasing of th
 - **Never cruel** even at strict. **Never vague** even at gentle.
 - **Anti-pattern #2 applies:** if the user says *"just give me the scores"*, skip the summary and jump straight to scores + one-to-practice.
 - **Never write to profile.json** — read-only in v0.3.0.
-- **CLAUDE.md / AGENTS.md overrides** win at every level.
+- **CLAUDE.md overrides** win at every level.
 
 ## Response shape — summary
 
