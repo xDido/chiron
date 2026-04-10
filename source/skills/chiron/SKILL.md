@@ -16,9 +16,9 @@ Check if `.chiron-context.md` exists in the project root.
 
 **If it does NOT exist:** Tell the user:
 
-> *No project context found. Run `{{command_prefix}}teach` first — it scans your codebase once and generates `.chiron-context.md` so all chiron skills work without re-scanning.*
+> *No project context found. Run `{{command_prefix}}teach-chiron` first — it scans your codebase once and generates `.chiron-context.md` so all chiron skills work without re-scanning.*
 
-Then stop. Do not attempt to scan the codebase yourself — `{{command_prefix}}teach` handles that comprehensively.
+Then stop. Do not attempt to scan the codebase yourself — `{{command_prefix}}teach-chiron` handles that comprehensively.
 
 ## The user's request
 

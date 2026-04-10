@@ -9,7 +9,7 @@ argument-hint: "[question]"
 
 ## Step 0 — Load project context
 
-Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files** unless the user's question references a specific file. **If not:** tell the user: *"No project context found. Run `/teach` first."* Then stop.
+Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files** unless the user's question references a specific file. **If not:** tell the user: *"No project context found. Run `/teach-chiron` first."* Then stop.
 
 The user's question or decision:
 
