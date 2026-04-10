@@ -131,7 +131,7 @@ Graceful degradation: if there's no recent chiron activity in the conversation, 
 
 ### `/tour <topic>` — structured preamble before a task *(v0.3.0)*
 
-Before diving into a new topic, `/tour` gives you a 3-section preamble: read-this-first doc pointers, key concepts, common junior mistakes. From `go-mentor.md`'s *"Before each task"* pattern.
+Before diving into a new topic, `/tour` gives you a 3-section preamble: read-this-first doc pointers, key concepts, common junior mistakes.
 
 ```
 /tour errgroup

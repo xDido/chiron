@@ -79,7 +79,7 @@ Implementation? `{{command_prefix}}chiron <request>`
 
 ## Idiom callouts
 
-When naming a specific primitive or library in an approach, offer ONE short doc pointer (the "read this first" pattern from `go-mentor.md`):
+When naming a specific primitive or library in an approach, offer ONE short doc pointer (the "read this first" pattern):
 
 > *"Approach 1: use `errgroup.WithContext` from `golang.org/x/sync/errgroup`. Background: `pkg.go.dev/golang.org/x/sync/errgroup`."*
 

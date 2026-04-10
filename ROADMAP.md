@@ -184,7 +184,7 @@ Second feature of **Bundle A — Voice & tuning**. Extends `~/.chiron/config.jso
 Three new user-invocable skills extending chiron's teach-first philosophy. All three are read-only, follow the established skill pattern, integrate with `voice_level` from config.
 
 - [x] `.claude/skills/explain/SKILL.md` — `/explain <question>`: 2–3 approaches with pros/cons/recommendation, never fence-sit
-- [x] `.claude/skills/postmortem/SKILL.md` — `/postmortem`: session-end 3-section review with `/10` scoring across 5 axes from `go-mentor.md`, graceful degradation if no recent chiron activity
+- [x] `.claude/skills/postmortem/SKILL.md` — `/postmortem`: session-end 3-section review with `/10` scoring across 5 axes, graceful degradation if no recent chiron activity
 - [x] `.claude/skills/tour/SKILL.md` — `/tour <topic>`: structured "read first / key concepts / junior mistakes" preamble, text-only
 - [x] `plugin.json` version bumped to `0.3.0`
 - [x] `marketplace.json` version bumped to `0.3.0`
