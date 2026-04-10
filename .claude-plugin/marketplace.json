@@ -1,7 +1,7 @@
 {
-  "name": "chiron",
+  "name": "chiron-dev",
   "metadata": {
-    "description": "Teach-first mentor mode for AI coding tools. Socratic questions before code, drills from your own source."
+    "description": "Local development marketplace for the chiron plugin"
   },
   "owner": {
     "name": "Ahmed Haitham",
@@ -10,8 +10,8 @@
   "plugins": [
     {
       "name": "chiron",
-      "description": "Teach-first mentor mode for AI coding tools. Socratic questions before code, drills from your own source.",
-      "version": "0.6.0",
+      "description": "Teach-first mentor mode for Claude Code. Socratic questions before code, drills from your own source.",
+      "version": "0.1.0",
       "source": "./",
       "author": {
         "name": "Ahmed Haitham",

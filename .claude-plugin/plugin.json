@@ -1,7 +1,7 @@
 {
   "name": "chiron",
-  "description": "Teach-first mentor mode for AI coding tools. Socratic questions before code, drills from your own source.",
-  "version": "0.6.0",
+  "description": "Teach-first mentor mode for Claude Code. Socratic questions before code, drills from your own source.",
+  "version": "0.1.0",
   "author": {
     "name": "Ahmed Haitham",
     "email": "adhaithaam@gmail.com"
@@ -9,6 +9,5 @@
   "homepage": "https://github.com/xDido/chiron",
   "repository": "https://github.com/xDido/chiron",
   "license": "MIT",
-  "keywords": ["mentor", "teach", "socratic", "drills", "learning", "go", "rust", "python", "javascript", "typescript", "java", "csharp", "kotlin", "swift"],
-  "skills": "./.claude/skills"
+  "keywords": ["mentor", "teach", "socratic", "drills", "learning", "go", "Claude", "Claude Code", "AI", "LLM"]
 }
