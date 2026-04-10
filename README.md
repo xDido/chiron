@@ -9,11 +9,17 @@
 
 ## Why I built this
 
-My day job had turned into a loop: take a ticket, hand it to an AI, review the diff, merge, repeat. The work got done. I didn't. Over a few months I noticed I'd stopped reaching for language idioms I used to know by heart, stopped weighing trade-offs before writing code, and stopped being able to explain *why* a solution worked instead of just that it did. Code-generation tools are incredible at delivering tasks — and that's exactly the problem. They optimize for throughput, not for the engineer on the other side of the keyboard.
+My job turned into a loop: take a ticket, give it to AI, review, merge, repeat. The work got done—but I didn’t grow.
 
-chiron is the tool I wanted: one that sits between me and the easy answer. Instead of handing me code, it asks the questions a senior engineer would ask, walks me through the decision one hint at a time, and makes me write the answer myself. I still ship — chiron is explicit about never refusing to help when asked — but by the time I get there, I actually understand why the solution is the solution. The point isn't to slow you down. It's to stay fluent, keep reasoning from first principles, and grow as an engineer while you're still getting your work done.
+Over time, I stopped thinking deeply. I used fewer language idioms, questioned fewer decisions, and couldn’t clearly explain why something worked—only that it did. AI tools are great at finishing tasks, but they don’t help you become a better engineer.
 
-If you've felt the same drift — productive on paper, quietly stagnating underneath — this plugin is for you.
+So I built chiron.
+
+Instead of giving answers, it guides you like a senior engineer—asking questions, giving hints, and making you think. You still ship your work, but you actually understand it.
+
+The goal isn’t to slow you down. It’s to keep you sharp while you build.
+
+If you’ve felt productive but stuck, this is for you.
 
 ## Install
 
