@@ -12,7 +12,7 @@ Check if `.chiron-context.md` exists in the project root.
 
 **If it exists:** Read it. This file is your complete project reference. **DO NOT scan the codebase, list directories, or re-read config files.** The only additional file you read is the target source file from Step 1. Proceed to Step 1.
 
-**If it does NOT exist:** Generate it now with a comprehensive scan — map ALL source files with Glob, list 3 levels of directories, read ALL project manifests/configs/READMEs, read ALL entry points/routes/models/services/test files, and document everything. Write to `.chiron-context.md` (see the chiron skill for the full 4-phase scan procedure and format template). Then proceed to Step 1.
+**If it does NOT exist:** Tell the user: *"No project context found. Run `/teach` first."* Then stop.
 
 `/challenge` reads a source file, finds 1–3 concrete practice targets grounded in specific lines, and presents them as short drills you can complete in 5–15 minutes. Each drill is tied to an idiom from the language pack. Your attempts get graded `/10` with honest, specific feedback.
 
