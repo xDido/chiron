@@ -1,4 +1,4 @@
-# Reliability concept pack (inlined)
+# Reliability concept pack
 
 Resilience and reliability patterns for backend services — retries, circuit breakers, timeouts, graceful degradation, and backpressure. Cross-language: seeds describe structural patterns, not language-specific syntax.
 

@@ -1,4 +1,4 @@
-# Python language pack (inlined)
+# Python language pack
 
 This is the runtime source of truth for chiron's Python knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/python.md`.
 

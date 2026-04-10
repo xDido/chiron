@@ -1,4 +1,4 @@
-# TypeScript language pack (inlined)
+# TypeScript language pack
 
 This is the runtime source of truth for chiron's TypeScript knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/typescript.md`. **TypeScript files also match JavaScript seeds** — consult both packs when running `{{command_prefix}}challenge` on a `.ts`/`.tsx` file.
 

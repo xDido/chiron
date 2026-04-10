@@ -1,4 +1,4 @@
-# Observability concept pack (inlined)
+# Observability concept pack
 
 Logging, metrics, and distributed tracing patterns for backend services. Cross-language: seeds describe structural observability concerns, not framework-specific APIs.
 
