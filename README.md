@@ -190,6 +190,24 @@ chiron is opinionated. It asks hard questions before writing code. It refuses to
 
 The plugin's job is not to make you feel smart. It's to make you think like a senior engineer, one small decision at a time.
 
+## Token-friendly by design
+
+Plugins that inject thousands of tokens into every prompt cost real money — and chiron is deliberate about keeping that cost low.
+
+**Most commands are small.** `/chiron`, `/hint`, `/explain`, `/level`, `/postmortem`, and `/tour` are each ~1,000–2,500 words. They load once when you invoke the slash command and add negligible cost to a conversation.
+
+**`/challenge` loads language packs on demand.** Rather than bundling all 9 language packs into one massive prompt, `/challenge` detects your file's language and loads only the relevant pack at runtime. A Go challenge loads the Go pack (~200 lines); a TypeScript challenge loads the TypeScript + JavaScript packs. The rest stay on disk.
+
+| Command | Prompt size | Approx. tokens |
+|---------|-------------|----------------|
+| `/chiron` | ~2,500 words | ~3.3k |
+| `/challenge` (core) | ~310 lines | ~4.2k |
+| + one language pack | ~200 lines | ~1.5k |
+| `/explain` | ~1,000 words | ~1.4k |
+| `/hint`, `/level`, `/tour`, `/postmortem` | ~1,000 words each | ~1.3–1.5k |
+
+For comparison, `/challenge` before v0.7.0 loaded all 9 packs on every invocation (~17.5k tokens). The on-demand architecture reduced that by **59–67%**.
+
 ## Respect for `CLAUDE.md` / `AGENTS.md`
 
 If your project's `CLAUDE.md` or `AGENTS.md` contains instructions that conflict with chiron's behavior (e.g., *"don't use Socratic questioning, just write the code"*), **your instructions win**. Every chiron skill file states this deferral explicitly at the top.
@@ -212,7 +230,7 @@ chiron ships with comprehensive language packs for nine languages. Run `/challen
 
 Each pack includes: stdlib anchors, 25–30 idioms, 20–25 common anti-patterns, mental-model deltas, and 12–17 challenge seeds. TypeScript files also match JavaScript seeds — both packs are consulted.
 
-**Want to add Zig, Ruby, Elixir, or something else?** See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide and start from [`docs/languages/_template.md`](docs/languages/_template.md). A new language pack is usually a single-file PR against `docs/languages/<lang>.md` plus a mirror into `.claude/skills/challenge/SKILL.md`.
+**Want to add Zig, Ruby, Elixir, or something else?** See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide and start from [`docs/languages/_template.md`](docs/languages/_template.md).
 
 ## Roadmap
 
