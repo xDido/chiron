@@ -222,6 +222,60 @@ Chiron aims to be opinionated and high-signal. A language pack is accepted if:
 
 The last point matters. We don't merge packs written in the abstract — they need to survive contact with real code. If you haven't tried your own pack on your own projects, wait until you have.
 
+## Keeping your pack fresh
+
+Language packs age slowly (years, not weeks), but they do age. New stdlib additions, deprecations, and ecosystem consensus shifts eventually need to land in the packs.
+
+### How the freshness CI works
+
+A GitHub Actions workflow (`.github/workflows/pack-freshness-check.yml`) runs every Monday at 06:00 UTC. For each language pack:
+
+1. It reads the YAML **frontmatter** at the top of `docs/languages/<lang>.md`
+2. It fetches the current stable version from the configured upstream endpoint
+3. It compares the `last_reviewed_against` field to the fetched version
+4. If they differ, it opens a `[pack-refresh]` issue with instructions
+
+The workflow is idempotent — it won't create duplicate issues for the same `(language, version)` pair.
+
+### Frontmatter schema
+
+Every pack file has YAML frontmatter with three fields:
+
+```yaml
+---
+language: go                        # lowercase, no spaces
+last_reviewed_against: "1.23"       # the version the pack was last reviewed against
+upstream_version_source:
+  type: endoflife                   # one of: endoflife, github-release, npm
+  product: go                       # depends on type (see below)
+---
+```
+
+**Source types:**
+
+| Type | Field | Endpoint |
+|------|-------|----------|
+| `endoflife` | `product: <slug>` | `https://endoflife.date/api/<slug>.json` → `[0].latest` |
+| `github-release` | `repo: <owner>/<repo>` | GitHub Releases API → `tag_name` |
+| `npm` | `package: <name>` | `https://registry.npmjs.org/<name>/latest` → `version` |
+
+For `github-release`, add `tag_strip: "prefix-|-suffix"` if the tag has decorations (e.g., Swift uses `swift-6.3-RELEASE` → strip `swift-` and `-RELEASE`).
+
+### When a `[pack-refresh]` issue appears
+
+1. Read the upstream release notes linked in the issue
+2. Identify new idioms, anti-patterns, mental-model deltas, or seed opportunities
+3. Update `docs/languages/<lang>.md`
+4. Mirror idiom/seed changes into `.claude/skills/challenge/SKILL.md`
+5. Update `last_reviewed_against` in the frontmatter to the new version
+6. Open a PR — the issue will close when the PR merges
+
+Not every new version needs pack changes. If the release has nothing relevant to idioms or practice drills, just bump `last_reviewed_against` and close the issue.
+
+### For new language contributions
+
+When you submit a new language pack, include the frontmatter with all three fields. Use `docs/languages/_template.md` as a starting point — it has the frontmatter block with placeholder values and inline comments explaining each field.
+
 ## Questions?
 
 Open a discussion or issue with the `language-pack` label. We'll help you scope the pack, write good seeds, and work through tricky signals. Contributing a language pack is the highest-leverage way to improve chiron — it brings a whole new community into the tool.

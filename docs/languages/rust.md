@@ -1,3 +1,11 @@
+---
+language: rust
+last_reviewed_against: "1.85"
+upstream_version_source:
+  type: endoflife
+  product: rust
+---
+
 # Rust language pack
 
 Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for Rust. This file is the **human-readable reference** for chiron's Rust knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.

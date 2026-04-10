@@ -1,0 +1,228 @@
+name: Pack freshness check
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Every Monday at 06:00 UTC
+  workflow_dispatch: # Allow manual runs from the Actions UI
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check all language packs for staleness
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // --- Frontmatter parser (no dependencies) ---
+            function parseFrontmatter(content) {
+              const match = content.match(/^---\n([\s\S]*?)\n---/);
+              if (!match) return null;
+              const lines = match[1].split('\n');
+              const result = {};
+              let currentKey = null;
+              let currentIndent = 0;
+              let nested = null;
+
+              for (const line of lines) {
+                if (line.trim().startsWith('#') || line.trim() === '') continue;
+                const topMatch = line.match(/^(\w[\w_]*):\s*(.*)$/);
+                if (topMatch) {
+                  if (nested && currentKey) {
+                    result[currentKey] = nested;
+                    nested = null;
+                  }
+                  const [, key, value] = topMatch;
+                  if (value === '' || value === null) {
+                    currentKey = key;
+                    nested = {};
+                  } else {
+                    result[key] = value.replace(/^["']|["']$/g, '');
+                    currentKey = null;
+                  }
+                } else if (nested) {
+                  const nestedMatch = line.match(/^\s+(\w[\w_]*):\s*(.+)$/);
+                  if (nestedMatch) {
+                    nested[nestedMatch[1]] = nestedMatch[2].replace(/^["']|["']$/g, '');
+                  }
+                }
+              }
+              if (nested && currentKey) result[currentKey] = nested;
+              return result;
+            }
+
+            // --- Version fetchers ---
+            async function fetchEndoflife(product) {
+              const resp = await fetch(`https://endoflife.date/api/${product}.json`);
+              if (!resp.ok) throw new Error(`endoflife.date ${product}: HTTP ${resp.status}`);
+              const data = await resp.json();
+              return data[0]?.latest || data[0]?.cycle || null;
+            }
+
+            async function fetchGithubRelease(repo) {
+              const resp = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, {
+                headers: { 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }
+              });
+              if (!resp.ok) throw new Error(`github-release ${repo}: HTTP ${resp.status}`);
+              const data = await resp.json();
+              return data.tag_name || null;
+            }
+
+            async function fetchNpm(pkg) {
+              const resp = await fetch(`https://registry.npmjs.org/${pkg}/latest`);
+              if (!resp.ok) throw new Error(`npm ${pkg}: HTTP ${resp.status}`);
+              const data = await resp.json();
+              return data.version || null;
+            }
+
+            function stripTag(raw, pattern) {
+              if (!pattern) return raw;
+              // pattern is "prefix-|-suffix" where | separates parts to strip
+              for (const part of pattern.split('|')) {
+                raw = raw.replace(new RegExp(part.trim()), '');
+              }
+              return raw;
+            }
+
+            function majorMinor(version) {
+              // Extract major.minor (or just major for single-number versions like "22")
+              const cleaned = version.replace(/^v/, '');
+              const parts = cleaned.split('.');
+              if (parts.length >= 2) return `${parts[0]}.${parts[1]}`;
+              return parts[0];
+            }
+
+            // --- Main logic ---
+            const packsDir = path.join(process.cwd(), 'docs', 'languages');
+            const files = fs.readdirSync(packsDir).filter(f => f.endsWith('.md') && f !== '_template.md');
+
+            const results = [];
+            const errors = [];
+
+            for (const file of files) {
+              const content = fs.readFileSync(path.join(packsDir, file), 'utf-8');
+              const fm = parseFrontmatter(content);
+              if (!fm || !fm.language || !fm.last_reviewed_against || !fm.upstream_version_source) {
+                core.info(`Skipping ${file}: missing or incomplete frontmatter`);
+                continue;
+              }
+
+              const lang = fm.language;
+              const reviewed = fm.last_reviewed_against;
+              const source = fm.upstream_version_source;
+
+              let rawVersion;
+              try {
+                if (source.type === 'endoflife') {
+                  rawVersion = await fetchEndoflife(source.product);
+                } else if (source.type === 'github-release') {
+                  rawVersion = await fetchGithubRelease(source.repo);
+                } else if (source.type === 'npm') {
+                  rawVersion = await fetchNpm(source.package);
+                } else {
+                  core.warning(`${file}: unknown source type "${source.type}"`);
+                  continue;
+                }
+              } catch (err) {
+                errors.push(`${file}: ${err.message}`);
+                core.warning(`${file}: fetch failed — ${err.message}`);
+                continue;
+              }
+
+              if (!rawVersion) {
+                errors.push(`${file}: fetched version is null`);
+                core.warning(`${file}: fetched version is null`);
+                continue;
+              }
+
+              // Strip tag prefixes/suffixes if configured
+              const cleaned = stripTag(rawVersion, source.tag_strip);
+              const current = majorMinor(cleaned);
+
+              core.info(`${lang}: reviewed=${reviewed}, current=${current} (raw=${rawVersion})`);
+
+              if (current !== reviewed) {
+                results.push({ lang, file, reviewed, current, rawVersion: cleaned });
+              }
+            }
+
+            // --- Open issues for stale packs ---
+            for (const { lang, file, reviewed, current, rawVersion } of results) {
+              const title = `[pack-refresh] ${lang} ${current} released — review docs/languages/${file}`;
+
+              // Check for existing open issue with same title to avoid duplicates
+              const existing = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                labels: 'pack-refresh',
+                per_page: 100,
+              });
+
+              const duplicate = existing.data.find(i => i.title === title);
+              if (duplicate) {
+                core.info(`Skipping ${lang}: open issue already exists (#${duplicate.number})`);
+                continue;
+              }
+
+              // Ensure the pack-refresh label exists
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: 'pack-refresh',
+                });
+              } catch {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: 'pack-refresh',
+                  color: 'f9d0c4',
+                  description: 'Language pack needs review against a new language version',
+                });
+              }
+
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                labels: ['pack-refresh', 'language-pack'],
+                body: [
+                  `The pack-freshness CI detected a new stable version of **${lang}**.`,
+                  '',
+                  `- **Last reviewed:** ${reviewed}`,
+                  `- **Current stable:** ${current} (raw: ${rawVersion})`,
+                  `- **Pack file:** \`docs/languages/${file}\``,
+                  '',
+                  '### What to do',
+                  '',
+                  '1. Read the upstream release notes and identify:',
+                  '   - New stdlib additions that deserve a new idiom entry',
+                  '   - Syntax changes or deprecations that deserve a new anti-pattern or mental-model delta',
+                  '   - New challenge seed opportunities',
+                  `2. Update \`docs/languages/${file}\` with the changes`,
+                  '3. Mirror idiom/seed changes into `.claude/skills/challenge/SKILL.md`',
+                  `4. Update the pack's \`last_reviewed_against\` frontmatter field to \`"${current}"\``,
+                  `5. Open a PR titled "refresh ${lang} pack against ${current}"`,
+                  '',
+                  '---',
+                  '*Opened automatically by `.github/workflows/pack-freshness-check.yml`*',
+                ].join('\n'),
+              });
+
+              core.info(`Opened issue for ${lang}: ${reviewed} → ${current}`);
+            }
+
+            // --- Summary ---
+            if (errors.length > 0) {
+              core.warning(`${errors.length} fetch error(s): ${errors.join('; ')}`);
+            }
+            core.info(`Done. ${results.length} stale pack(s) found, issues opened for new ones.`);

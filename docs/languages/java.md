@@ -1,3 +1,11 @@
+---
+language: java
+last_reviewed_against: "21"
+upstream_version_source:
+  type: endoflife
+  product: oracle-jdk
+---
+
 # Java language pack
 
 Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for modern Java (17+). This file is the **human-readable reference** for chiron's Java knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.

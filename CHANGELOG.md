@@ -6,6 +6,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.5.1] — 2026-04-10
+
+### Added — Pack freshness CI
+
+A GitHub Actions workflow that detects when a new stable version of a supported language ships and opens a `[pack-refresh]` issue with instructions. Keeps language packs current without scraping docs or fetching at runtime.
+
+**How it works:**
+
+1. Runs every Monday at 06:00 UTC (+ manual dispatch from the Actions UI)
+2. Reads YAML frontmatter from each `docs/languages/<lang>.md` — `last_reviewed_against` and `upstream_version_source`
+3. Fetches the current stable version from the configured endpoint (endoflife.date, GitHub Releases, or npm)
+4. If the version differs from `last_reviewed_against`, opens a GitHub issue with the `pack-refresh` label and step-by-step refresh instructions
+5. Idempotent — won't duplicate issues for the same `(language, version)` pair
+
+**New file:** `.github/workflows/pack-freshness-check.yml`
+
+**Frontmatter added to all 9 language packs:**
+
+| Language | Source | Product/Repo | Reviewed against |
+|----------|--------|-------------|------------------|
+| Go | endoflife | `go` | 1.23 |
+| Rust | endoflife | `rust` | 1.85 |
+| Python | endoflife | `python` | 3.13 |
+| JavaScript | endoflife | `nodejs` | 22 |
+| TypeScript | npm | `typescript` | 5.7 |
+| Java | endoflife | `oracle-jdk` | 21 |
+| C# | endoflife | `dotnet` | 12 |
+| Kotlin | github-release | `JetBrains/kotlin` | 2.1 |
+| Swift | github-release | `swiftlang/swift` | 5.10 |
+
+**Template updated:** `docs/languages/_template.md` now includes the frontmatter block with placeholder values and inline comments.
+
+**Contribution guide updated:** `docs/CONTRIBUTING-LANGUAGE-PACKS.md` gains a "Keeping your pack fresh" section explaining the frontmatter schema, CI behavior, and how to respond to `[pack-refresh]` issues.
+
+### Not changed
+
+- **No runtime behavior change.** `/challenge`, `/chiron`, and all other skills are untouched. The frontmatter is invisible to the runtime.
+- **No new slash commands.**
+- **All 9 language packs unchanged** (only frontmatter added; no idiom/seed/anti-pattern changes).
+
+---
+
 ## [0.5.0] — 2026-04-10
 
 ### Added — Bundle F language packs (C#, Kotlin, Swift)

@@ -1,3 +1,11 @@
+---
+language: kotlin
+last_reviewed_against: "2.1"
+upstream_version_source:
+  type: github-release
+  repo: JetBrains/kotlin
+---
+
 # Kotlin language pack
 
 Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for modern Kotlin (1.9+ / 2.0). This file is the **human-readable reference** for chiron's Kotlin knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.

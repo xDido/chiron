@@ -1,3 +1,12 @@
+---
+language: swift
+last_reviewed_against: "5.10"
+upstream_version_source:
+  type: github-release
+  repo: swiftlang/swift
+  tag_strip: "swift-|-RELEASE"
+---
+
 # Swift language pack
 
 Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for modern Swift (5.9+). This file is the **human-readable reference** for chiron's Swift knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.
