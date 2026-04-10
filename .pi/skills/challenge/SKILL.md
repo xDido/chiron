@@ -1,7 +1,7 @@
 ---
 name: challenge
 description: Generate idiom drills grounded in specific lines of a source file. Seeded patterns first, model eyeball fallback on no match. Grades user attempts /10 and writes outcomes to ~/.chiron/profile.json.
-allowed-tools: Read, Write, Grep, Bash
+allowed-tools: Read, Write, Grep, Glob, LS, Bash
 ---
 
 # /challenge — hero feature: drills from your own code
