@@ -22,16 +22,16 @@ The seeds are what makes `/challenge` work for the language. Without seeds, `/ch
 
 Every pack has content in **two files**, both maintained together:
 
-| File                                                                 | Role                                                                                                                                                           | Size                       |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| `docs/languages/<lang>.md`                                           | Human-readable reference. Full idiom explanations, all anti-patterns, mental-model deltas, stdlib anchors. Read by contributors and users, not by the runtime. | Large (500+ lines typical) |
-| `.claude/skills/challenge/SKILL.md` § "&lt;Language&gt; language pack (inlined)" | Runtime source of truth. Just the idiom tag list (for eyeball fallback) and the full seeds (for pattern matching). No prose explanations.                      | ~200 lines per language    |
+| File                                     | Role                                                                                                                                                           | Size                       |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| `docs/languages/<lang>.md`               | Human-readable reference. Full idiom explanations, all anti-patterns, mental-model deltas, stdlib anchors. Read by contributors and users, not by the runtime. | Large (500+ lines typical) |
+| `source/skills/challenge/packs/<lang>.md` | Runtime language pack. Just the idiom tag list (for eyeball fallback) and the full seeds (for pattern matching). No prose explanations. Loaded on demand by `/challenge`. | ~200 lines per language    |
 
-**Both files must be kept in sync.** The docs file explains the content; the command file runs the command. A contribution PR touches both. If they drift, the runtime behavior drifts from the documentation.
+**Both files must be kept in sync.** The docs file explains the content; the runtime pack drives the command. A contribution PR touches both. If they drift, the runtime behavior drifts from the documentation.
 
 ## Why two files?
 
-Because commands in Claude Code can't reliably load external files from the plugin directory at runtime. The command must be self-contained. At the same time, we want a readable reference document for contributors and users — hence the docs mirror. See the implementation plan file (cross-check #3 and the Phase 4 install-phase correction) for the full reasoning behind this decision — it's stored outside the public repo at `~/.claude/plans/mossy-crunching-hopcroft.md`.
+The `/challenge` command loads only the language pack it needs at runtime via the Read tool, keeping the initial skill prompt small. The docs file provides the full teaching context — idiom explanations, anti-patterns with examples, mental-model deltas — that contributors and users need but the runtime algorithm does not.
 
 ---
 
@@ -75,12 +75,12 @@ The hero fixture serves two purposes:
 1. Proof that your pack works end-to-end: `/challenge tests/fixtures/<lang>/<file>` should produce a real drill.
 2. Material for the README hero GIF if the language becomes the primary demo.
 
-### 4. Mirror into `.claude/skills/challenge/SKILL.md`
+### 4. Create the runtime language pack
 
-Copy the **idiom tag list** and the **full challenge seeds** (not the explanations, not the mental-model deltas) into `.claude/skills/challenge/SKILL.md`. Add them as a new section at the end of the file:
+Create `source/skills/challenge/packs/<lang>.md` with the **idiom tag list** and the **full challenge seeds** (not the explanations, not the mental-model deltas):
 
 ```markdown
-# <Language> language pack (inlined)
+# <Language> language pack
 
 This is the runtime source of truth for chiron's <Language> knowledge...
 
@@ -93,9 +93,9 @@ This is the runtime source of truth for chiron's <Language> knowledge...
 [copy the seeds from docs/languages/<lang>.md]
 ```
 
-The human-readable docs stay in `docs/languages/<lang>.md`. Only the tags and seeds go into the command file.
+The human-readable docs stay in `docs/languages/<lang>.md`. Only the tags and seeds go into the runtime pack. The build system (`bun run build`) copies this pack to all 13 platform output directories.
 
-### 5. Update language detection in `.claude/skills/challenge/SKILL.md`
+### 5. Update language detection in `source/skills/challenge/SKILL.md`
 
 Find step 2 of the command ("Language detection"). Add your language's file extension:
 
@@ -143,7 +143,8 @@ If the fallback fires too often, your seed signals are too narrow. If seeds fire
 Against `main`, with these files changed:
 
 - `docs/languages/<lang>.md` (new)
-- `.claude/skills/challenge/SKILL.md` (modified — new inlined section + language detection update)
+- `source/skills/challenge/packs/<lang>.md` (new — runtime pack)
+- `source/skills/challenge/SKILL.md` (modified — language detection update)
 - `tests/fixtures/<lang>/<file>.<ext>` (new)
 - `README.md` (modified — roadmap update)
 
@@ -159,7 +160,7 @@ The PR description should include:
 - Seeds have both Signal and Drill and look runnable
 - Drills meet the size constraints (≤20 lines, ≤1 function, 5–15 min)
 - At least one drill has been verified end-to-end on a real file
-- The command file and docs file stay in sync (same seeds, same tag list)
+- The runtime pack and docs file stay in sync (same seeds, same tag list)
 - README roadmap is updated
 
 ---
@@ -217,7 +218,7 @@ Chiron aims to be opinionated and high-signal. A language pack is accepted if:
 - Every anti-pattern has a bug example, a fix example, and a rationale
 - Every seed has Signal + Drill that a reviewer can verify by inspection
 - The hero fixture demonstrates at least one seed firing end-to-end
-- The command file and docs file are in sync
+- The runtime pack and docs file are in sync
 - The contributor has actually used chiron with their pack for at least one real coding session
 
 The last point matters. We don't merge packs written in the abstract — they need to survive contact with real code. If you haven't tried your own pack on your own projects, wait until you have.
@@ -266,7 +267,7 @@ For `github-release`, add `tag_strip: "prefix-|-suffix"` if the tag has decorati
 1. Read the upstream release notes linked in the issue
 2. Identify new idioms, anti-patterns, mental-model deltas, or seed opportunities
 3. Update `docs/languages/<lang>.md`
-4. Mirror idiom/seed changes into `.claude/skills/challenge/SKILL.md`
+4. Mirror idiom/seed changes into `source/skills/challenge/packs/<lang>.md`
 5. Update `last_reviewed_against` in the frontmatter to the new version
 6. Open a PR — the issue will close when the PR merges
 

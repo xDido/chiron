@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { PROVIDERS } = require('./lib/providers');
 const { PLACEHOLDERS } = require('./lib/placeholders');
-const { readSourceSkills, transformSkill, writeSkill } = require('./lib/transform');
+const { readSourceSkills, transformSkill, replacePlaceholders, writeSkill } = require('./lib/transform');
 
 const ROOT = path.resolve(__dirname, '..');
 const SOURCE_DIR = path.join(ROOT, 'source', 'skills');
@@ -50,14 +50,32 @@ for (const [providerKey, providerConfig] of Object.entries(PROVIDERS)) {
   }
 
   let count = 0;
+  let packCount = 0;
   for (const skill of skills) {
-    const output = transformSkill(skill.content, providerConfig, placeholders);
-    writeSkill(ROOT, providerConfig.configDir, skill.name, output);
+    // Add dynamic pack_path placeholder: resolves to the skill's output directory
+    const skillPlaceholders = {
+      ...placeholders,
+      pack_path: `${providerConfig.configDir}/skills/${skill.name}`
+    };
+    const output = transformSkill(skill.content, providerConfig, skillPlaceholders);
+
+    // Transform pack files with placeholder replacement
+    let transformedPacks = null;
+    if (skill.packs) {
+      transformedPacks = {};
+      for (const [filename, packContent] of Object.entries(skill.packs)) {
+        transformedPacks[filename] = replacePlaceholders(packContent, skillPlaceholders);
+      }
+      packCount += Object.keys(transformedPacks).length;
+    }
+
+    writeSkill(ROOT, providerConfig.configDir, skill.name, output, transformedPacks);
     count++;
   }
 
   totalFiles += count;
-  console.log(`  ${providerConfig.displayName.padEnd(25)} → ${providerConfig.configDir}/skills/ (${count} skills)`);
+  const packNote = packCount > 0 ? ` + ${packCount} packs` : '';
+  console.log(`  ${providerConfig.displayName.padEnd(25)} → ${providerConfig.configDir}/skills/ (${count} skills${packNote})`);
 }
 
 console.log(`\nBuilt ${skills.length} skills × ${Object.keys(PROVIDERS).length} platforms = ${totalFiles} files`);
