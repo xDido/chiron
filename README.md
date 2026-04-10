@@ -9,8 +9,6 @@
 
 ## Why I built this
 
-I built chiron because I was shipping tasks without growing.
-
 My day job had turned into a loop: take a ticket, hand it to an AI, review the diff, merge, repeat. The work got done. I didn't. Over a few months I noticed I'd stopped reaching for language idioms I used to know by heart, stopped weighing trade-offs before writing code, and stopped being able to explain *why* a solution worked instead of just that it did. Code-generation tools are incredible at delivering tasks — and that's exactly the problem. They optimize for throughput, not for the engineer on the other side of the keyboard.
 
 chiron is the tool I wanted: one that sits between me and the easy answer. Instead of handing me code, it asks the questions a senior engineer would ask, walks me through the decision one hint at a time, and makes me write the answer myself. I still ship — chiron is explicit about never refusing to help when asked — but by the time I get there, I actually understand why the solution is the solution. The point isn't to slow you down. It's to stay fluent, keep reasoning from first principles, and grow as an engineer while you're still getting your work done.
