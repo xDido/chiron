@@ -26,15 +26,15 @@ A GitHub Actions workflow that detects when a new stable version of a supported 
 
 | Language | Source | Product/Repo | Reviewed against |
 |----------|--------|-------------|------------------|
-| Go | endoflife | `go` | 1.23 |
-| Rust | endoflife | `rust` | 1.85 |
-| Python | endoflife | `python` | 3.13 |
-| JavaScript | endoflife | `nodejs` | 22 |
-| TypeScript | npm | `typescript` | 5.7 |
-| Java | endoflife | `oracle-jdk` | 21 |
-| C# | endoflife | `dotnet` | 12 |
-| Kotlin | github-release | `JetBrains/kotlin` | 2.1 |
-| Swift | github-release | `swiftlang/swift` | 5.10 |
+| Go | endoflife | `go` | 1.26 |
+| Rust | endoflife | `rust` | 1.94 |
+| Python | endoflife | `python` | 3.14 |
+| JavaScript | endoflife | `nodejs` | 25.9 |
+| TypeScript | npm | `typescript` | 6.0 |
+| Java | endoflife | `oracle-jdk` | 26.0 |
+| C# | endoflife | `dotnet` | 10.0 |
+| Kotlin | github-release | `JetBrains/kotlin` | 2.3 |
+| Swift | github-release | `swiftlang/swift` | 6.3 |
 
 **Template updated:** `docs/languages/_template.md` now includes the frontmatter block with placeholder values and inline comments.
 

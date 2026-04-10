@@ -1,6 +1,6 @@
 ---
 language: java
-last_reviewed_against: "21"
+last_reviewed_against: "26.0"
 upstream_version_source:
   type: endoflife
   product: oracle-jdk
