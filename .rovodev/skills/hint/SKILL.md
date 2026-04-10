@@ -2,9 +2,14 @@
 name: hint
 description: Advance one rung on the chiron hint ladder. Re-reads the most recent assistant turn, identifies its hint rung, and emits the next rung. Stateless — no session memory required.
 user-invocable: true
+allowed-tools: Read
 ---
 
 # /hint — advance one rung on the hint ladder
+
+## Context reuse
+
+If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
 
 ## CRITICAL — user instructions always win
 

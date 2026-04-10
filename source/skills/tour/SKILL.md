@@ -3,9 +3,14 @@ name: tour
 description: Structured "before each task" preamble for a coding topic. Presents read-this-first doc pointers, key concepts, and common junior mistakes. From chiron's session preamble pattern — gives you the mental model before you start writing code. For topic overviews, NOT tutorials.
 user-invocable: true
 argument-hint: "[topic]"
+allowed-tools: Read, Grep, Bash
 ---
 
 # {{command_prefix}}tour — structured preamble for a coding topic
+
+## Context reuse
+
+If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
 
 The user's topic:
 

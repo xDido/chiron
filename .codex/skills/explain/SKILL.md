@@ -5,6 +5,10 @@ description: Compare 2-3 approaches to a coding or design decision with trade-of
 
 # $explain — compare approaches with trade-offs
 
+## Context reuse
+
+If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
+
 The user's question or decision:
 
 ```

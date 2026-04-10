@@ -7,6 +7,10 @@ argument-hint: "[optional session summary]"
 
 # /postmortem — session-end review and scoring
 
+## Context reuse
+
+If files, config, or codebase context from earlier in this conversation are still relevant, reuse them instead of re-reading. Only re-read a file if the user explicitly asks to refresh, if the file may have changed since last read, or if it has not been read in this conversation yet.
+
 Optional user-supplied session summary (or blank):
 
 ```
