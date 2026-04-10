@@ -1,3 +1,11 @@
+---
+language: typescript
+last_reviewed_against: "5.7"
+upstream_version_source:
+  type: npm
+  package: typescript
+---
+
 # TypeScript language pack
 
 Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for TypeScript. This file is the **human-readable reference** for chiron's TypeScript knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.

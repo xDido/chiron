@@ -1,8 +1,22 @@
+---
+# Freshness tracking — the CI at .github/workflows/pack-freshness-check.yml
+# reads these fields weekly to detect when a new language version ships.
+# See docs/CONTRIBUTING-LANGUAGE-PACKS.md § "Keeping your pack fresh" for details.
+language: "<language>"                   # lowercase, no spaces (e.g., "ruby", "zig")
+last_reviewed_against: "<major.minor>"   # the version you wrote/reviewed the pack against
+upstream_version_source:
+  type: endoflife                        # one of: endoflife, github-release, npm
+  product: "<product>"                   # endoflife.date product slug, OR:
+  # repo: "<owner>/<repo>"              # for github-release type
+  # package: "<npm-package>"            # for npm type
+  # tag_strip: "prefix-|-suffix"        # optional regex parts to strip from github tags
+---
+
 # &lt;language&gt; language pack
 
-> **This is a template.** Copy this file to `docs/languages/<language>.md` (e.g., `rust.md`, `typescript.md`, `python.md`) and fill it in. Then mirror the seed list + idiom tag list into the "<language> language pack (inlined)" section of `.claude/skills/challenge/SKILL.md`. See [`../CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the full authoring guide.
+> **This is a template.** Copy this file to `docs/languages/<language>.md` (e.g., `ruby.md`, `zig.md`, `elixir.md`) and fill it in. Then mirror the seed list + idiom tag list into the "&lt;language&gt; language pack (inlined)" section of `.claude/skills/challenge/SKILL.md`. See [`../CONTRIBUTING-LANGUAGE-PACKS.md`](../CONTRIBUTING-LANGUAGE-PACKS.md) for the full authoring guide.
 >
-> Delete this quote block once you're ready to submit. The rest of this file is the structure your pack should follow.
+> Delete this quote block (and the frontmatter comments) once you're ready to submit. The rest of this file is the structure your pack should follow.
 
 Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for &lt;language&gt;. This file is the **human-readable reference** for chiron's &lt;language&gt; knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.
 

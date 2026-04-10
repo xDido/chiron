@@ -2,7 +2,7 @@
 
 This roadmap tracks chiron's path from empty repo to v0.1.0 public release. Updated as work completes.
 
-**Current status:** Phase 10 — v0.5.0 Bundle F language packs (C#, Kotlin, Swift)
+**Current status:** Phase 11 — v0.5.1 Pack freshness CI
 
 **Phase 4 correction:** during install testing, slash commands appeared with the mandatory `chiron:` prefix (`/chiron:chiron`, `/chiron:hint`, `/chiron:challenge`). Investigation of the `impeccable` plugin revealed that `user-invocable: true` skills in a custom skills path (`./.claude/skills`) bypass namespacing. Migrated the three command files to `.claude/skills/<name>/SKILL.md` with `user-invocable: true` frontmatter. Content unchanged; only the container and frontmatter changed. Slash commands should now be `/chiron`, `/hint`, `/challenge` without prefix. See the plan file for full details.
 
@@ -316,9 +316,40 @@ Three more comprehensive language packs: C#, Kotlin, and Swift. Same pattern as 
 
 ### Remaining work after v0.5.0
 
-- **v0.5.1** — Pack freshness CI (weekly version-check → auto-open issue)
+- **v0.5.1** — Pack freshness CI → **shipped (Phase 11)**
 - **Bundle D** — `chiron-reviewer` agent, pre-edit hook
 - **Additional language packs** — Ruby, Zig, Elixir — deferred to community contributions
+
+---
+
+## Phase 11 — v0.5.1 Pack freshness CI (in progress)
+
+Weekly GitHub Actions workflow that detects new language versions and opens `[pack-refresh]` issues. Infrastructure-only — no runtime behavior changes.
+
+- [x] Verify all 9 version endpoints manually (endoflife.date for Go/Rust/Python/Node/Java/dotnet, GitHub Releases for Kotlin/Swift, npm for TypeScript)
+- [x] Add YAML frontmatter to all 9 language packs (`language`, `last_reviewed_against`, `upstream_version_source`)
+- [x] Update `docs/languages/_template.md` with frontmatter block + placeholder values
+- [x] Write `.github/workflows/pack-freshness-check.yml` — inline JS via `actions/github-script`, weekly cron + manual dispatch, idempotent issue creation
+- [x] Update `docs/CONTRIBUTING-LANGUAGE-PACKS.md` — "Keeping your pack fresh" section
+- [x] `plugin.json` + `marketplace.json` → `0.5.1`
+- [x] `CHANGELOG.md` — `## [0.5.1]` section
+- [x] `ROADMAP.md` — this section
+
+### Pending
+
+- [ ] Commit as `v0.5.1: pack freshness CI (version-check → auto-open issue)`
+- [ ] Git tag `v0.5.1`
+- [ ] Push main + tag
+- [ ] Create GitHub Release from v0.5.1 tag
+- [ ] Trigger workflow manually to verify zero issues opened (all packs current at ship time)
+
+**Exit criteria:** Workflow runs cleanly via manual dispatch. All 9 pack frontmatters parsed correctly. Zero false-positive issues on first run. GitHub Release v0.5.1 published.
+
+### Remaining work after v0.5.1
+
+- **Bundle D** — `chiron-reviewer` agent, pre-edit hook (next major feature bundle)
+- **Additional language packs** — Ruby, Zig, Elixir — deferred to community contributions
+- **Post-release polish:** hero GIFs recording session for README
 
 ---
 

@@ -1,3 +1,11 @@
+---
+language: csharp
+last_reviewed_against: "12"
+upstream_version_source:
+  type: endoflife
+  product: dotnet
+---
+
 # C# language pack
 
 Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for modern C# (10+, targeting .NET 6/8/9). This file is the **human-readable reference** for chiron's C# knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.

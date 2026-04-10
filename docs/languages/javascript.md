@@ -1,3 +1,11 @@
+---
+language: javascript
+last_reviewed_against: "22"
+upstream_version_source:
+  type: endoflife
+  product: nodejs
+---
+
 # JavaScript language pack
 
 Canonical idioms, common pitfalls, mental-model shifts, and challenge seeds for modern JavaScript (ES2020+). This file is the **human-readable reference** for chiron's JavaScript knowledge base. The content is mirrored into `.claude/skills/challenge/SKILL.md` at runtime for the `/challenge` command's seeded pass.
