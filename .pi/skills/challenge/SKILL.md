@@ -86,6 +86,25 @@ Each challenge seed in the loaded pack has this shape:
 - Constraint: <what makes this a drill, not a rewrite>
 ```
 
+## Step 3b — Detect backend concepts (auto)
+
+After loading the language pack, scan the target file's **import statements** (or `require`, `using`, `use`, `import` — whatever the language uses). Match against the table below to identify which backend domains the file touches. Load **up to 2** matching concept packs from `.pi/skills/challenge/packs/`. If more than 2 domains match, pick the 2 with the strongest signal (most matching imports).
+
+If zero domains match, proceed with only the language pack — no concept packs needed.
+
+| Domain | Pack file | Import signals (match ANY) |
+|--------|-----------|---------------------------|
+| Database | `database.md` | `database/sql`, `sqlx`, `gorm`, `ent`, `sqlalchemy`, `psycopg2`, `django.db`, `pymongo`, `pg`, `mysql2`, `prisma`, `typeorm`, `sequelize`, `knex`, `drizzle`, `mongoose`, `java.sql`, `javax.persistence`, `hibernate`, `spring-data`, `jooq`, `System.Data`, `EntityFrameworkCore`, `Dapper`, `Npgsql`, `exposed`, `ktorm`, `diesel`, `sea-orm`, `Fluent`, `SQLite` |
+| API design | `api-design.md` | `net/http`, `gin`, `echo`, `fiber`, `chi`, `fastapi`, `flask`, `django`, `starlette`, `express`, `koa`, `hono`, `fastify`, `nest`, `spring-web`, `javax.servlet`, `jakarta.ws.rs`, `Microsoft.AspNetCore`, `System.Web.Http`, `ktor`, `axum`, `actix-web`, `warp`, `rocket`, `Vapor` |
+| Reliability | `reliability.md` | `gobreaker`, `cenkalti/backoff`, `tenacity`, `circuitbreaker`, `backoff`, `cockatiel`, `opossum`, `resilience4j`, `spring-retry`, `hystrix`, `Polly`, `Microsoft.Extensions.Http.Resilience` |
+| Observability | `observability.md` | `log/slog`, `zap`, `zerolog`, `prometheus`, `otel`, `structlog`, `prometheus_client`, `opentelemetry`, `winston`, `pino`, `bunyan`, `prom-client`, `@opentelemetry`, `slf4j`, `logback`, `log4j`, `micrometer`, `Serilog`, `Microsoft.Extensions.Logging`, `kotlin-logging`, `tracing` |
+| Security | `security.md` | `crypto`, `golang.org/x/crypto`, `jwt`, `oauth2`, `bcrypt`, `cryptography`, `passlib`, `secrets`, `jsonwebtoken`, `helmet`, `csurf`, `passport`, `spring-security`, `javax.crypto`, `nimbus-jose-jwt`, `Microsoft.AspNetCore.Authentication`, `System.Security.Cryptography`, `argon2`, `ring`, `rustls` |
+| Testing | `testing.md` | `testcontainers`, `httptest`, `testify`, `supertest`, `nock`, `wiremock`, `rest-assured`, `WireMock`, `mockk`, `responses` |
+| Messaging | `messaging.md` | `amqp`, `kafka-go`, `cloud.google.com/go/pubsub`, `pika`, `kafka-python`, `celery`, `amqplib`, `kafkajs`, `bullmq`, `@aws-sdk/client-sqs`, `spring-kafka`, `spring-amqp`, `javax.jms`, `MassTransit`, `RabbitMQ.Client`, `Confluent.Kafka`, `Azure.Messaging`, `lapin`, `rdkafka` |
+| Caching | `caching.md` | `go-redis/redis`, `go-cache`, `groupcache`, `redis`, `django.core.cache`, `cachetools`, `aiocache`, `ioredis`, `node-cache`, `lru-cache`, `spring-cache`, `jedis`, `lettuce`, `caffeine`, `ehcache`, `StackExchange.Redis`, `Microsoft.Extensions.Caching`, `moka` |
+
+Concept pack seeds use the same format as language pack seeds. When running Steps 4–5, scan seeds from **both** the language pack and any loaded concept packs.
+
 ## Step 4 — Seeded pass
 
 Scan the target file against each `## Challenge seeds` entry in the language pack.

@@ -232,6 +232,23 @@ Each pack includes: stdlib anchors, 25–30 idioms, 20–25 common anti-patterns
 
 **Want to add Zig, Ruby, Elixir, or something else?** See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide and start from [`docs/languages/_template.md`](docs/languages/_template.md).
 
+## Backend concept packs *(v0.8.0)*
+
+Beyond language idioms, `/challenge` also detects backend patterns from your imports and loads domain-specific concept packs alongside the language pack. This happens automatically — no extra flags needed.
+
+| Pack | Domain | Seeds | Auto-detects |
+|------|--------|-------|--------------|
+| `database.md` | SQL/NoSQL patterns | 14 | `database/sql`, `sqlalchemy`, `prisma`, `hibernate`, ... |
+| `api-design.md` | HTTP/REST/gRPC | 14 | `net/http`, `express`, `fastapi`, `spring-web`, ... |
+| `reliability.md` | Retries, circuit breakers, timeouts | 12 | `gobreaker`, `tenacity`, `resilience4j`, `Polly`, ... |
+| `observability.md` | Logging, metrics, tracing | 12 | `zap`, `pino`, `slf4j`, `opentelemetry`, ... |
+| `security.md` | Auth, secrets, validation | 12 | `crypto`, `jwt`, `bcrypt`, `spring-security`, ... |
+| `testing.md` | Integration & contract testing | 12 | `testcontainers`, `supertest`, `wiremock`, ... |
+| `messaging.md` | Queues, events, pub/sub | 12 | `kafka-go`, `amqplib`, `celery`, `spring-kafka`, ... |
+| `caching.md` | Cache patterns | 12 | `go-redis`, `ioredis`, `caffeine`, `StackExchange.Redis`, ... |
+
+Up to 2 concept packs are loaded per invocation (on top of the language pack). If your file doesn't import any backend libraries, only the language pack is used.
+
 ## Roadmap
 
 chiron's development roadmap from empty repo to v0.1 MVP lives in [`ROADMAP.md`](ROADMAP.md). It tracks phase-by-phase progress (scaffolding → commands → language pack → verification → public release) and lists v0.2+ candidate features that are intentionally not in v0.1.
