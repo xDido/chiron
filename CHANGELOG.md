@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.9.0] — 2026-04-10
+
+### Added — Complete backend coverage (4 more concept packs)
+
+Four additional concept packs fill the remaining gaps in backend engineering coverage:
+
+| Pack | Domain | Seeds |
+|------|--------|-------|
+| `configuration.md` | Env vars, feature flags, config validation | 10 |
+| `concurrency.md` | Race conditions, locks, thread safety | 12 |
+| `realtime.md` | WebSockets, SSE, streaming | 10 |
+| `storage.md` | File/object storage, uploads | 10 |
+
+**Totals:** 12 concept packs, 9 language packs = 21 packs. ~142 backend seeds + ~150 language seeds. Build output: **364 files** across 13 platforms.
+
+---
+
 ## [0.8.0] — 2026-04-10
 
 ### Added — Backend concept packs (8 domains)

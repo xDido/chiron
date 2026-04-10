@@ -232,7 +232,7 @@ Each pack includes: stdlib anchors, 25–30 idioms, 20–25 common anti-patterns
 
 **Want to add Zig, Ruby, Elixir, or something else?** See [`docs/CONTRIBUTING-LANGUAGE-PACKS.md`](docs/CONTRIBUTING-LANGUAGE-PACKS.md) for the authoring guide and start from [`docs/languages/_template.md`](docs/languages/_template.md).
 
-## Backend concept packs *(v0.8.0)*
+## Backend concept packs *(v0.8.0+)*
 
 Beyond language idioms, `/challenge` also detects backend patterns from your imports and loads domain-specific concept packs alongside the language pack. This happens automatically — no extra flags needed.
 
@@ -246,6 +246,10 @@ Beyond language idioms, `/challenge` also detects backend patterns from your imp
 | `testing.md` | Integration & contract testing | 12 | `testcontainers`, `supertest`, `wiremock`, ... |
 | `messaging.md` | Queues, events, pub/sub | 12 | `kafka-go`, `amqplib`, `celery`, `spring-kafka`, ... |
 | `caching.md` | Cache patterns | 12 | `go-redis`, `ioredis`, `caffeine`, `StackExchange.Redis`, ... |
+| `configuration.md` | Env vars, feature flags, config validation | 10 | `viper`, `dotenv`, `pydantic_settings`, `IOptions`, ... |
+| `concurrency.md` | Race conditions, locks, thread safety | 12 | `sync.Mutex`, `threading`, `java.util.concurrent`, `tokio::sync`, ... |
+| `realtime.md` | WebSockets, SSE, streaming | 10 | `gorilla/websocket`, `socket.io`, `SignalR`, `tokio-tungstenite`, ... |
+| `storage.md` | File/object storage, uploads | 10 | `boto3`, `@aws-sdk/client-s3`, `multer`, `Azure.Storage.Blobs`, ... |
 
 Up to 2 concept packs are loaded per invocation (on top of the language pack). If your file doesn't import any backend libraries, only the language pack is used.
 
