@@ -14,7 +14,7 @@ Check if `.chiron-context.md` exists in the project root.
 
 **If it exists:** Read it. This file is your complete project reference. **DO NOT scan the codebase, list directories, or re-read config files.** The only additional file you read is the target source file from Step 1. Proceed to Step 1.
 
-**If it does NOT exist:** Tell the user: *"No project context found. Run `{{command_prefix}}teach` first."* Then stop.
+**If it does NOT exist:** Tell the user: *"No project context found. Run `{{command_prefix}}teach-chiron` first."* Then stop.
 
 `{{command_prefix}}challenge` reads a source file, finds 1–3 concrete practice targets grounded in specific lines, and presents them as short drills you can complete in 5–15 minutes. Each drill is tied to an idiom from the language pack. Your attempts get graded `/10` with honest, specific feedback.
 
