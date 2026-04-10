@@ -13,16 +13,36 @@ Check if `.chiron-context.md` exists in the project root.
 
 **If it exists:** Read it. This file is your complete project reference. **DO NOT read additional files, scan the codebase, or re-read config files.** The only file you should read beyond `.chiron-context.md` is the specific file the user mentions in their request (if any). Proceed to the next step.
 
-**If it does NOT exist:** Generate it now with a thorough project scan:
+**If it does NOT exist:** Generate it now with a **comprehensive** project scan. This is the one-time investment that saves every future invocation. Be thorough — the goal is that after writing this file, no chiron skill ever needs to scan the codebase again.
 
-1. Read `~/.chiron/config.json` if it exists (for voice level and drill config)
-2. Use Glob to map the full project structure: `**/*.{go,rs,py,js,ts,java,cs,kt,swift,md,json,yaml,yml,toml}` (limit to first 200 results)
-3. Use LS to list the top 2 levels of directories
-4. Read the project manifest (`package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, `*.csproj`, `build.gradle`, `Package.swift`, or equivalent)
-5. Read the README.md if it exists (first 100 lines)
-6. Read 2-3 key source files (entry points, main handlers, or core modules) to understand patterns
-7. Read any existing CLAUDE.md, AGENTS.md, or .cursorrules for project conventions
-8. Write all findings to `.chiron-context.md` using the format below, then proceed
+### Scan procedure
+
+**Phase 1 — Map the project (parallel where possible):**
+1. Read `~/.chiron/config.json` if it exists
+2. Use Glob to find all source files: `**/*.{go,rs,py,js,ts,jsx,tsx,java,cs,kt,swift,rb,ex,exs,zig}` (note the file list)
+3. Use Glob to find all config files: `**/*.{json,yaml,yml,toml,xml,env,ini,cfg}` and `**/Makefile` `**/Dockerfile` `**/docker-compose*`
+4. Use LS to list the full directory tree (3 levels deep)
+
+**Phase 2 — Read key files (read ALL of these that exist):**
+5. Project manifest: `package.json`, `go.mod`, `Cargo.toml`, `pom.xml`, `*.csproj`, `build.gradle`, `Package.swift`, `pyproject.toml`, `requirements.txt`, `Gemfile`
+6. README.md (full file)
+7. CLAUDE.md, AGENTS.md, .cursorrules, GEMINI.md, .github/copilot-instructions.md
+8. Docker/infra: `Dockerfile`, `docker-compose.yml`, `.env.example`
+9. CI/CD: `.github/workflows/*.yml`, `Makefile`, `Justfile`
+10. Config: `tsconfig.json`, `.eslintrc*`, `prettier*`, `rustfmt.toml`, `.golangci.yml`
+
+**Phase 3 — Read source code (read ALL important source files):**
+11. Entry points: `main.go`, `cmd/*/main.go`, `src/main.*`, `app.py`, `manage.py`, `index.ts`, `server.*`, `Program.cs`, `App.kt`, `main.swift`
+12. Route/handler definitions: files containing HTTP routes, API endpoints, or controller classes
+13. Data layer: database models, repository/DAO files, migration files (read at least the latest)
+14. Core business logic: service classes, domain models, core modules
+15. Config/bootstrap: dependency injection setup, middleware registration, app configuration
+16. Test files: read 2-3 test files to understand testing patterns and conventions
+17. Types/interfaces: shared types, API contracts, protobuf/OpenAPI schemas
+
+For each file read, note: file path, purpose (1 line), key exports/functions, patterns used.
+
+**Phase 4 — Write `.chiron-context.md`:**
 
 ```markdown
 # Chiron project context
@@ -33,30 +53,53 @@ Auto-generated — delete this file to force a refresh on next invocation.
 - **Languages:** <detected languages>
 - **Framework:** <detected frameworks>
 - **Test runner:** <detected test runner>
-- **Build:** <detected build system>
+- **Build system:** <detected build system>
 - **Package manager:** <npm/yarn/pnpm/go modules/cargo/maven/etc.>
+- **Runtime:** <Node.js version, Go version, Python version, etc.>
 
 ## Dependencies (key libraries)
-<top 10-15 most important dependencies with one-line descriptions>
+<ALL important dependencies grouped by category — e.g., "HTTP: gin v1.9", "DB: sqlx v0.7", "Auth: jwt-go v5">
 
 ## Directory structure
-<full tree, 2 levels deep, with one-line descriptions for each directory>
+<full tree, 3 levels deep, with descriptions for every directory>
+
+## Source file map
+<every source file with a one-line description of its purpose>
+Format: `path/to/file.go` — <what it does>
 
 ## Entry points
-<main files, CLI entry points, HTTP server setup, etc. with file paths>
+<main files, CLI commands, HTTP server bootstrap, background workers — with file paths and what they start>
+
+## API surface
+<HTTP routes/endpoints, gRPC services, CLI commands — with method, path, handler file, and one-line description>
+
+## Data layer
+<database/ORM models, table names, repository files, migration strategy>
 
 ## Architecture overview
-<3-5 sentences describing the architecture: monolith vs microservices, API style, data layer, etc.>
+<detailed description: monolith vs microservices, API style (REST/gRPC/GraphQL), authentication approach, data flow, caching strategy, message queue usage, deployment model>
 
 ## Key patterns and conventions
-<5-10 patterns observed: error handling style, naming conventions, test patterns, DI approach, etc.>
+<ALL patterns observed:>
+- Error handling style (how errors are created, wrapped, returned, logged)
+- Naming conventions (files, functions, variables, packages)
+- Test patterns (unit vs integration, mocking approach, fixtures, table-driven)
+- Dependency injection approach
+- Logging and observability patterns
+- Code organization (by feature, by layer, hybrid)
+- State management approach
+- Authentication/authorization pattern
+- Configuration management
+
+## Infrastructure
+<Docker setup, CI/CD pipeline, deployment targets, environment variables>
 
 ## Chiron config
 - **Voice level:** <from ~/.chiron/config.json, or "default" if missing>
 - **Drill sizing:** <from config, or "20 lines / 1 function / 5-15 min" if missing>
 
 ## Project conventions (from config files)
-<any relevant instructions from CLAUDE.md, AGENTS.md, .cursorrules — or "none found">
+<full content from CLAUDE.md, AGENTS.md, .cursorrules — or "none found">
 ```
 
 ## The user's request
