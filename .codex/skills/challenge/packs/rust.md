@@ -1,4 +1,4 @@
-# Rust language pack (inlined)
+# Rust language pack
 
 This is the runtime source of truth for chiron's Rust knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/rust.md`.
 

@@ -201,7 +201,7 @@ Plugins that inject thousands of tokens into every prompt cost real money — an
 | Command | Prompt size | Approx. tokens |
 |---------|-------------|----------------|
 | `/chiron` | ~2,500 words | ~3.3k |
-| `/challenge` (core) | ~310 lines | ~4.2k |
+| `/challenge` (core) | ~340 lines | ~4.5k |
 | + one language pack | ~200 lines | ~1.5k |
 | `/explain` | ~1,000 words | ~1.4k |
 | `/hint`, `/level`, `/tour`, `/postmortem` | ~1,000 words each | ~1.3–1.5k |

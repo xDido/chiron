@@ -1,4 +1,4 @@
-# JavaScript language pack (inlined)
+# JavaScript language pack
 
 This is the runtime source of truth for chiron's JavaScript knowledge. The canonical human-readable explanation of each idiom and anti-pattern lives at `docs/languages/javascript.md`. These seeds also apply to TypeScript files (`.ts`, `.tsx`).
 
