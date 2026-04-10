@@ -6,6 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.8.0] — 2026-04-10
+
+### Added — Backend concept packs (8 domains)
+
+`/challenge` now auto-detects backend patterns from import statements and loads concept-specific drill packs alongside the language pack. Up to 2 concept packs are loaded per invocation.
+
+**New concept packs:**
+
+| Pack | Domain | Seeds | Triggers on |
+|------|--------|-------|-------------|
+| `database.md` | SQL/NoSQL patterns | 14 | `database/sql`, `sqlalchemy`, `prisma`, `hibernate`, etc. |
+| `api-design.md` | HTTP/REST/gRPC | 14 | `net/http`, `express`, `fastapi`, `spring-web`, etc. |
+| `reliability.md` | Retries, circuit breakers, timeouts | 12 | `gobreaker`, `tenacity`, `resilience4j`, `Polly`, etc. |
+| `observability.md` | Logging, metrics, tracing | 12 | `zap`, `pino`, `slf4j`, `prometheus`, `opentelemetry`, etc. |
+| `security.md` | Auth, secrets, validation | 12 | `crypto`, `jwt`, `bcrypt`, `helmet`, `spring-security`, etc. |
+| `testing.md` | Integration & contract testing | 12 | `testcontainers`, `supertest`, `wiremock`, `rest-assured`, etc. |
+| `messaging.md` | Queues, events, pub/sub | 12 | `kafka-go`, `amqplib`, `celery`, `spring-kafka`, etc. |
+| `caching.md` | Cache patterns | 12 | `go-redis`, `ioredis`, `caffeine`, `StackExchange.Redis`, etc. |
+
+**How it works:** After loading the language pack (Step 3), a new Step 3b scans the file's imports against a detection table in the core skill. Matching concept packs are loaded on demand — same mechanism as language packs.
+
+**Build output:** 91 SKILL.md + 221 packs (17 per platform × 13 platforms) = **312 total files**.
+
+---
+
 ## [0.7.0] — 2026-04-10
 
 ### Changed — On-demand language pack loading for `/challenge`
