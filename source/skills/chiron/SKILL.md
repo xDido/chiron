@@ -2,11 +2,17 @@
 name: chiron
 description: Apply teach-first Socratic mentor treatment to a coding request. Questions before code, graduated hints via an L0-L4 ladder, idiom callouts. Defers to {{config_files_plain}} when they conflict.
 user-invocable: true
-argument-hint: "[request]"
+argument-hint: "<your coding question or task>"
 allowed-tools: Read, Grep, Glob, LS, Bash
+compatibility: "Run {{command_prefix}}teach-chiron first to generate .chiron-context.md"
 ---
 
 # {{command_prefix}}chiron — Socratic mentor mode for one coding request
+
+Quick start:
+- `{{command_prefix}}chiron implement a worker pool in Go` — Socratic walkthrough of a coding task
+- `{{command_prefix}}chiron why is my context cancellation not propagating?` — debug-mode deferral
+- `{{command_prefix}}chiron` then describe your task when prompted
 
 ## Step 0 — Load project context
 
@@ -19,6 +25,25 @@ Check if `.chiron-context.md` exists in the project root.
 > *No project context found. Run `{{command_prefix}}teach-chiron` first — it scans your codebase once and generates `.chiron-context.md` so all chiron skills work without re-scanning.*
 
 Then stop. Do not attempt to scan the codebase yourself — `{{command_prefix}}teach-chiron` handles that comprehensively.
+
+```
+┌──────────────────────────────────────────────┐
+│  {{command_prefix}}chiron                                     │
+├──────────────────────────────────────────────┤
+│  REQUIRES .chiron-context.md                 │
+│  Run {{command_prefix}}teach-chiron once to generate it       │
+├──────────────────────────────────────────────┤
+│  CORE (always active)                        │
+│  ✓ Socratic questioning (L0–L4 ladder)       │
+│  ✓ Idiom callouts + doc pointers             │
+│  ✓ Voice level from ~/.chiron/config.json    │
+├──────────────────────────────────────────────┤
+│  ENHANCED (with rich project context)        │
+│  + Project-aware questions & hints           │
+│  + Framework-specific idiom matching         │
+│  + Convention-aware code review              │
+└──────────────────────────────────────────────┘
+```
 
 ## The user's request
 
@@ -244,7 +269,7 @@ Your response to this `{{command_prefix}}chiron` invocation should:
 1. Start with the decision tree. Route to debugging-deferral, direct-answer, or Socratic teach mode based on the user's request.
 2. If in teach mode: apply the hint ladder, starting at L0 unless the request is precise enough for L1/L2.
 3. Use the A+B voice blend (strict content, neutral framing) throughout.
-4. End with either a next-action prompt (clarifying question, hint-ladder offer, signature handoff) OR an idiom callout + `{{command_prefix}}challenge` handoff if the session has reached a natural close.
+4. End with either a next-action prompt (clarifying question, hint-ladder offer, signature handoff) OR an idiom callout + `{{command_prefix}}challenge` handoff if the session has reached a natural close. If the session surfaced a decision point between approaches, suggest `{{command_prefix}}explain` as well.
 5. If any file edits occur, those edits must contain ZERO teaching content — no comments, no docstrings, no commit messages referencing the teach session.
 
 The golden transcript at `docs/GOLDEN-TRANSCRIPT.md` is the shape reference. When in doubt about structure, consult it.

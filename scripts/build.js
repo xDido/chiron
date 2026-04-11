@@ -51,6 +51,7 @@ for (const [providerKey, providerConfig] of Object.entries(PROVIDERS)) {
 
   let count = 0;
   let packCount = 0;
+  let refCount = 0;
   for (const skill of skills) {
     // Add dynamic pack_path placeholder: resolves to the skill's output directory
     const skillPlaceholders = {
@@ -69,13 +70,24 @@ for (const [providerKey, providerConfig] of Object.entries(PROVIDERS)) {
       packCount += Object.keys(transformedPacks).length;
     }
 
-    writeSkill(ROOT, providerConfig.configDir, skill.name, output, transformedPacks);
+    // Transform reference files with placeholder replacement
+    let transformedRefs = null;
+    if (skill.references) {
+      transformedRefs = {};
+      for (const [filename, refContent] of Object.entries(skill.references)) {
+        transformedRefs[filename] = replacePlaceholders(refContent, skillPlaceholders);
+      }
+      refCount += Object.keys(transformedRefs).length;
+    }
+
+    writeSkill(ROOT, providerConfig.configDir, skill.name, output, transformedPacks, transformedRefs);
     count++;
   }
 
   totalFiles += count;
   const packNote = packCount > 0 ? ` + ${packCount} packs` : '';
-  console.log(`  ${providerConfig.displayName.padEnd(25)} → ${providerConfig.configDir}/skills/ (${count} skills${packNote})`);
+  const refNote = refCount > 0 ? ` + ${refCount} refs` : '';
+  console.log(`  ${providerConfig.displayName.padEnd(25)} → ${providerConfig.configDir}/skills/ (${count} skills${packNote}${refNote})`);
 }
 
 console.log(`\nBuilt ${skills.length} skills × ${Object.keys(PROVIDERS).length} platforms = ${totalFiles} files`);

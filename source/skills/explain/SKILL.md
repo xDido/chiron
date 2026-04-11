@@ -2,8 +2,9 @@
 name: explain
 description: Compare 2-3 approaches to a coding or design decision with trade-offs and a recommendation. Teach-first framing — surfaces decision complexity rather than picking for you. For "which way should I..." questions (complements {{command_prefix}}chiron which handles "how do I..." questions). Defers to {{config_files_plain}}.
 user-invocable: true
-argument-hint: "[question]"
+argument-hint: "<design decision or 'which way' question>"
 allowed-tools: Read, Grep, Glob, LS, Bash
+compatibility: "Run {{command_prefix}}teach-chiron first to generate .chiron-context.md"
 ---
 
 # {{command_prefix}}explain — compare approaches with trade-offs
@@ -74,6 +75,31 @@ Recommend: <approach X> by default. <approach Y> when <condition>. <approach Z> 
 Implementation? `{{command_prefix}}chiron <request>`
 ```
 
+Example (shape reference, not content to copy):
+
+```
+Approaches:
+
+1. errgroup.WithContext — stdlib-adjacent, cancel-on-first-error built in
+   + familiar API, automatic context cancellation, composable with existing middleware
+   - no built-in concurrency limit, requires external semaphore for bounded parallelism
+   When: most Go fan-out tasks where you want cancel-on-error semantics
+
+2. Manual goroutines + sync.WaitGroup — full control, no dependencies
+   + zero dependencies, explicit lifecycle, easy to add custom recovery logic
+   - manual error collection, no cancel propagation, easy to leak goroutines
+   When: simple fire-and-forget tasks where errors are logged, not propagated
+
+3. Worker pool with buffered channel — bounded concurrency by design
+   + natural backpressure, fixed memory footprint, predictable resource usage
+   - more boilerplate, harder to wire cancel-on-error, channel sizing requires thought
+   When: high-volume input where unbounded goroutines would exhaust resources
+
+Recommend: errgroup by default. Worker pool when input volume is unbounded. Manual WaitGroup only for fire-and-forget logging.
+
+Implementation? `/chiron implement fan-out with errgroup`
+```
+
 **Style rules:**
 
 - One line per pros/cons bullet, comma-separated items, not multi-line markdown lists
@@ -133,5 +159,5 @@ Read `~/.chiron/config.json` at invocation time. The level affects the voice ton
 2. Decision tree: is this a "which approach" question? Route elsewhere if not.
 3. Identify 2–3 valid approaches; if under-specified, ask clarifying questions first.
 4. Present each approach with pros/cons/when-to-use in the format above.
-5. Close with a qualified recommendation and a handoff to `{{command_prefix}}chiron`.
+5. Close with a qualified recommendation and a handoff to `{{command_prefix}}chiron` for implementation. If the user seems unfamiliar with the topic, suggest `{{command_prefix}}tour <topic>` first for background reading.
 6. Do NOT write to `~/.chiron/profile.json`. This command is read-only.

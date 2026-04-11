@@ -2,8 +2,9 @@
 name: challenge
 description: Generate idiom drills grounded in specific lines of a source file. Seeded patterns first, model eyeball fallback on no match. Grades user attempts /10 and writes outcomes to ~/.chiron/profile.json.
 user-invocable: true
-argument-hint: "[file]"
+argument-hint: "<file path or function name>"
 allowed-tools: Read, Write, Grep, Glob, LS, Bash
+compatibility: "Run {{command_prefix}}teach-chiron first to generate .chiron-context.md"
 ---
 
 # {{command_prefix}}challenge — hero feature: drills from your own code
@@ -15,6 +16,25 @@ Check if `.chiron-context.md` exists in the project root.
 **If it exists:** Read it. This file is your complete project reference. **DO NOT scan the codebase, list directories, or re-read config files.** The only additional file you read is the target source file from Step 1. Proceed to Step 1.
 
 **If it does NOT exist:** Tell the user: *"No project context found. Run `{{command_prefix}}teach-chiron` first."* Then stop.
+
+```
+┌──────────────────────────────────────────────┐
+│  {{command_prefix}}challenge                                  │
+├──────────────────────────────────────────────┤
+│  REQUIRES .chiron-context.md                 │
+│  Run {{command_prefix}}teach-chiron once to generate it       │
+├──────────────────────────────────────────────┤
+│  CORE (always active)                        │
+│  ✓ Language pack seeded pattern matching     │
+│  ✓ Eyeball fallback for unmatched files      │
+│  ✓ /10 grading + profile logging             │
+├──────────────────────────────────────────────┤
+│  ENHANCED (with rich project context)        │
+│  + Project-aware drill targeting             │
+│  + Concept pack auto-detection from imports  │
+│  + Convention-aligned grading feedback        │
+└──────────────────────────────────────────────┘
+```
 
 `{{command_prefix}}challenge` reads a source file, finds 1–3 concrete practice targets grounded in specific lines, and presents them as short drills you can complete in 5–15 minutes. Each drill is tied to an idiom from the language pack. Your attempts get graded `/10` with honest, specific feedback.
 
@@ -307,6 +327,7 @@ The full voice rules from `.claude/skills/chiron/SKILL.md` apply. Key points bel
 5. Wait for the user's attempt.
 6. When they paste an attempt, run steps 7–8 (grade with `/10`, log to profile).
 7. Zero teaching content in any file edits made during this command.
+8. After grading, suggest next steps: `{{command_prefix}}hint` if the user is stuck mid-drill, or `{{command_prefix}}postmortem` after completing a drill session to review progress across all axes.
 
 The full voice, anti-patterns, and failure-mode rules from `.claude/skills/chiron/SKILL.md` apply here too. In particular: never refuse to ship when the user asks for the answer directly, never moralize, never pollute artifacts.
 

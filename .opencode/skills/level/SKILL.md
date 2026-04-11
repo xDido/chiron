@@ -4,6 +4,7 @@ description: Set or show chiron's voice level (gentle, default, or strict). Pers
 user-invocable: true
 argument-hint: "[gentle|default|strict]"
 allowed-tools: Read, Write
+compatibility: "Run /teach-chiron first to generate .chiron-context.md"
 ---
 
 # /level — set or show chiron's voice level

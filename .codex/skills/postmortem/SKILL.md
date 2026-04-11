@@ -76,6 +76,21 @@ Scores:
 Practice: <concrete, bounded next step — specific exercise, not vague advice>
 ```
 
+Example (shape reference, not content to copy):
+
+```
+Session: Implemented fan-out worker pool with errgroup, iterated through L0–L3 before landing on bounded concurrency.
+
+Scores:
+- Design 7/10: considered cancel-on-error; missed backpressure discussion
+- Code 8/10: correct errgroup usage, clean goroutine lifecycle
+- Idioms 6/10: shadowed ctx inside goroutine, unbuffered channel with known capacity
+- Testing 4/10: no tests written, no edge cases discussed
+- Maturity 8/10: accepted feedback on ctx shadowing immediately, pushed back on channel sizing with valid reasoning
+
+Practice: Write a table-driven test for the fan-out function covering cancel-on-error and zero-input edge cases — `$challenge src/worker/pool.go`
+```
+
 **Style rules:**
 
 - `Session:` one line, not a `## Session summary` header block
@@ -142,4 +157,5 @@ The 5 axes and `/10` rubric are the same at every level. Only the phrasing of th
 3. If no chiron activity, degrade gracefully per the section above.
 4. Otherwise, produce the 3-section format: summary / scores / one-to-practice.
 5. Apply voice tone per level.
-6. Do NOT write to `~/.chiron/profile.json`. This command is read-only in v0.3.0.
+6. In the "Practice" line, include a concrete next command: suggest `$challenge <file>` targeting the weakest-scoring axis, or `$tour <topic>` if the user needs conceptual grounding before drilling.
+7. Do NOT write to `~/.chiron/profile.json`. This command is read-only in v0.3.0.
