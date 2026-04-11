@@ -1,6 +1,7 @@
 ---
 name: hint
 description: Advance one rung on the chiron hint ladder. Re-reads the most recent assistant turn, identifies its hint rung, and emits the next rung. Stateless — no session memory required.
+compatibility: "Run /teach-chiron first to generate .chiron-context.md"
 ---
 
 # /hint — advance one rung on the hint ladder

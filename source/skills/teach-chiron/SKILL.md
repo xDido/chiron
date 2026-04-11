@@ -194,3 +194,4 @@ Confirm to the user:
 2. How many source files mapped
 3. The detected language(s) and framework(s)
 4. Remind them: *"All chiron skills will now use `.chiron-context.md` instead of re-scanning. Run `{{command_prefix}}teach-chiron` again anytime to refresh."*
+5. Suggest next steps: *"Ready to start? Try `{{command_prefix}}chiron <your task>` for guided help, or `{{command_prefix}}tour <topic>` for a quick overview of a concept before diving in."*

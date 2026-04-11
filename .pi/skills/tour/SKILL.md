@@ -6,6 +6,11 @@ allowed-tools: Read, Grep, Glob, LS, Bash
 
 # /tour — structured preamble for a coding topic
 
+Quick start:
+- `/tour Go channels` — preamble for a specific primitive
+- `/tour async/await in JavaScript` — preamble for a language concept
+- `/tour database connection pooling` — preamble for an architecture topic
+
 ## Step 0 — Load project context
 
 Check if `.chiron-context.md` exists in the project root. **If it exists:** read it. **DO NOT scan the codebase or read additional files.** **If not:** tell the user: *"No project context found. Run `/teach-chiron` first."* Then stop.
@@ -128,4 +133,5 @@ The 3-section structure is the same at every level. Only the phrasing and the "C
 2. Decision tree: is the topic well-defined? A "how do I" question in disguise? A "which way" question in disguise? Route appropriately.
 3. Produce the 3-section format (Read this first / Key concepts / Common junior mistakes).
 4. Apply voice tone per level.
-5. Do NOT write to `~/.chiron/profile.json`. This command is read-only.
+5. Close with a handoff to `/chiron` for implementation. If the topic lends itself to drills, also suggest `/challenge <file>` for hands-on practice.
+6. Do NOT write to `~/.chiron/profile.json`. This command is read-only.

@@ -3,6 +3,7 @@ name: level
 description: Set or show chiron's voice level (gentle, default, or strict). Persists to ~/.chiron/config.json across sessions. Affects voice tone, hint ladder progression, and refusal behavior — not anti-patterns or the never-refuse rule.
 user-invocable: true
 argument-hint: "[gentle|default|strict]"
+compatibility: "Run /teach-chiron first to generate .chiron-context.md"
 ---
 
 # /level — set or show chiron's voice level
