@@ -63,6 +63,28 @@ Apply the voice level from `.chiron-context.md` (the "Chiron config" section). T
 
 ---
 
+## Step 0.5 — Load learning profile (best-effort)
+
+Read `~/.chiron/profile.json` if it exists. This is a **best-effort read** — the skill must work normally even if the profile is missing, corrupt, or empty. Parse the JSON and extract entries relevant to this session:
+
+1. **Filter by language/domain:** Only entries whose `tag` matches the current file's language (e.g., `go:*` for Go files) or a loaded concept pack's domain (e.g., `db:*`, `api:*`).
+2. **Filter by recency:** Entries from the last 30 days count at **full weight**. Older entries count at **half weight**. Do not discard old entries — the Ebbinghaus forgetting curve says old mistakes still matter, just less.
+3. **Build a weakness map:** For each tag, count weighted `drill_attempted` + `drill_gaveup` as failures, weighted `drill_solved` as successes. A tag is a **recurring weakness** if: failures ≥ 2 AND failures/total > 0.5.
+4. **Build a mastery set:** Tags with 2+ recent `drill_solved` and zero recent failures are "mastered — avoid re-drilling."
+
+**Error handling (silent fallback — never crash):**
+- File does not exist → empty weakness map, empty mastery set, proceed normally to Step 1
+- File is not valid JSON → empty maps, proceed
+- File has unexpected schema (missing `entries`, wrong types) → empty maps, proceed
+- File is very large (>500 entries) → read last 200 entries only for relevance calculation
+- Any other error → empty maps, proceed
+
+The weakness map and mastery set are **optional inputs** to Steps 4–6. Missing profile just means no bias — `/challenge` behaves exactly as it did before the read-loop was added. Never block drill generation waiting for profile data.
+
+**Read-only:** `/challenge` still writes to profile.json in Step 8, but that is the only writer. Step 0.5 never modifies the file.
+
+---
+
 ## Step 1 — Target resolution
 
 From `$ARGUMENTS`, determine the target file:
@@ -151,6 +173,16 @@ If **more than 3 seeds match**, pick the 3 most pedagogically interesting and us
 
 If **zero seeds match**, proceed to Step 5.
 
+**Profile bias (when the weakness map from Step 0.5 is non-empty):**
+
+After finding candidate matching seeds, re-rank them using the weakness map and mastery set:
+
+1. **Prioritize weakness matches.** If any matching seed's tag is in the weakness map, promote it to the top of the drill list. If 3+ seeds match and 1+ is a weakness, pick the weakness one first and fill with 1–2 non-weakness matches for variety.
+2. **Deprioritize mastered patterns.** If a seed's tag is in the mastery set (2+ recent solves, no recent failures), only include it if no alternative seeds match the file. Re-drilling a mastered pattern is low-value practice.
+3. **Fall through to eyeball.** If all matching seeds are mastered AND no weaknesses exist in the file, proceed to Step 5 (eyeball fallback) rather than re-drilling a mastered pattern.
+
+The bias is a **preference, not a requirement**. If the user explicitly requests a specific pattern (*"drill me on X"*), honor it regardless of mastery status — anti-pattern #2 (never refuse) applies here.
+
 ## Step 5 — Eyeball fallback (when no seeds match)
 
 If the seeded pass finds nothing, fall back to a model eyeball pass:
@@ -171,6 +203,19 @@ Drill 1/3 — <idiom tag> @ <file>:<line-range>
 <what the user should do> (current: <what's there now>)
 Constraint: <what makes this a drill, not a rewrite>
 ```
+
+**History callout (when a presented drill targets a recurring weakness from Step 0.5):**
+
+If any drill you're about to present has a tag in the weakness map, lead the response with **one** terse history line before the drills:
+
+> *Profile: you've marked `<tag>` as attempted/gaveup <N> times in past sessions. This file has the pattern — here's a focused drill on it.*
+
+Rules:
+- **One callout per response, max.** If multiple drills hit weakness patterns, pick the most-failed tag for the callout.
+- **One sentence.** State the count and the tag plainly. No moralizing, no *"you should have learned this by now"*, no *"finally"*.
+- **Lead with the callout, then present the drills** in the normal format below.
+- **Never show the full profile history.** Just the relevant tag and count.
+- **Omit entirely** if no drill targets a weakness — don't force a callout.
 
 **Style rules:**
 

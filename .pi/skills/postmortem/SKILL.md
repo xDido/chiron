@@ -77,6 +77,43 @@ After generating initial scores, verify each one before delivering (silent — t
 
 This loop improves accuracy without adding output length.
 
+## Profile-informed trends (optional)
+
+Read `~/.chiron/profile.json` if it exists. This is a **read-only** operation — `/postmortem` never writes to the profile. The file is owned by `/challenge`'s Step 8.
+
+When profile data is available, use it to ground scoring in longitudinal evidence rather than only the current conversation:
+
+**1. Filter recent history.** Last 30 days of entries, grouped by `tag`.
+
+**2. Identify trend signals:**
+- **Recurring weakness:** Tags with 2+ `drill_attempted` or `drill_gaveup` in the window
+- **Emerging mastery:** Tags with 2+ `drill_solved` in the window and no recent failures
+- **Language/domain focus:** Which languages and domains the user has practiced most in the window
+
+**3. Integrate into scoring.** Use trend signals to refine the 5 axis scores where relevant:
+
+- **Idioms axis:** If the current session touched a tag that's a recurring weakness in profile history, the idioms score reflects both the current evidence AND the historical pattern. Example: *"Idioms 6/10 — the current session used `errgroup.WithContext` correctly, but profile history shows 3 missed attempts on this pattern over the last 2 weeks, so the grasp is still developing."*
+- **Engineering maturity axis:** Emerging mastery (profile shows recent improvement on a tag) counts positively: *"Maturity 8/10 — accepted feedback on ctx shadowing immediately, and profile shows this is the first session where that pattern was solved cleanly."*
+
+**4. Surface a trend callout in the session summary (at most one per session).**
+
+If a profile-backed trend is genuinely relevant to the current session, mention it in the Session line:
+
+> *Session: Implemented fan-out worker pool with errgroup. Profile note: this is your third session touching `go:errgroup-with-context` and your first clean solve.*
+
+Rules for trend callouts:
+- **One trend mention per session, maximum.** More is noise.
+- **Only if genuinely relevant.** Don't force a trend callout when the current session doesn't intersect with profile data.
+- **No moralizing.** State the trend as fact, not judgment. *"Third session"* yes. *"Finally solved it"* no.
+- **Never shame history.** Past failures are data, not character flaws.
+
+**Error handling (silent fallback — never crash):**
+- Profile file missing or corrupt → no trend data, score only on current conversation, no trend callouts
+- File is very large (>500 entries) → read last 200 entries only for trend analysis
+- No relevant trend signals (all tags are one-off or no overlap with current session) → score only on current conversation, no trend callouts
+
+**Read-only invariant:** Never write to `~/.chiron/profile.json` from `/postmortem`. This preserves the v0.3.0 read-only contract — `/postmortem` never persists scores or modifies any chiron state file. The file is owned exclusively by `/challenge`'s Step 8.
+
 ## Response format — keep it terse
 
 Compact 3-section format. ~10 lines total instead of decorative `##` headers:
@@ -127,6 +164,9 @@ Practice: Write a table-driven test for the fan-out function covering cancel-on-
 - Specific enough to actually do. *"Write a table-driven test for the fan-out function using `t.Run` subtests"* — good. *"Work on your testing"* — bad.
 - Should be 5–30 minutes of focused work, matching the drill ethos from `/challenge`.
 - Can optionally suggest running `/challenge` on a specific file or `/chiron` on a specific topic.
+- **Profile-informed practice suggestions:** If profile trend data identifies a recurring weakness relevant to the current session, the practice line may target it explicitly: *"Practice: `/challenge` on a file with `errgroup.WithContext` — profile shows 3 past attempts still unsolved."*
+
+**Profile trend integration (when applicable):** When profile data exists and contains relevant trends, the Session line may include a one-sentence trend note (see "Profile-informed trends" section above). Score justifications may cite longitudinal evidence alongside current-session evidence. This enhances accuracy without adding output length. When no profile data exists or no trends are relevant, the response format is unchanged from the profile-less case.
 
 ## Anti-patterns
 
