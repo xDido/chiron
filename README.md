@@ -340,6 +340,51 @@ chiron's development roadmap from empty repo to v0.1 MVP lives in [`ROADMAP.md`]
 
 See [`ROADMAP.md`](ROADMAP.md) for the full history and future bundles.
 
+## References
+
+Chiron's design is grounded in pedagogical research and prompt engineering literature. Every core mechanism — the hint ladder, voice levels, drills, grading, session review, profile tracking — is backed by a specific finding from the references below. The full mapping of research to chiron mechanisms lives in [`source/skills/chiron/references/pedagogy.md`](source/skills/chiron/references/pedagogy.md).
+
+### Pedagogical research
+
+- **Ebbinghaus, H. (1885).** *Über das Gedächtnis: Untersuchungen zur experimentellen Psychologie.* — The forgetting curve. Informs chiron's profile tracking and recency weighting.
+- **Vygotsky, L.S. (1978).** *Mind in Society: The Development of Higher Psychological Processes.* Harvard University Press. — Zone of Proximal Development. The hint ladder targets ZPD boundaries: L0 probes them, L1–L3 operate within them, L4 steps outside them.
+- **Wood, D., Bruner, J.S., & Ross, G. (1976).** The Role of Tutoring in Problem Solving. *Journal of Child Psychology and Psychiatry, 17*, 89–100. — Coined "scaffolding." Chiron's hint ladder is contingent tutoring in action — reduce help as the learner succeeds, offer more when they fail.
+- **Deci, E.L., & Ryan, R.M. (1985).** *Intrinsic Motivation and Self-Determination in Human Behavior.* Plenum Press. — Self-Determination Theory. The never-refuse rule preserves learner autonomy, which drives intrinsic motivation.
+- **Sweller, J. (1988).** Cognitive Load During Problem Solving: Effects on Learning. *Cognitive Science, 12*(2), 257–285. — Cognitive Load Theory. Chiron's progressive disclosure (one rung at a time) manages extraneous load and frees germane load for learning.
+- **Ericsson, K.A., Krampe, R.T., & Tesch-Römer, C. (1993).** The Role of Deliberate Practice in the Acquisition of Expert Performance. *Psychological Review, 100*(3), 363–406. — Deliberate practice. `/challenge` drills are targeted, feedback-equipped, edge-of-ability tasks — the four conditions for expertise development.
+- **Chi, M.T.H., De Leeuw, N., Chiu, M., & LaVancher, C. (1994).** Eliciting Self-Explanations Improves Understanding. *Cognitive Science, 18*(3), 439–477. — Self-explanation effect. L0 clarifying questions force learners to articulate their own thinking before receiving guidance.
+- **Kalyuga, S., Ayres, P., Chandler, P., & Sweller, J. (2003).** The Expertise Reversal Effect. *Educational Psychologist, 38*(1), 23–31. — Instructional techniques that help novices harm experts. Chiron's voice levels (gentle/default/strict) and domain-vocabulary detection address this directly.
+- **Roediger, H.L., & Karpicke, J.D. (2006).** The Power of Testing Memory: Basic Research and Implications for Educational Practice. *Perspectives on Psychological Science, 1*(3), 181–210. — Testing effect. Retrieval practice outperforms re-study by 50–80% for long-term retention. Drills are retrieval practice.
+- **Cepeda, N.J., Pashler, H., Vul, E., Wixted, J.T., & Rohrer, D. (2006).** Distributed Practice in Verbal Recall Tasks: A Review and Quantitative Synthesis. *Psychological Bulletin, 132*(3), 354–380. — Modern meta-analysis of spacing effect. Profile read-loop's recency weighting (30-day window, 50% weight for older entries) follows this research.
+- **Paul, R., & Elder, L. (2006).** *The Thinker's Guide to the Art of Socratic Questioning.* Foundation for Critical Thinking. — Six types of Socratic questions. `/chiron`'s L0 questions draw from the clarification, assumptions, and implications categories most often.
+- **Bjork, E.L., & Bjork, R.A. (2011).** Making Things Hard on Yourself, But in a Good Way: Creating Desirable Difficulties to Enhance Learning. In *Psychology and the Real World* (pp. 56–64). Worth Publishers. — The hint ladder withholding answers is a desirable difficulty; never-refusing when asked keeps it from becoming undesirable.
+- **Kapur, M. (2014).** Productive Failure in Learning Math. *Cognitive Science, 38*(4), 627–658. — Struggling before receiving instruction yields deeper learning. L3's signature-with-blanks creates exactly this kind of productive failure.
+
+### Prompt engineering research
+
+- **Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., Chi, E., Le, Q., & Zhou, D. (2022).** Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. *arXiv:2201.11903.* — The hint ladder's progressive reasoning steps are chain-of-thought prompting applied to teaching.
+- **Wang, X., Wei, J., Schuurmans, D., Le, Q., Chi, E., Narang, S., Chowdhery, A., & Zhou, D. (2022).** Self-Consistency Improves Chain of Thought Reasoning in Language Models. *arXiv:2203.11171.* — Sampling multiple reasoning paths and taking consensus reduces noise. `/challenge`'s self-consistency grading runs the evaluation three times internally before delivering.
+- **Diao, S., Wang, P., Lin, Y., Pan, R., Liu, X., & Zhang, T. (2023).** Active Prompting with Chain-of-Thought for Large Language Models. *arXiv:2302.12246.* — Uncertainty-targeted clarification beats uniform questioning. `/chiron`'s ambiguity detection at L0 fires one clarification cycle when the user's answer is vague, surfacing 2–3 interpretations.
+- **Shinn, N., Cassano, F., Labash, B., Gopinath, A., Narasimhan, K., & Yao, S. (2023).** Reflexion: Language Agents with Verbal Reinforcement Learning. *arXiv:2303.11366.* — Persistent memory across episodes enables targeted improvement. Chiron's profile read-loop (`/challenge` + `/postmortem`) is Reflexion adapted for deliberate practice — past failures inform future drill selection.
+
+### Additional inspirations
+
+- **[taste-skill](https://github.com/Leonxlnx/taste-skill) by Leonxlnx** — frontend design-quality plugin whose techniques (anti-pattern enumeration, pre-flight checklists, named pattern arsenal, output completeness enforcement, control dials, self-verification loops, multi-level specification) were adapted for chiron's backend teaching context in v0.12.0.
+- **[Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) by dair-ai** — comprehensive reference on prompting techniques that informed v0.14.0's self-consistency grading, Active-Prompt ambiguity detection, and context engineering audit.
+
+### How to cite chiron
+
+If you use chiron in research or writing, please cite:
+
+```bibtex
+@software{chiron2026,
+  author = {Haitham, Ahmed},
+  title = {Chiron: A Teach-First Mentor Plugin for AI Coding Tools},
+  year = {2026},
+  url = {https://github.com/xDido/chiron}
+}
+```
+
 ## License
 
 [MIT](LICENSE).

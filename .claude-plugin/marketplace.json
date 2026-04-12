@@ -11,7 +11,7 @@
     {
       "name": "chiron",
       "description": "Teach-first mentor mode for Claude Code. Socratic questions before code, drills from your own source.",
-      "version": "0.13.0",
+      "version": "0.14.0",
       "source": "./",
       "author": {
         "name": "Ahmed Haitham",
