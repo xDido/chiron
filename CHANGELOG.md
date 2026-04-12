@@ -6,6 +6,64 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.13.0] — 2026-04-12
+
+### Added — Three new teach-first skills
+
+Three new skills with domain-adapted hint ladders and dedicated reference files:
+
+| Skill | Purpose | Reference |
+|-------|---------|-----------|
+| `/debug` | Structured debugging with hypothesis testing (observe → hypothesize → verify → fix) | `debugging-playbook.md` — 10 root cause categories |
+| `/refactor` | Guided refactoring with named patterns (identify smell → name refactoring → transform) | `refactoring-catalog.md` — 13 smells, 16 refactorings |
+| `/architect` | Architecture Decision Records with quality-attribute trade-off analysis | `architecture-decisions.md` — 8 quality attributes, ADR template |
+
+All three integrate with chiron's voice levels, teaching dials, and cross-skill handoffs. Read-only for `profile.json` in v1.
+
+**Totals:** 11 skills, 7 reference files, 21 packs. Build output: **143 files** across 13 platforms.
+
+---
+
+## [0.12.0] — 2026-04-12
+
+### Added — Taste-skill technique adaptations
+
+Seven techniques adapted from [taste-skill](https://github.com/Leonxlnx/taste-skill) (frontend design plugin) for chiron's backend teaching context:
+
+- **AI Code Tells** — explicit ban list of AI-generated code smells (`chiron/references/ai-code-tells.md`): naming, comment, error handling, structure, and completeness tells
+- **Pre-flight checklists** — silent verification gates before L4 delivery in `/chiron`, drill presentation in `/challenge`, and approach comparison in `/explain`
+- **Engineering Arsenal** — 42 named backend patterns across 6 domains (`chiron/references/engineering-arsenal.md`): API design, concurrency, data access, resilience, observability, security
+- **Output completeness enforcement** — anti-pattern #7 banning placeholder patterns (`// ...`, `// for brevity`), PAUSED signaling protocol for token-constrained responses
+- **Teaching dials** — three new config parameters in `~/.chiron/config.json`: `teaching.depth` (1-10), `teaching.theory_ratio` (1-10), `teaching.idiom_strictness` (1-10)
+- **Self-verification loops** — score verification in `/postmortem`, grade verification in `/challenge`
+- **Multi-level teaching scope** — micro/meso/macro request classification in `/chiron` affects hint ladder abstraction level
+
+### Changed — Research-backed pedagogy
+
+Expanded `pedagogy.md` with 12 research citations grounding every chiron mechanism: Vygotsky ZPD, Wood/Bruner/Ross scaffolding, Sweller cognitive load theory, Chi self-explanation, Kapur productive failure, Bjork desirable difficulties, Ericsson deliberate practice, Roediger/Karpicke testing effect, Ebbinghaus spaced repetition, Kalyuga expertise reversal, Paul/Elder Socratic questioning, Deci/Ryan self-determination theory.
+
+---
+
+## [0.11.0] — 2026-04-11
+
+### Changed — Anthropic knowledge-work-plugins patterns
+
+Adopted the Anthropic knowledge-work-plugins architecture for cross-platform skill distribution. Single source of truth in `source/skills/`, compiled to 13 platform outputs via `bun scripts/build.js`.
+
+**Supported platforms:** Claude Code, Cursor, Gemini CLI, Codex CLI, OpenCode, GitHub Copilot Agents, Kiro, Pi, OpenAI, Trae, Trae CN, Rovo Dev, VS Code Copilot.
+
+---
+
+## [0.10.0] — 2026-04-11
+
+### Added — `/teach-chiron` and context caching
+
+- **`/teach-chiron`** — one-time comprehensive project scan that reads every important file and writes `.chiron-context.md`
+- **`.chiron-context.md`** — persistent context file containing project metadata, dependencies, directory tree, source file map, entry points, API surface, data layer, architecture overview, patterns, and chiron config
+- All other chiron skills now read `.chiron-context.md` instead of re-scanning the codebase
+
+---
+
 ## [0.9.0] — 2026-04-10
 
 ### Added — Complete backend coverage (4 more concept packs)

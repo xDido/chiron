@@ -420,3 +420,74 @@ Sequence will be decided based on validation gate feedback. Likely candidates in
 - ~~**C#, Kotlin, Swift language packs**~~ — **shipped in v0.5.0**
 - **Additional language packs** — Ruby, Zig, Elixir (community contributions preferred)
 - **Session-start hook** — automatically surface profile insights at session start
+
+---
+
+## Phase 13 — v0.10.0: `/teach-chiron` and context caching ✅
+
+**Date:** 2026-04-11
+
+- [x] `/teach-chiron` skill for comprehensive project scanning
+- [x] `.chiron-context.md` generation — persistent project context
+- [x] All skills read cached context instead of re-scanning
+- [x] Context includes: project metadata, dependencies, directory tree, source map, entry points, API surface, data layer, architecture, patterns, infrastructure, chiron config
+
+**Exit criteria met:** `/teach-chiron` generates `.chiron-context.md`, all other skills read it successfully.
+
+---
+
+## Phase 14 — v0.11.0: Multi-platform distribution ✅
+
+**Date:** 2026-04-11
+
+- [x] Adopt Anthropic knowledge-work-plugins architecture
+- [x] Single source of truth in `source/skills/`
+- [x] Build system compiles to 13 platform outputs
+- [x] Supported: Claude Code, Cursor, Gemini CLI, Codex CLI, OpenCode, GitHub Copilot Agents, Kiro, Pi, OpenAI, Trae, Trae CN, Rovo Dev, VS Code Copilot
+- [x] Placeholder system for cross-platform compatibility (`{{command_prefix}}`, `{{config_files}}`, `{{pack_path}}`)
+
+**Exit criteria met:** `bun scripts/build.js` produces correct output for all 13 platforms.
+
+---
+
+## Phase 15 — v0.12.0: Taste-skill technique adaptations ✅
+
+**Date:** 2026-04-12
+
+Seven techniques adapted from [taste-skill](https://github.com/Leonxlnx/taste-skill):
+
+- [x] AI Code Tells reference — ban list of AI-generated code smells
+- [x] Pre-flight checklists — silent verification gates in `/chiron`, `/challenge`, `/explain`
+- [x] Engineering Arsenal reference — 42 named backend patterns across 6 domains
+- [x] Output completeness enforcement — anti-pattern #7, PAUSED signaling
+- [x] Teaching dials — `teaching.depth`, `teaching.theory_ratio`, `teaching.idiom_strictness`
+- [x] Self-verification loops — score verification in `/postmortem`, grade verification in `/challenge`
+- [x] Multi-level teaching scope — micro/meso/macro classification in `/chiron`
+- [x] Research-backed pedagogy — 12 citations in `pedagogy.md`
+
+**Exit criteria met:** All 7 enhancements integrated, build passes, references distributed to all platforms.
+
+---
+
+## Phase 16 — v0.13.0: `/debug`, `/refactor`, `/architect` ✅
+
+**Date:** 2026-04-12
+
+- [x] `/debug` skill — structured debugging with hypothesis testing (L0-L4 ladder)
+- [x] `debugging-playbook.md` reference — 10 root cause categories, hypothesis templates
+- [x] `/refactor` skill — guided refactoring with named patterns (L0-L4 ladder)
+- [x] `refactoring-catalog.md` reference — 13 code smells, 16 named refactorings
+- [x] `/architect` skill — architecture decision records with quality-attribute analysis (L0-L4 ladder)
+- [x] `architecture-decisions.md` reference — 8 quality attributes, ADR template, 7 decision categories
+
+**Exit criteria met:** 11 skills × 13 platforms = 143 files, 7 references, all placeholders resolved.
+
+---
+
+## Post-v0.13.0 — Candidate features
+
+- Profile read-loop — read `~/.chiron/profile.json` in `/challenge` to surface recurring weakness patterns
+- `chiron-reviewer` agent — review code the way a senior engineer would
+- Golden transcripts for `/debug`, `/refactor`, `/architect`
+- Community language packs (Ruby, Zig, Elixir)
+- Profile persistence for `/postmortem` scores

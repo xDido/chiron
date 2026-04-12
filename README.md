@@ -155,6 +155,41 @@ Before diving into a new topic, `/tour` gives you a 3-section preamble: read-thi
 
 Text-only — no code examples. Intentionally brief. If you want a tutorial or implementation guidance, follow up with `/chiron` after reading the tour.
 
+### `/debug <error or file>` — structured debugging *(v0.13.0)*
+
+When you want to understand *why* a bug happens (not just get a fix), `/debug` walks through a structured methodology: observe symptoms, categorize the root cause, form a testable hypothesis, verify it, then fix.
+
+```
+/debug "connection refused after deploying new config"
+/debug path/to/file.go:42
+/debug
+```
+
+Differs from chiron's debug-deferral (which skips Socratic mode for speed) — `/debug` is explicitly opted into when you want to learn debugging methodology. References a debugging playbook with 10 root cause categories and hypothesis templates.
+
+### `/refactor <file or smell>` — guided refactoring with named patterns *(v0.13.0)*
+
+Point `/refactor` at messy code and it identifies the code smell by name (Feature Envy, God Class, Shotgun Surgery, ...), names the refactoring pattern (Extract Method, Move Method, ...), and guides you through the transformation with before/after skeletons.
+
+```
+/refactor path/to/handler.go
+/refactor "this function does too much"
+/refactor path/to/service.go:processOrder
+```
+
+Key constraint: refactoring changes structure *without* changing behavior. References a catalog of 13 named smells and 16 named refactorings.
+
+### `/architect <decision>` — architecture decision records *(v0.13.0)*
+
+When facing a design decision with multiple valid approaches, `/architect` guides through articulating the context, scoring options against quality attributes (performance, scalability, maintainability, security, cost, operability, testability, simplicity), and producing an ADR document.
+
+```
+/architect "should we use event sourcing for order history?"
+/architect "PostgreSQL vs MongoDB for user profiles"
+```
+
+The only chiron skill that deliberately writes a file artifact — the ADR is a project document, not teaching content. References a quality-attribute taxonomy with 8 attributes and 7 common decision categories.
+
 ## Pervasive mode (optional)
 
 If you want chiron voice across every coding request in a project without typing `/chiron` each time, paste this into your project's `CLAUDE.md`:
@@ -167,7 +202,7 @@ This is opt-in via your own configuration — chiron does **not** auto-activate 
 
 ## Configuration (`~/.chiron/config.json`) *(v0.2.0+)*
 
-chiron reads one configuration file: `~/.chiron/config.json`. It's created automatically the first time you run `/level <value>`. Current schema (v0.2.1):
+chiron reads one configuration file: `~/.chiron/config.json`. It's created automatically the first time you run `/level <value>`. Current schema (v0.13.0):
 
 ```json
 {
@@ -178,6 +213,11 @@ chiron reads one configuration file: `~/.chiron/config.json`. It's created autom
     "max_functions_touched": 1,
     "time_minutes_min": 5,
     "time_minutes_max": 15
+  },
+  "teaching": {
+    "depth": 5,
+    "theory_ratio": 3,
+    "idiom_strictness": 5
   }
 }
 ```
@@ -193,6 +233,11 @@ chiron reads one configuration file: `~/.chiron/config.json`. It's created autom
   - If `time_minutes_min > time_minutes_max`, both fields silently fall back to defaults.
 
 Edit the file directly with any text editor, or use `/level` to manage `voice_level`. If the file is missing or corrupt, chiron silently falls back to default behavior — no errors.
+
+- **`teaching`** *(new in v0.12.0)* — teaching intensity overrides. Every field is optional; missing fields fall back to defaults. Read by `/chiron`, `/challenge`, `/explain`, and `/tour`.
+  - `teaching.depth` — how deep Socratic questioning goes (default **5**, clamped [1, 10]). 1 = quick answers, 10 = full architectural discussion before code.
+  - `teaching.theory_ratio` — how much theory accompanies code (default **3**, clamped [1, 10]). 1 = practical-only, 10 = theory-enriched with historical context.
+  - `teaching.idiom_strictness` — how pedantic about language conventions (default **5**, clamped [1, 10]). 1 = any working approach is fine, 10 = must use canonical idiomatic form.
 
 Future v0.2.x releases will add more fields (grading thresholds, hint tuning, etc.) without breaking the schema; existing entries stay valid.
 
@@ -228,6 +273,9 @@ Plugins that inject thousands of tokens into every prompt cost real money — an
 | + one language pack | ~200 lines | ~1.5k |
 | `/explain` | ~1,000 words | ~1.4k |
 | `/hint`, `/level`, `/tour`, `/postmortem` | ~1,000 words each | ~1.3–1.5k |
+| `/debug` | ~2,200 words | ~2.9k |
+| `/refactor` | ~2,100 words | ~2.8k |
+| `/architect` | ~2,300 words | ~3.0k |
 
 For comparison, `/challenge` before v0.7.0 loaded all 9 packs on every invocation (~17.5k tokens). The on-demand architecture reduced that by **59–67%**.
 
@@ -282,7 +330,7 @@ Up to 2 concept packs are loaded per invocation (on top of the language pack). I
 
 chiron's development roadmap from empty repo to v0.1 MVP lives in [`ROADMAP.md`](ROADMAP.md). It tracks phase-by-phase progress (scaffolding → commands → language pack → verification → public release) and lists v0.2+ candidate features that are intentionally not in v0.1.
 
-**Shipped:** `/teach-chiron`, `/chiron`, `/hint`, `/challenge`, `/level`, `/explain`, `/postmortem`, `/tour` — nine language packs, twelve backend concept packs, and persistent project context.
+**Shipped:** `/teach-chiron`, `/chiron`, `/hint`, `/challenge`, `/level`, `/explain`, `/postmortem`, `/tour`, `/debug`, `/refactor`, `/architect` — eleven skills, nine language packs, twelve backend concept packs, seven reference files, and persistent project context.
 
 **On deck:**
 
