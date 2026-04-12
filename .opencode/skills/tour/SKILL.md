@@ -89,6 +89,14 @@ Ready? `/chiron <task>`
 - **Common mistakes are patterns that look correct but are subtly wrong.** Include a one-line "why it's wrong" for each.
 - **Handoff line** at the end points to `/chiron` for when the user is ready to start writing.
 
+## Engineering arsenal reference
+
+When the user's topic maps to a named pattern in `.opencode/skills/tour/../chiron/references/engineering-arsenal.md`, use that entry as the foundation for the "Key concepts" section. Read the reference file on first /tour invocation per session.
+
+- If the topic IS one of the arsenal patterns (e.g., `/tour circuit breaker`), the preamble should cover that specific pattern's prerequisites, not the general category.
+- If the topic spans multiple arsenal patterns (e.g., `/tour resilience`), pick the 2–3 most foundational patterns and name the others as "also worth reading."
+- If the topic doesn't map to any arsenal pattern, proceed with model knowledge as usual — the arsenal is a supplement, not a constraint.
+
 ## Anti-patterns
 
 1. **Do not write a tutorial.** `/tour` is a preamble, NOT a walkthrough. If the user wants step-by-step, they can run `/chiron` after.

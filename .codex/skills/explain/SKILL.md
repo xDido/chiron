@@ -104,6 +104,19 @@ Implementation? `/chiron implement fan-out with errgroup`
 - No padded framings like *"Three main approaches, each with clear trade-offs:"* — just *"Approaches:"*
 - Closing handoff is one line, no extra explanation
 
+## Pre-delivery checklist (verify silently)
+
+1. Exactly 2–3 approaches — not 1 (use $chiron instead), not 4+ (too many choices)
+2. Each approach has pros AND cons — no approach is presented as all-upside
+3. Recommendation is qualified by context, not absolute
+4. Handoff line to `$chiron` is present
+5. No fence-sitting — a clear recommendation exists for the stated case
+
+**Teaching dial effects on $explain:** Read `teaching.depth` and `teaching.theory_ratio` from `.chiron-context.md`. If missing, use defaults (5, 3).
+- `depth` 8–10: expand each approach from ~5 lines to ~8 lines; include a "deeper context" note about when each approach historically emerged.
+- `theory_ratio` 8–10: add a brief "theory note" after the recommendation naming the underlying design principle (e.g., *"This is the Single Responsibility Principle applied to data flow"*).
+- At default values (5, 3), no expansion — standard compact format.
+
 ## Idiom callouts
 
 When naming a specific primitive or library in an approach, offer ONE short doc pointer (the "read this first" pattern):

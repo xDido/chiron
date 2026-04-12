@@ -153,6 +153,12 @@ Drill sizing fields added in v0.2.1:
 - `drill.time_minutes_min` — default 5, clamped [1, 60]
 - `drill.time_minutes_max` — default 15, clamped [1, 60]
 
+Teaching dial fields added in v0.12.0:
+
+- `teaching.depth` — 1–10, default 5. How deep the Socratic questioning goes. 1 = quick answer with minimal questioning, 10 = full architectural discussion before any code. Affects /chiron L0 question count and /explain detail level. Clamped [1, 10]. Invalid values silently fall back to 5.
+- `teaching.theory_ratio` — 1–10, default 3. How much theory accompanies code. 1 = practical-only (just the pattern), 10 = theory-enriched (why this pattern exists, what problem it solves, historical context). Affects /chiron idiom callouts and /tour key-concepts depth. Clamped [1, 10]. Invalid values silently fall back to 3.
+- `teaching.idiom_strictness` — 1–10, default 5. How pedantic about conventions. 1 = lenient (any working approach is fine), 10 = pedantic (must be the canonical idiomatic form). Affects /challenge grading weight on the idiom-fit dimension and /chiron's willingness to accept non-idiomatic solutions. Clamped [1, 10]. Invalid values silently fall back to 5.
+
 Invalid values silently fall back to defaults — no crashes.
 
 ## Cross-platform note
