@@ -59,122 +59,29 @@ This generates skill files for all 13 platforms from the single source of truth 
 
 ## Usage
 
-### `/teach-chiron` — one-time project scan *(v0.10.0)*
-
-Run this once per project. It scans your entire codebase and writes `.chiron-context.md` — a comprehensive reference that all other chiron skills read instead of re-scanning.
+**Start here.** Run `/teach-chiron` once per project. It scans your codebase and writes `.chiron-context.md` — a persistent reference all other commands read instead of re-scanning. Every other command prompts you to run it if missing; re-run anytime to refresh.
 
 ```
 /teach-chiron
 ```
 
-What it captures: project metadata, all dependencies, full directory tree, every source file with its purpose, entry points, API routes, data models, architecture overview, patterns/conventions, infrastructure, and your chiron config.
+Then use any of the ten commands below. Every command preserves three invariants: **never refuses to ship when asked**, **never moralizes**, **never pollutes code with teaching content** (lessons live in chat).
 
-**Re-run anytime** to refresh (e.g., after major refactoring). All other commands require this file — they'll prompt you to run `/teach-chiron` if it's missing.
+- **`/chiron <request>`** — Socratic mentor mode. Clarifying questions before code, graduated hints (L0–L4), idiom callouts. *Example:* `/chiron implement a worker pool in Go`
+- **`/challenge <file>`** — Drills grounded in specific lines of your code, 5–15 min each, graded `/10`. Reads `~/.chiron/profile.json` to bias toward recurring weaknesses. *Example:* `/challenge path/to/worker_pool.go`
+- **`/hint`** — Advance one rung on the hint ladder: L0 clarifying → L1 concept → L2 named API → L3 signature with blanks → L4 full solution. Stateless.
+- **`/level gentle|default|strict`** *(v0.2.0)* — Dial chiron's voice intensity. Persists via `~/.chiron/config.json`. `strict` is firm, not mean. *Example:* `/level strict`
+- **`/explain <question>`** *(v0.3.0)* — Compare 2–3 approaches with trade-offs and a qualified recommendation. Never fence-sits. *Example:* `/explain REST vs gRPC for this service`
+- **`/postmortem [summary]`** *(v0.3.0)* — Session-end review with `/10` across 5 axes (design, code, idioms, testing, maturity). Reads profile for cross-session trends. *Example:* `/postmortem`
+- **`/tour <topic>`** *(v0.3.0)* — Structured preamble: read-first doc pointers, key concepts, common junior mistakes. Text-only, no code. *Example:* `/tour Go channels`
+- **`/debug <error or file>`** *(v0.13.0)* — Hypothesis-driven debugging: observe → categorize → hypothesize → verify → fix. Opts *into* methodology teaching (chiron's built-in debug handler skips Socratic for speed). *Example:* `/debug "connection refused after deploy"`
+- **`/refactor <file or smell>`** *(v0.13.0)* — Identify named code smells and guide refactoring transformations. Changes structure without changing behavior. *Example:* `/refactor path/to/handler.go`
+- **`/architect <decision>`** *(v0.13.0)* — ADRs with quality-attribute trade-off analysis. The only skill that deliberately writes a file (the ADR is a project document, not teaching content). *Example:* `/architect "event sourcing for order history?"`
 
-### `/chiron <request>` — Socratic mentor mode for one request
-
-Wrap a normal coding request with `/chiron` to get the teach-first treatment — clarifying questions before code, graduated hints, idiom callouts.
-
-```
-/chiron I need a Go function that fans out N workers on a channel and collects results
-```
-
-### `/challenge <file>` — drill from your own code
-
-Point `/challenge` at a source file and it will generate 1–3 focused drills grounded in specific lines of the actual code. Each drill is a 5–15 minute change with a clear constraint. Your attempts get graded `/10` by a mentor who's read your file.
-
-```
-/challenge path/to/your/worker_pool.go
-```
-
-### `/hint` — advance one rung on the hint ladder
-
-Inside a chiron response, `/hint` advances from **L0** (clarifying questions) → **L1** (conceptual nudge) → **L2** (named primitive) → **L3** (signature with blanks) → **L4** (full solution). Stateless — reads the most recent chiron turn and emits the next rung.
-
-### `/level gentle | default | strict` — switch chiron's voice level *(v0.2.0)*
-
-Dial chiron's intensity. `gentle` is warmer and more forgiving (full solution after one attempt). `default` is the baseline A+B blend. `strict` is sharper and makes you work harder before showing the canonical answer (2+ attempts required). Your choice persists globally across sessions via `~/.chiron/config.json`.
-
-```
-/level gentle
-/level strict
-/level default
-/level          # shows current + all three options
-```
-
-Every response shows all three levels with `→` marking the currently active one. Invalid input (`/level nuclear`) shows valid options without modifying your config.
-
-**All three levels preserve the core invariants:** never refuse to ship when asked, never moralize, never pollute artifacts. `strict` is firm, not mean.
-
-### `/explain <question>` — compare 2–3 approaches *(v0.3.0)*
-
-When you're facing a *"which way should I..."* question, `/explain` surfaces 2–3 named approaches with pros/cons and a qualified recommendation. Complements `/chiron` (which handles *"how do I..."* questions).
-
-```
-/explain error handling in Go: return errors vs panic vs typed errors
-/explain REST vs gRPC for this internal service
-/explain goroutines vs worker pool for this fan-out
-```
-
-Every response ends with a recommendation — no fence-sitting. If you just want the answer without the comparison, say *"just tell me which one"* and `/explain` will ship the recommendation directly.
-
-### `/postmortem [optional summary]` — session-end review *(v0.3.0)*
-
-Run at the end of a coding session to get a 3-section review: what you worked on, a `/10` score across 5 axes (design thinking, code quality, idioms, testing, engineering maturity), and one concrete thing to practice next. Read-only in v0.3.0 — scores aren't persisted yet.
-
-```
-/postmortem
-/postmortem fan-out worker pool implementation
-```
-
-Graceful degradation: if there's no recent chiron activity in the conversation, `/postmortem` tells you to run a `/chiron` or `/challenge` session first.
-
-### `/tour <topic>` — structured preamble before a task *(v0.3.0)*
-
-Before diving into a new topic, `/tour` gives you a 3-section preamble: read-this-first doc pointers, key concepts, common junior mistakes.
-
-```
-/tour errgroup
-/tour Go channels
-/tour async/await in TypeScript
-```
-
-Text-only — no code examples. Intentionally brief. If you want a tutorial or implementation guidance, follow up with `/chiron` after reading the tour.
-
-### `/debug <error or file>` — structured debugging *(v0.13.0)*
-
-When you want to understand *why* a bug happens (not just get a fix), `/debug` walks through a structured methodology: observe symptoms, categorize the root cause, form a testable hypothesis, verify it, then fix.
-
-```
-/debug "connection refused after deploying new config"
-/debug path/to/file.go:42
-/debug
-```
-
-Differs from chiron's debug-deferral (which skips Socratic mode for speed) — `/debug` is explicitly opted into when you want to learn debugging methodology. References a debugging playbook with 10 root cause categories and hypothesis templates.
-
-### `/refactor <file or smell>` — guided refactoring with named patterns *(v0.13.0)*
-
-Point `/refactor` at messy code and it identifies the code smell by name (Feature Envy, God Class, Shotgun Surgery, ...), names the refactoring pattern (Extract Method, Move Method, ...), and guides you through the transformation with before/after skeletons.
-
-```
-/refactor path/to/handler.go
-/refactor "this function does too much"
-/refactor path/to/service.go:processOrder
-```
-
-Key constraint: refactoring changes structure *without* changing behavior. References a catalog of 13 named smells and 16 named refactorings.
-
-### `/architect <decision>` — architecture decision records *(v0.13.0)*
-
-When facing a design decision with multiple valid approaches, `/architect` guides through articulating the context, scoring options against quality attributes (performance, scalability, maintainability, security, cost, operability, testability, simplicity), and producing an ADR document.
-
-```
-/architect "should we use event sourcing for order history?"
-/architect "PostgreSQL vs MongoDB for user profiles"
-```
-
-The only chiron skill that deliberately writes a file artifact — the ADR is a project document, not teaching content. References a quality-attribute taxonomy with 8 attributes and 7 common decision categories.
+**How the commands relate:**
+- `/chiron` handles *"how do I..."*. `/explain` handles *"which way should I..."*. `/tour` gives background *before* you start. `/postmortem` reviews *after* you finish.
+- `/challenge` drills patterns you know. `/chiron` teaches new ones.
+- Inside any chiron response, `/hint` advances one rung on the ladder. Saying *"just write it"* always gets the full answer immediately.
 
 ## Pervasive mode (optional)
 
