@@ -7,20 +7,6 @@
 
 **chiron never auto-activates.** It only fires when you explicitly type one of its slash commands. This is by design: a plugin should not change your default coding-assistant behavior without your consent.
 
-## Why I built this
-
-My job turned into a loop: take a ticket, give it to AI, review, merge, repeat. The work got done—but I didn’t grow.
-
-Over time, I stopped thinking deeply. I used fewer language idioms, questioned fewer decisions, and couldn’t clearly explain why something worked—only that it did. AI tools are great at finishing tasks, but they don’t help you become a better engineer.
-
-So I built chiron.
-
-Instead of giving answers, it guides you like a senior engineer—asking questions, giving hints, and making you think. You still ship your work, but you actually understand it.
-
-The goal isn’t to slow you down. It’s to keep you sharp while you build.
-
-If you’ve felt productive but stuck, this is for you.
-
 ## Install
 
 ### Claude Code
@@ -354,10 +340,10 @@ Chiron's design is grounded in pedagogical research and prompt engineering liter
 - **[Ericsson, K.A., Krampe, R.T., & Tesch-Römer, C. (1993).](https://psycnet.apa.org/record/1993-40718-001)** The Role of Deliberate Practice in the Acquisition of Expert Performance. *Psychological Review, 100*(3), 363–406. — Deliberate practice. `/challenge` drills are targeted, feedback-equipped, edge-of-ability tasks — the four conditions for expertise development.
 - **[Chi, M.T.H., De Leeuw, N., Chiu, M., & LaVancher, C. (1994).](https://onlinelibrary.wiley.com/doi/10.1207/s15516709cog1803_3)** Eliciting Self-Explanations Improves Understanding. *Cognitive Science, 18*(3), 439–477. — Self-explanation effect. L0 clarifying questions force learners to articulate their own thinking before receiving guidance.
 - **[Kalyuga, S., Ayres, P., Chandler, P., & Sweller, J. (2003).](https://www.tandfonline.com/doi/abs/10.1207/S15326985EP3801_4)** The Expertise Reversal Effect. *Educational Psychologist, 38*(1), 23–31. — Instructional techniques that help novices harm experts. Chiron's voice levels (gentle/default/strict) and domain-vocabulary detection address this directly.
-- **[Roediger, H.L., & Karpicke, J.D. (2006).](https://pubmed.ncbi.nlm.nih.gov/26151629/)** The Power of Testing Memory: Basic Research and Implications for Educational Practice. *Perspectives on Psychological Science, 1*(3), 181–210. — Testing effect. Retrieval practice outperforms re-study by 50–80% for long-term retention. Drills are retrieval practice.
+- **[Roediger, H.L., & Karpicke, J.D. (2006).](https://pubmed.ncbi.nlm.nih.gov/26151629/)** The Power of Testing Memory: Basic Research and Implications for Educational Practice. *Perspectives on Psychological Science, 1*(3), 181–210. — Testing effect. Retrieval practice outperforms re-study by 50–80% for long-term retention. Drills are a retrieval practice.
 - **[Cepeda, N.J., Pashler, H., Vul, E., Wixted, J.T., & Rohrer, D. (2006).](https://pubmed.ncbi.nlm.nih.gov/16719566/)** Distributed Practice in Verbal Recall Tasks: A Review and Quantitative Synthesis. *Psychological Bulletin, 132*(3), 354–380. — Modern meta-analysis of spacing effect. Profile read-loop's recency weighting (30-day window, 50% weight for older entries) follows this research.
 - **[Paul, R., & Elder, L. (2006).](https://www.criticalthinking.org/store/products/the-thinkers-guide-to-socratic-questioning/231)** *The Thinker's Guide to the Art of Socratic Questioning.* Foundation for Critical Thinking. — Six types of Socratic questions. `/chiron`'s L0 questions draw from the clarification, assumptions, and implications categories most often.
-- **[Bjork, E.L., & Bjork, R.A. (2011).](https://bjorklab.psych.ucla.edu/wp-content/uploads/sites/13/2016/04/EBjork_RBjork_2011.pdf)** Making Things Hard on Yourself, But in a Good Way: Creating Desirable Difficulties to Enhance Learning. In *Psychology and the Real World* (pp. 56–64). Worth Publishers. — The hint ladder withholding answers is a desirable difficulty; never-refusing when asked keeps it from becoming undesirable.
+- **[Bjork, E.L., & Bjork, R.A. (2011).](https://bjorklab.psych.ucla.edu/wp-content/uploads/sites/13/2016/04/EBjork_RBjork_2011.pdf)** Making Things Hard on Yourself, But in a Good Way: Creating Desirable Difficulties to Enhance Learning. In *Psychology and the Real World* (pp. 56–64). Worth Publishers. — The hint ladder withholding answers is a desirable difficulty; never refusing when asked keeps it from becoming undesirable.
 - **[Kapur, M. (2014).](https://onlinelibrary.wiley.com/doi/10.1111/cogs.12107)** Productive Failure in Learning Math. *Cognitive Science, 38*(4), 627–658. — Struggling before receiving instruction yields deeper learning. L3's signature-with-blanks creates exactly this kind of productive failure.
 
 ### Prompt engineering research
