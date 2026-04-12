@@ -6,6 +6,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.14.0] — 2026-04-12
+
+### Added — Profile read-loop (Reflexion pattern)
+
+`/challenge` and `/postmortem` now read `~/.chiron/profile.json` to inform drill selection and session reviews with longitudinal evidence. `/challenge` has written to this file since v0.1, but no skill read it until now.
+
+**`/challenge` changes:**
+- **New Step 0.5 — Load learning profile:** builds a weakness map (tags with 2+ weighted failures and failure ratio > 0.5) and a mastery set (tags with 2+ recent solves, no recent failures)
+- **Step 4 profile bias:** promotes weakness-matching seeds to the top, deprioritizes mastered patterns, falls through to eyeball fallback if only mastered patterns match
+- **Step 6 history callout:** one-line callout when a drill targets a recurring weakness (*"Profile: you've marked `go:errgroup-with-context` as attempted 3 times in past sessions — here's a focused drill on it"*)
+- **Step 8 write path unchanged:** existing writer preserved; profile file is owned exclusively by `/challenge`
+
+**`/postmortem` changes:**
+- **New Profile-informed trends section:** score justifications may cite longitudinal evidence alongside current-session evidence
+- **Session summary may include one trend callout** (at most one per session, only if genuinely relevant)
+- **Read-only contract preserved:** `/postmortem` reads profile but never writes
+
+**Design locks:**
+- Recency weighting: last 30 days full weight, older entries at 50%
+- Weakness threshold: 2+ failures per tag, failure ratio > 0.5
+- Silent fallback on missing/corrupt/empty profile
+- Never-refuse invariant preserved — profile bias is a suggestion, not a gate
+
+Based on Reflexion (Shinn et al., 2023) adapted for deliberate-practice drill systems, with Ebbinghaus/Cepeda spacing effect informing recency weighting.
+
+### Added — Prompt engineering improvements
+
+Three techniques adapted from [dair-ai/Prompt-Engineering-Guide](https://github.com/dair-ai/Prompt-Engineering-Guide):
+
+- **Self-consistency grading in `/challenge`** (Wang et al., 2022) — grader runs the /10 evaluation three times internally, uses consensus. Reduces grading noise without user-visible changes. Re-examines the constraint if scores diverge > 2 points.
+- **Active-Prompt ambiguity detection in `/chiron`** (Diao et al., 2023) — when the user's L0 answer is vague or multi-interpretable, fire one clarification cycle surfacing 2–3 interpretations. Unambiguous answers proceed normally to L1. Never-refuse rule still applies.
+- **Context engineering audit** — all 11 SKILL.md files audited against the 5-principle checklist (eliminate ambiguity, explicit expectations, observability, balance flexibility, robust error handling). Drift found and fixed in 3 files: `challenge` (struggle trigger definition), `postmortem` (sentence count alignment), `architect` (ADR status update target).
+
+### Added — References section in README
+
+Comprehensive citations for all 17 research papers and inspirations that shaped chiron's design, with BibTeX block for how to cite chiron in research.
+
+---
+
 ## [0.13.0] — 2026-04-12
 
 ### Added — Three new teach-first skills
