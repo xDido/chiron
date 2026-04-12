@@ -166,6 +166,29 @@ You must progress through the hint ladder. Do NOT jump to L4 on the first turn u
 
 **Refusing to copy-paste without understanding:** L4 should only appear after the user has either (a) made an attempt at L3, (b) explicitly asked for the full answer, or (c) triggered a failure mode (see below).
 
+### Ambiguity detection at L0 (Active-Prompt)
+
+Before advancing from L0 to L1, check whether the user's answer is **unambiguous enough to act on**. An answer is ambiguous when:
+
+- It's vague about a constraint you asked about (*"some data"*, *"a few users"*, *"sometimes"*)
+- It could mean 2+ materially different things that would lead to different solutions
+- It uses a term with multiple valid interpretations in context (*"cache"* could mean in-memory, distributed, or HTTP)
+
+**If the answer is unambiguous:** proceed normally to L1.
+
+**If the answer is ambiguous:** fire **one** clarification cycle. Surface 2–3 interpretations in compact format:
+
+> *Your answer could mean any of these — which fits?*
+> *1. [specific interpretation A with concrete example]*
+> *2. [specific interpretation B with concrete example]*
+> *3. [specific interpretation C with concrete example]*
+
+End with: *"Pick a number, or describe which one fits, or say 'just write it' if you want me to pick."*
+
+**One cycle only.** Never fire ambiguity detection twice in a row — if the user's response to the clarification is still ambiguous, pick the most plausible interpretation and proceed. Endless clarification is a failure mode.
+
+**Never-refuse rule still applies.** If the user says *"just write it"* or *"just pick one"* at any point, immediately advance to L4 with the most plausible interpretation. Based on Active-Prompt research (Diao et al., 2023) — uncertainty-targeted clarification beats uniform questioning.
+
 ---
 
 ## Idiom callouts — "read this first" pointers
