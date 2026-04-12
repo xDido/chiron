@@ -191,6 +191,15 @@ Drill sizing is tunable via `~/.chiron/config.json` (v0.2.1+). Read the `drill` 
 
 If `~/.chiron/config.json` is missing, invalid JSON, or has no `drill` object, apply all hardcoded defaults (20 / 1 / 5–15) — the v0.2.0 behavior. Never crash on bad config input; silent fallback is the correct behavior.
 
+**Drill quality checklist (verify silently before presenting):**
+
+1. Constraint is verifiable — a reviewer can tell pass/fail without ambiguity
+2. Task is expressible in one sentence (if not, narrow it)
+3. Sizing within config limits (lines, functions, time range)
+4. Success criteria are clear — the user knows when they're done
+5. The drill targets a real pattern in the file, not an invented one
+6. No drill duplicates a pattern already covered by a previous drill in this session
+
 After all drills, close with:
 
 > Pick one and make the change. Paste your result (or the diff) and I'll review.
@@ -200,7 +209,7 @@ After all drills, close with:
 When the user pastes their attempt (or makes an edit you can inspect):
 
 1. **Check the constraint.** Did they satisfy the stated constraint? This is binary — pass or fail.
-2. **Assign a `/10` grade.** Senior-engineer scoring: correctness + idiom fit + readability. Be honest but never cruel. Always explain the specific points lost. Example:
+2. **Assign a `/10` grade.** Senior-engineer scoring: correctness + idiom fit + readability. Be honest but never cruel. Always explain the specific points lost. **Idiom-fit weight adjustment:** when `teaching.idiom_strictness` is configured in `.chiron-context.md`: 1–3 = idiom-fit worth 1–2 points max (focus on correctness); 4–7 = default weighting (3–4 points); 8–10 = idiom-fit worth 4–5 points (pedantic about canonical form). Example:
 
    > 7/10 — works, and the `errgroup.WithContext` usage is correct. Loses 2 points for shadowing `ctx` inside the goroutine (subtle footgun). Loses 1 for leaving the result channel unbuffered when you know the size in advance.
 
@@ -208,7 +217,17 @@ When the user pastes their attempt (or makes an edit you can inspect):
 
    > That's the worker-pool shape with shared input channel — canonical Go. Background: `pkg.go.dev/golang.org/x/sync/errgroup`.
 
-4. **If the user struggles:** offer an L1 hint from the chiron hint ladder, not a full solution. Users who explicitly want the full answer can say *"just show me"* — anti-pattern #2 applies here, never refuse to ship when asked.
+4. **AI code tell check.** If the solution contains any pattern from `.opencode/skills/challenge/../chiron/references/ai-code-tells.md`, name it in the feedback as a one-liner. This is a readability deduction (part of the 1–2 readability points), not a separate penalty. Load the reference file once per grading session.
+
+5. **Completeness check.** If the user's attempt contains `// TODO`, `// ...`, placeholder returns, or incomplete error branches, note it as a constraint failure regardless of the drill's specific constraint. Incomplete code cannot pass any drill.
+
+6. **Grade verification (silent).** After assigning the /10 grade, verify before delivering:
+   - The constraint check (pass/fail) is based on the stated constraint, not general code quality
+   - Points lost are traceable to specific lines in the user's code
+   - The idiom callout names a real, searchable pattern — not a generic "nice work"
+   If any check fails, revise the grade before delivering.
+
+7. **If the user struggles:** offer an L1 hint from the chiron hint ladder, not a full solution. Users who explicitly want the full answer can say *"just show me"* — anti-pattern #2 applies here, never refuse to ship when asked.
 
 ## Step 8 — Log to profile
 

@@ -60,6 +60,23 @@ If `$ARGUMENTS` contains a user-supplied summary (e.g., `/postmortem fan-out wor
 
 Each axis is scored `/10`. **Be honest and specific. Never cruel.**
 
+## Self-verification loop
+
+After generating initial scores, verify each one before delivering (silent — the user sees only verified scores):
+
+1. **For each axis score,** ask yourself one specific verification question:
+   - Design: *"What specific design decision did the user make (or fail to make) that justifies this score?"*
+   - Code: *"What specific line or pattern in the code justifies points lost?"*
+   - Idioms: *"Can I name the specific idiom that was used correctly or missed?"*
+   - Testing: *"What specific test was written or should have been?"*
+   - Maturity: *"What specific feedback exchange justifies this score?"*
+
+2. **If you cannot answer the verification question with a specific, concrete example from the conversation:** revise the score. A score without evidence is wrong by definition.
+
+3. **If two axes have the same score AND the same justification,** one of them is wrong — they're measuring different things. Two axes with the same score for different reasons is fine.
+
+This loop improves accuracy without adding output length.
+
 ## Response format — keep it terse
 
 Compact 3-section format. ~10 lines total instead of decorative `##` headers:

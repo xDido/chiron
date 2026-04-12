@@ -178,6 +178,9 @@ Group by resource or domain.
 ## Chiron config
 - **Voice level:** <from ~/.chiron/config.json, or "default">
 - **Drill sizing:** <from config, or "20 lines / 1 function / 5-15 min">
+- **Teaching depth:** <from config teaching.depth, or "5">
+- **Theory ratio:** <from config teaching.theory_ratio, or "3">
+- **Idiom strictness:** <from config teaching.idiom_strictness, or "5">
 
 ## Project conventions (from AI config files)
 <full relevant content from CLAUDE.md, AGENTS.md, .cursorrules — or "none found">
