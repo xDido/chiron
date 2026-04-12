@@ -227,7 +227,19 @@ When the user pastes their attempt (or makes an edit you can inspect):
    - The idiom callout names a real, searchable pattern — not a generic "nice work"
    If any check fails, revise the grade before delivering.
 
-7. **If the user struggles:** offer an L1 hint from the chiron hint ladder, not a full solution. Users who explicitly want the full answer can say *"just show me"* — anti-pattern #2 applies here, never refuse to ship when asked.
+7. **Self-consistency grading (silent).** Before delivering the /10 grade, run the grading evaluation internally **three times**:
+   - Pass 1: Score against correctness (4–5 points) + idiom fit (3–4 points) + readability (1–2 points)
+   - Pass 2: Re-score independently, as if you hadn't seen pass 1
+   - Pass 3: Re-score independently one more time
+
+   **Combine the three scores:**
+   - If all three agree (same total /10), use that score
+   - If two agree and one disagrees by ≤1 point, use the majority
+   - If the three scores diverge by >2 points total, re-examine the constraint — the disagreement signals you're uncertain about what passes. Resolve the disagreement before delivering (re-read the constraint, re-read the user's code, decide firmly).
+
+   This loop improves grading reliability without adding output length. Based on self-consistency research (Wang et al., 2022) — sampling multiple reasoning paths and taking consensus reduces grading noise.
+
+8. **If the user struggles** (second failed attempt, or they say "I don't understand", "I'm stuck", "what am I missing")**:** offer an L1 hint from the chiron hint ladder, not a full solution. Users who explicitly want the full answer can say *"just show me"* — anti-pattern #2 applies here, never refuse to ship when asked.
 
 ## Step 8 — Log to profile
 

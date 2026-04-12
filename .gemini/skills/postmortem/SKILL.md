@@ -31,7 +31,7 @@ Apply the voice level from `.chiron-context.md`. If missing or unrecognized, use
 
 Reviews the current Gemini CLI conversation's recent chiron activity and presents a session-end report. Based on chiron's *"After each session"* pattern:
 
-1. **Session summary** — 2–3 sentences recapping what was worked on
+1. **Session summary** — 1–2 sentences recapping what was worked on
 2. **Scores** — `/10` across 5 axes
 3. **One thing to practice** — concrete, bounded next step
 

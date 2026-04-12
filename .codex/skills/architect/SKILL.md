@@ -188,7 +188,7 @@ Before writing the ADR file, verify silently:
 3. Options section scores against the quality attributes identified at L1
 4. Consequences section names what gets harder, not just what gets easier
 5. Status field is set correctly (Proposed for new, Superseded for replacements)
-6. If this supersedes a previous ADR, the old ADR's status is updated
+6. If this supersedes a previous ADR, the old ADR's status is updated to `Superseded`
 
 ---
 
