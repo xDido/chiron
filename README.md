@@ -59,29 +59,59 @@ This generates skill files for all 13 platforms from the single source of truth 
 
 ## Usage
 
-**Start here.** Run `/teach-chiron` once per project. It scans your codebase and writes `.chiron-context.md` — a persistent reference all other commands read instead of re-scanning. Every other command prompts you to run it if missing; re-run anytime to refresh.
+Run `/teach-chiron` once per project. It scans your codebase and writes `.chiron-context.md` — a persistent reference all other commands read instead of re-scanning. Then use any of the eleven commands below.
 
+| Command | Purpose |
+|---------|---------|
+| `/teach-chiron` | One-time project scan, writes `.chiron-context.md` |
+| `/chiron` | Socratic mentor mode for one coding request |
+| `/challenge` | Drills graded `/10` from your own source code |
+| `/hint` | Advance one rung on the L0–L4 hint ladder |
+| `/level` | Set voice intensity (gentle / default / strict) |
+| `/explain` | Compare 2–3 approaches with trade-offs |
+| `/postmortem` | Session-end review across 5 axes |
+| `/tour` | Read-first preamble for a topic |
+| `/debug` | Hypothesis-driven debugging methodology |
+| `/refactor` | Identify code smells, guide named refactorings |
+| `/architect` | Architecture decision records with trade-offs |
+
+### Workflow patterns
+
+**Teach a new pattern:**
 ```
-/teach-chiron
+/teach-chiron                              # one-time per project
+/chiron implement a worker pool in Go      # Socratic walkthrough
+/hint                                      # advance to next rung
+/postmortem                                # session review
 ```
 
-Then use any of the ten commands below. Every command preserves three invariants: **never refuses to ship when asked**, **never moralizes**, **never pollutes code with teaching content** (lessons live in chat).
+**Drill on existing code:**
+```
+/challenge path/to/worker_pool.go          # 1–3 drills, graded /10
+/hint                                      # if stuck mid-drill
+```
 
-- **`/chiron <request>`** — Socratic mentor mode. Clarifying questions before code, graduated hints (L0–L4), idiom callouts. *Example:* `/chiron implement a worker pool in Go`
-- **`/challenge <file>`** — Drills grounded in specific lines of your code, 5–15 min each, graded `/10`. Reads `~/.chiron/profile.json` to bias toward recurring weaknesses. *Example:* `/challenge path/to/worker_pool.go`
-- **`/hint`** — Advance one rung on the hint ladder: L0 clarifying → L1 concept → L2 named API → L3 signature with blanks → L4 full solution. Stateless.
-- **`/level gentle|default|strict`** *(v0.2.0)* — Dial chiron's voice intensity. Persists via `~/.chiron/config.json`. `strict` is firm, not mean. *Example:* `/level strict`
-- **`/explain <question>`** *(v0.3.0)* — Compare 2–3 approaches with trade-offs and a qualified recommendation. Never fence-sits. *Example:* `/explain REST vs gRPC for this service`
-- **`/postmortem [summary]`** *(v0.3.0)* — Session-end review with `/10` across 5 axes (design, code, idioms, testing, maturity). Reads profile for cross-session trends. *Example:* `/postmortem`
-- **`/tour <topic>`** *(v0.3.0)* — Structured preamble: read-first doc pointers, key concepts, common junior mistakes. Text-only, no code. *Example:* `/tour Go channels`
-- **`/debug <error or file>`** *(v0.13.0)* — Hypothesis-driven debugging: observe → categorize → hypothesize → verify → fix. Opts *into* methodology teaching (chiron's built-in debug handler skips Socratic for speed). *Example:* `/debug "connection refused after deploy"`
-- **`/refactor <file or smell>`** *(v0.13.0)* — Identify named code smells and guide refactoring transformations. Changes structure without changing behavior. *Example:* `/refactor path/to/handler.go`
-- **`/architect <decision>`** *(v0.13.0)* — ADRs with quality-attribute trade-off analysis. The only skill that deliberately writes a file (the ADR is a project document, not teaching content). *Example:* `/architect "event sourcing for order history?"`
+**Decide before you build:**
+```
+/tour Go channels                          # background reading
+/explain REST vs gRPC for this service     # quick comparison
+/architect "event sourcing for orders?"    # full ADR with quality attributes
+/chiron implement the chosen approach      # guided implementation
+```
 
-**How the commands relate:**
-- `/chiron` handles *"how do I..."*. `/explain` handles *"which way should I..."*. `/tour` gives background *before* you start. `/postmortem` reviews *after* you finish.
-- `/challenge` drills patterns you know. `/chiron` teaches new ones.
-- Inside any chiron response, `/hint` advances one rung on the ladder. Saying *"just write it"* always gets the full answer immediately.
+**Improve existing code:**
+```
+/refactor path/to/handler.go               # name the smell, guide the change
+/debug "connection refused after deploy"   # observe → hypothesize → verify → fix
+```
+
+**Tune chiron's voice:**
+```
+/level strict                              # firm, terse, two attempts before L4
+/level                                     # show current + all options
+```
+
+Every command preserves three invariants: **never refuses to ship when asked**, **never moralizes**, **never pollutes code with teaching content** (lessons live in chat). Defers to `CLAUDE.md` / `AGENTS.md` when they conflict.
 
 ## Pervasive mode (optional)
 
