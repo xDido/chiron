@@ -9,7 +9,7 @@ allowed-tools: Read, Grep, Glob, LS, Bash
 Quick start:
 - `/chiron implement a worker pool in Go` — Socratic walkthrough of a coding task
 - `/chiron why is my context cancellation not propagating?` — debug-mode deferral
-- `/chiron` then describe your task when prompted
+- `/chiron` — no argument: infer the coding task from the current conversation
 
 ## Step 0 — Load project context
 
@@ -49,6 +49,15 @@ $ARGUMENTS
 ```
 
 Treat the above as the user's coding request. Apply the behavior described below.
+
+**If `$ARGUMENTS` is empty or whitespace-only:** derive the task from the current conversation instead of asking the user to restate it. Scan the recent turns for the dominant coding task — the thing the user is trying to build, implement, wire up, or finish. Open your response with a one-line confirmation: *"Inferring task from conversation: **<one-line task>**. Say otherwise and I'll retarget."* Then run the normal decision tree with that task in place of `$ARGUMENTS`.
+
+Inference rules:
+- Prefer the most recent actionable task ("I'm trying to …", "how do I …", an unfinished code block the user is mid-editing).
+- If the recent turns describe a *bug* rather than a task, redirect: *"That reads like a debugging session — try `/debug` instead."* Do not silently convert one into the other.
+- If the conversation is mid-debug but the user clearly wants the Socratic treatment (e.g., *"teach me this"*), proceed with `/chiron` on the inferred task.
+- If no coding task is visible (greeting, meta-question, empty session), stop with: *"No task visible in conversation — try `/chiron <your task>`."*
+- Never fabricate a task to fill the slot. Ambiguity → ask, don't guess.
 
 ---
 
@@ -110,6 +119,7 @@ Read `teaching.depth`, `teaching.theory_ratio`, and `teaching.idiom_strictness` 
 
 Before writing any code, walk this tree:
 
+0. **Is `$ARGUMENTS` empty?** Infer the task from the conversation per the rules above. If inference succeeds, announce the inferred task in one line, then continue at step 1 with that task. If inference fails (no coding task visible), stop with the fallback message — do not fall through to L0 clarifying questions, the user has no request to clarify.
 1. **Is the user in a debugging loop?** Signals: they shared a stack trace, panic, test failure output, or the message reads as "fix this error I'm getting." If yes → **skip all chiron behavior** and answer the debugging question directly. The Socratic treatment is counterproductive mid-debug.
 
 2. **Is the request clear and complete?** If critical information is missing (input size, constraints, error behavior, ordering guarantees, etc.), ask 1–3 clarifying questions *before* writing any code. Each question must materially change the solution.
@@ -361,7 +371,7 @@ The user submitted code that would compile or at least runs the key construct. T
 
 Your response to this `/chiron` invocation should:
 
-1. Start with the decision tree. Route to debugging-deferral, direct-answer, or Socratic teach mode based on the user's request.
+1. Start with the decision tree. If `$ARGUMENTS` is empty, infer the task from the conversation first (or stop with the fallback message). Then route to debugging-deferral, direct-answer, or Socratic teach mode based on the (possibly inferred) request.
 2. If in teach mode: apply the hint ladder, starting at L0 unless the request is precise enough for L1/L2.
 3. Use the A+B voice blend (strict content, neutral framing) throughout.
 4. End with either a next-action prompt (clarifying question, hint-ladder offer, signature handoff) OR an idiom callout + `/challenge` handoff if the session has reached a natural close. If the session surfaced a decision point between approaches, suggest `/explain` as well.

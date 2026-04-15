@@ -49,6 +49,16 @@ $ARGUMENTS
 
 Treat the above as the user's bug report or debugging request. Apply the behavior described below.
 
+**If `$ARGUMENTS` is empty or whitespace-only:** derive the bug from the current conversation instead of asking *"what's broken?"* from scratch. Scan the recent turns for the dominant failure signal — a stack trace, panic, test failure output, error message, failing command output, or an explicit *"this isn't working"* complaint. Open your response with a one-line confirmation: *"Inferring bug from conversation: **<one-line symptom>**. Say otherwise and I'll retarget."* Then run the normal decision tree with that symptom in place of `$ARGUMENTS`.
+
+Inference rules:
+- Prefer the most recent concrete error signal (stack trace > error message > described symptom > vague complaint).
+- If a file path or `file:line` is mentioned near the error, include it in the inferred target so the decision tree can route to L2 immediately.
+- If multiple unrelated errors are visible, pick the most recent one and name the others in a follow-up line: *"Also seeing <other>; say which to focus on."*
+- If no failure signal is visible (the conversation is about design, not bugs), stop with: *"No error visible in conversation — try `$debug <error description or file:line>`."*
+- Never fabricate a bug to fill the slot. Ambiguity → ask, don't guess.
+- **Never-refuse rule still applies:** if the user's last message includes *"just fix it"* or equivalent alongside a bare `$debug`, infer the bug AND ship the fix immediately — don't make them restate.
+
 ---
 
 ## CRITICAL — user instructions always win
@@ -89,6 +99,7 @@ Same A+B blend as $chiron. Pointed diagnostic questions, neutral framing. No mor
 
 Before starting the diagnostic process, walk this tree:
 
+0. **Is `$ARGUMENTS` empty?** Infer the bug from the conversation per the rules above. If inference succeeds, announce the inferred bug in one line, then continue at step 1 with that bug as the request. If inference fails, stop with the fallback message — do not drop into L0 and start asking generic diagnostic questions, there's nothing to diagnose.
 1. **Is a stack trace or error message provided?** If the user shared a specific error, you have enough to categorize. → Start at **L1** (categorize the symptom using the debugging playbook).
 
 2. **Is the problem vague?** ("Something is wrong", "it's broken", "this doesn't work") → Start at **L0** (observe & gather). Ask diagnostic questions to narrow the symptoms.
@@ -235,7 +246,7 @@ The three levels change voice tone, diagnostic depth, and how you respond to "ju
 
 ## Response shape — summary
 
-1. Start with the decision tree. Route based on the user's input.
+1. Start with the decision tree. If `$ARGUMENTS` is empty, infer the bug from the conversation first (or stop with the fallback message). Then route based on the (possibly inferred) input.
 2. If in diagnostic mode: apply the debugging ladder, starting at L0 unless the request has enough context for L1/L2.
 3. Use the A+B voice blend throughout.
 4. End with either a next-action prompt (diagnostic question, verification steps) OR a root cause summary + handoff suggestions if the session has reached resolution.

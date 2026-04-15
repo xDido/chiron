@@ -2,7 +2,7 @@
 name: refactor
 description: Guided refactoring with named patterns. Identifies code smells, names the refactoring, and guides the transformation via a domain-adapted hint ladder. Defers to .github/copilot-instructions.md.
 user-invocable: true
-argument-hint: "<file path, function name, or described smell>"
+argument-hint: "[file path, function name, or described smell — omit to infer from conversation]"
 compatibility: "Run /teach-chiron first to generate .chiron-context.md"
 ---
 
@@ -12,6 +12,7 @@ Quick start:
 - `/refactor path/to/file.go` — identify refactoring opportunities in a file
 - `/refactor path/to/file.go:functionName` — refactor a specific function
 - `/refactor "this handler does too much"` — refactor based on a described smell
+- `/refactor` — no argument: infer the file or smell from the current conversation
 
 ## Step 0 — Load project context
 
@@ -51,6 +52,16 @@ $ARGUMENTS
 ```
 
 Treat the above as the user's refactoring request. Apply the behavior described below.
+
+**If `$ARGUMENTS` is empty or whitespace-only:** derive the refactoring target from the current conversation instead of asking *"what would you like to refactor?"*. Scan the recent turns for a file the user just edited or discussed, a function they named, or a smell they described in prose (*"this is getting messy"*, *"I hate this function"*, *"too much duplication"*). Open with a one-line confirmation: *"Inferring refactor target from conversation: **<file or smell>**. Say otherwise and I'll retarget."* Then run the normal decision tree with that target in place of `$ARGUMENTS`.
+
+Inference rules:
+- Prefer a concrete file or function over a described smell (file/function → L1 with the code in hand; smell → L1 with catalog mapping).
+- If the user is mid-discussion on a file, use that file; don't ask them to re-specify.
+- If only a smell description is visible ("this feels off") with no file, use the smell — the catalog mapping at L1 still works.
+- If no refactoring target is visible (the conversation is about design, docs, or a bug), stop with: *"No file or smell visible in conversation — try `/refactor <path>` or `/refactor <described smell>`."*
+- Never fabricate a smell or pick a random file to fill the slot. Ambiguity → ask, don't guess.
+- **Never-refuse rule still applies:** if *"just clean this up"* appears alongside a bare `/refactor`, infer the target AND apply the highest-impact refactoring immediately.
 
 ---
 
@@ -92,6 +103,7 @@ Same A+B blend as /chiron. Direct identification of smells, neutral framing. No 
 
 ## Decision tree
 
+0. **Is `$ARGUMENTS` empty?** Infer the refactoring target from the conversation per the rules above. If inference succeeds, announce the inferred target in one line, then continue at step 1 with that target as the request. If inference fails, stop with the fallback message — do not drop into L0 and start asking generic motivation questions.
 1. **User names a file or function** → Read it. Identify 1–3 refactoring opportunities using the catalog. Present as choices if multiple apply. Start at **L1** (name the smells).
 
 2. **User describes a smell** ("this function is too long", "there's too much duplication") → Map to a named smell from the catalog. Start at **L1**.
@@ -221,7 +233,7 @@ After a successful refactoring session:
 
 ## Response shape — summary
 
-1. Start with the decision tree. Route based on the user's input.
+1. Start with the decision tree. If `$ARGUMENTS` is empty, infer the target from the conversation first (or stop with the fallback message). Then route based on the (possibly inferred) input.
 2. If in teach mode: apply the refactoring ladder, starting at L0 unless the request specifies a smell or refactoring.
 3. Use the A+B voice blend throughout.
 4. End with either a next-action prompt (smell choices, refactoring confirmation) OR a handoff if the session is complete.

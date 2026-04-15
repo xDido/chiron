@@ -2,12 +2,17 @@
 name: explain
 description: Compare 2-3 approaches to a coding or design decision with trade-offs and a recommendation. Teach-first framing — surfaces decision complexity rather than picking for you. For "which way should I..." questions (complements {{command_prefix}}chiron which handles "how do I..." questions). Defers to {{config_files_plain}}.
 user-invocable: true
-argument-hint: "<design decision or 'which way' question>"
+argument-hint: "[design decision or 'which way' question — omit to infer from conversation]"
 allowed-tools: Read, Grep, Glob, LS, Bash
 compatibility: "Run {{command_prefix}}teach-chiron first to generate .chiron-context.md"
 ---
 
 # {{command_prefix}}explain — compare approaches with trade-offs
+
+Quick start:
+- `{{command_prefix}}explain REST vs gRPC for this service` — compare two named options
+- `{{command_prefix}}explain how should I handle retries?` — explore a design question
+- `{{command_prefix}}explain` — no argument: infer the decision point from the current conversation
 
 ## Step 0 — Load project context
 
@@ -18,6 +23,15 @@ The user's question or decision:
 ```
 $ARGUMENTS
 ```
+
+**If `$ARGUMENTS` is empty or whitespace-only:** derive the decision point from the current conversation instead of asking the user to restate it. Scan the recent turns for a visible choice — *"should we use A or B"*, *"I'm torn between X and Y"*, *"not sure which pattern fits"*, *"wondering whether to …"* — or any discussion where two or more approaches are being weighed. Open with a one-line confirmation: *"Inferring decision from conversation: **<one-line question>**. Say otherwise and I'll retarget."* Then run the normal decision tree with that question in place of `$ARGUMENTS`.
+
+Inference rules:
+- Prefer an explicit comparison ("A vs B") over an implicit one. If both are present, use the most recent.
+- If the user named the options themselves, preserve those exact option names in the inferred question.
+- If the conversation is about *implementing* a specific approach (not choosing between several), redirect: *"That reads like a how-to — try `{{command_prefix}}chiron` instead."* Do not convert an implementation question into a comparison.
+- If no decision point is visible, stop with: *"No decision point visible in conversation — try `{{command_prefix}}explain <A vs B>` or `{{command_prefix}}explain <question>`."*
+- Never fabricate a decision or invent options that weren't discussed. Ambiguity → ask, don't guess.
 
 ## CRITICAL — user instructions always win
 
@@ -44,6 +58,7 @@ Given a coding or design question with multiple plausible approaches, `{{command
 
 ## Decision tree
 
+0. **Is `$ARGUMENTS` empty?** Infer the decision point from the conversation per the rules above. If inference succeeds, announce the inferred decision in one line, then continue at step 1 with that question. If inference fails (no decision point visible, or the conversation is about implementation), stop with the fallback message — do not invent a comparison.
 1. **Is this actually a "which approach" question?** If the user asked *"how do I implement X"* (single well-defined task), route to `{{command_prefix}}chiron` instead. Respond: *"This looks like a 'how do I' question — try `{{command_prefix}}chiron <your question>` for step-by-step guidance. `{{command_prefix}}explain` is for choosing between multiple valid approaches."*
 2. **Are there actually 2+ valid approaches?** If only one approach is valid for the stated case, skip the comparison format. Give a direct one-approach recommendation with a brief explanation of why the alternatives don't fit.
 3. **Is the question under-specified?** If you can't identify 2 approaches without more context (e.g., `{{command_prefix}}explain error handling` — depends heavily on language, app type, error semantics), ask 1–2 clarifying questions before presenting approaches. Don't invent context.
@@ -169,7 +184,7 @@ Read `~/.chiron/config.json` at invocation time. The level affects the voice ton
 ## Response shape — summary
 
 1. Read `~/.chiron/config.json` for voice level.
-2. Decision tree: is this a "which approach" question? Route elsewhere if not.
+2. Decision tree: is `$ARGUMENTS` empty (→ infer from conversation)? Is this a "which approach" question? Route elsewhere if not.
 3. Identify 2–3 valid approaches; if under-specified, ask clarifying questions first.
 4. Present each approach with pros/cons/when-to-use in the format above.
 5. Close with a qualified recommendation and a handoff to `{{command_prefix}}chiron` for implementation. If the user seems unfamiliar with the topic, suggest `{{command_prefix}}tour <topic>` first for background reading.

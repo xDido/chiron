@@ -9,7 +9,7 @@ allowed-tools: Read, Write, Grep, Glob, LS, Bash
 Quick start:
 - `/architect "should we use event sourcing for order history?"` — explore a design decision
 - `/architect "PostgreSQL vs MongoDB for user profiles"` — compare specific options
-- `/architect` — record an architecture decision for the current work
+- `/architect` — no argument: infer the design decision from the current conversation
 
 ## Step 0 — Load project context
 
@@ -50,6 +50,15 @@ $ARGUMENTS
 
 Treat the above as the user's architecture decision or question. Apply the behavior described below.
 
+**If `$ARGUMENTS` is empty or whitespace-only:** derive the decision from the current conversation instead of asking the user to restate it. Scan the recent turns for an architecture-level topic — a choice between databases, frameworks, patterns, service boundaries, data models, consistency strategies, etc. Open with a one-line confirmation: *"Inferring architecture decision from conversation: **<one-line decision>**. Say otherwise and I'll retarget."* Then run the normal decision tree with that decision in place of `$ARGUMENTS`.
+
+Inference rules:
+- Prefer an explicit architecture discussion over an incidental mention. *"Should we denormalize this?"* counts; *"I used a JSON column here"* doesn't unless trade-offs were actively debated.
+- If the user has already clearly chosen an option and just wants the ADR written, infer *"record decision: <option> for <problem>"* and route straight to L3 (ADR template) or L4 (full ADR).
+- If the decision would be better served by a light comparison than a formal ADR, redirect: *"That's a lighter decision — try `/explain` instead."* `/architect` is for decisions worth committing to a record.
+- If no architecture topic is visible (the conversation is about debugging, implementation details, or unrelated), stop with: *"No architecture decision visible in conversation — try `/architect <decision>`."*
+- Never fabricate a decision to fill the slot. Ambiguity → ask, don't guess.
+
 ---
 
 ## CRITICAL — user instructions always win
@@ -88,6 +97,7 @@ Same A+B blend as /chiron. Direct identification of trade-offs, neutral framing 
 
 ## Decision tree
 
+0. **Is `$ARGUMENTS` empty?** Infer the decision from the conversation per the rules above. If inference succeeds, announce the inferred decision in one line, then continue at step 1 with that decision as the request. If inference fails, stop with the fallback message — do not invent an architecture topic.
 1. **User names a decision** ("should we use event sourcing?") → Start at **L0** (decision context). Explore the forces before comparing options.
 
 2. **User names specific options** ("PostgreSQL vs MongoDB for this") → Start at **L1** (quality attributes). The options are known; identify what matters.
@@ -253,7 +263,7 @@ After recording a decision:
 
 ## Response shape — summary
 
-1. Start with the decision tree. Route based on the user's input.
+1. Start with the decision tree. If `$ARGUMENTS` is empty, infer the decision from the conversation first (or stop with the fallback message). Then route based on the (possibly inferred) input.
 2. If in analysis mode: apply the architecture ladder, starting at L0 unless the request provides enough context for L1/L2.
 3. Use the A+B voice blend throughout.
 4. End with either a next-action prompt (context question, attribute scoring) OR a complete ADR + handoff if the session has reached resolution.

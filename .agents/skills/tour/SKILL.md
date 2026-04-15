@@ -2,7 +2,7 @@
 name: tour
 description: Structured "before each task" preamble for a coding topic. Presents read-this-first doc pointers, key concepts, and common junior mistakes. From chiron's session preamble pattern — gives you the mental model before you start writing code. For topic overviews, NOT tutorials.
 user-invocable: true
-argument-hint: "<topic to learn about>"
+argument-hint: "[topic to learn about — omit to infer from conversation]"
 compatibility: "Run /teach-chiron first to generate .chiron-context.md"
 ---
 
@@ -12,6 +12,7 @@ Quick start:
 - `/tour Go channels` — preamble for a specific primitive
 - `/tour async/await in JavaScript` — preamble for a language concept
 - `/tour database connection pooling` — preamble for an architecture topic
+- `/tour` — no argument: infer the topic from the current conversation
 
 ## Step 0 — Load project context
 
@@ -22,6 +23,14 @@ The user's topic:
 ```
 $ARGUMENTS
 ```
+
+**If `$ARGUMENTS` is empty or whitespace-only:** derive the topic from the current conversation instead of asking. Scan the recent turns for the dominant coding subject — the file, primitive, library, language feature, or architectural concept the user has been working on or asking about — and use that as the topic. Open the preamble with a one-line confirmation of what you inferred, e.g. *"Inferring topic from conversation: **Go `errgroup`**. Say otherwise and I'll retarget."* Then produce the normal 3-section output.
+
+Inference rules:
+- Prefer the most recent, most specific subject (a named primitive like `errgroup.WithContext` beats a vague category like "concurrency").
+- If the conversation spans several subjects, pick the one the user is *currently* stuck on or asking about — not the first one mentioned.
+- If the conversation has no identifiable coding topic (greeting, meta-question, empty session), fall back to: *"No topic given and I can't infer one from the conversation yet. Try `/tour <specific concept>` — e.g. `/tour Go channels`."* Then stop.
+- Never fabricate a topic to fill the slot. Ambiguity → ask, don't guess.
 
 ## CRITICAL — user instructions always win
 
@@ -47,6 +56,7 @@ Based on chiron's *"Before each task"* pattern. The output is a reading and ment
 
 ## Decision tree
 
+0. **Is `$ARGUMENTS` empty?** Infer the topic from the conversation per the rules above. If inference succeeds, announce the inferred topic in one line, then continue at step 1 with that topic. If inference fails, stop with the fallback message.
 1. **Is the topic well-defined?** If not (e.g., `/tour async programming`), ask for specificity: *"`/tour` works best with a specific concept or primitive. Try `/tour Go channels` or `/tour async/await in JavaScript`."*
 2. **Is the "topic" actually a "how do I" question?** (e.g., `/tour how do I implement a worker pool`) Route to `/chiron`: *"This looks like a task. Try `/chiron implement a worker pool in Go` for guided help, or `/explain` if you want to compare approaches first."*
 3. **Is the "topic" actually a "which way" question?** (e.g., `/tour REST vs gRPC`) Route to `/explain`: *"This looks like a choose-an-approach question. Try `/explain REST vs gRPC`."*
@@ -140,7 +150,7 @@ The 3-section structure is the same at every level. Only the phrasing and the "C
 ## Response shape — summary
 
 1. Read `~/.chiron/config.json` for voice level.
-2. Decision tree: is the topic well-defined? A "how do I" question in disguise? A "which way" question in disguise? Route appropriately.
+2. Decision tree: is `$ARGUMENTS` empty (→ infer from conversation)? Is the topic well-defined? A "how do I" question in disguise? A "which way" question in disguise? Route appropriately.
 3. Produce the 3-section format (Read this first / Key concepts / Common junior mistakes).
 4. Apply voice tone per level.
 5. Close with a handoff to `/chiron` for implementation. If the topic lends itself to drills, also suggest `/challenge <file>` for hands-on practice.
