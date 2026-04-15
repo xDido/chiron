@@ -6,6 +6,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.15.0] — 2026-04-15
+
+### Added — Zero-arg context inference across six skills
+
+Six skills now accept bare invocations and infer their target from the current conversation: `/tour`, `/chiron`, `/debug`, `/refactor`, `/explain`, `/architect`. When `$ARGUMENTS` is empty, each skill scans the recent turns for the domain-specific target (topic / task / bug / file-or-smell / decision point / architecture decision), announces the inference in one line, then runs its normal decision tree with that target substituted.
+
+**Per-skill inference targets:**
+
+| Skill | Inferred target | Primary signal in conversation |
+|-------|-----------------|--------------------------------|
+| `/tour` | Coding topic | Most recent specific concept or primitive |
+| `/chiron` | Coding task | Most recent "how do I …" / "I'm trying to …" / unfinished code block |
+| `/debug` | Specific bug / error | Most recent stack trace, panic, test failure, or "this isn't working" |
+| `/refactor` | File or named smell | Most recently edited/discussed file, or described smell |
+| `/explain` | "Which way" decision point | *"should we use A or B"*, *"torn between"*, *"not sure which"* |
+| `/architect` | Design decision | Architecture-level discussion; trade-off, stack, schema, or boundary debate |
+
+**Design locks:**
+- **Never fabricate a target.** Ambiguity → stop with a helpful fallback pointing at the explicit form, never guess.
+- **Graceful fallback per skill.** Each skill has a domain-specific "nothing to infer" message (e.g., `/debug` says *"No error visible — try `/debug <error description or file:line>`"*) so a cold-started bare invocation degrades to a single helpful line instead of dropping into L0 clarifying questions.
+- **Announcement line is mandatory.** *"Inferring <target> from conversation: **<one-line summary>**. Say otherwise and I'll retarget."* — users always see what the skill latched onto and can redirect with one message.
+- **Cross-skill redirects preserved.** `/chiron` on a bug redirects to `/debug`; `/explain` on an implementation question redirects to `/chiron`; `/architect` on a lightweight trade-off redirects to `/explain`. Inference never silently converts between skill types.
+- **Never-refuse rule wins.** If the user invokes *"just fix it"* / *"just clean it up"* / *"just decide for me"* alongside a bare form, the skill infers the target AND ships the direct answer immediately — no restate loop.
+
+### Fixed — Quick-start promises that the body never delivered
+
+`/debug` and `/architect` Quick start sections already listed bare-form invocations (*"debug the current error in context"*, *"record an architecture decision for the current work"*) but their decision trees had no matching rule — users who ran them bare dropped into generic L0 questioning. The new inference path closes the gap. `/chiron`'s older *"then describe your task when prompted"* Quick start line has also been replaced with inference.
+
+### Unchanged — skills that don't participate
+
+`/challenge` still requires a file path (inference wouldn't make sense for drill targeting). `/hint`, `/level`, `/postmortem`, `/teach-chiron` either take no free-text argument or have no natural "from conversation" interpretation.
+
+---
+
 ## [0.14.0] — 2026-04-12
 
 ### Added — Profile read-loop (Reflexion pattern)
