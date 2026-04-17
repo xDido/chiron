@@ -1,9 +1,11 @@
 {
   "name": "chiron",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "private": true,
   "scripts": {
     "build": "bun scripts/build.js",
-    "clean": "bun scripts/build.js --clean"
+    "clean": "bun scripts/build.js --clean",
+    "verify": "bun scripts/verify-integrity.js",
+    "test": "bun test scripts/lib"
   }
 }

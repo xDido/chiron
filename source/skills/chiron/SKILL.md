@@ -3,7 +3,7 @@ name: chiron
 description: Apply teach-first Socratic mentor treatment to a coding request. Questions before code, graduated hints via an L0-L4 ladder, idiom callouts. Defers to {{config_files_plain}} when they conflict.
 user-invocable: true
 argument-hint: "[coding question or task — omit to infer from conversation]"
-allowed-tools: Read, Grep, Glob, LS, Bash
+allowed-tools: Read, Grep, Glob, LS
 compatibility: "Run {{command_prefix}}teach-chiron first to generate .chiron-context.md"
 ---
 

@@ -3,7 +3,7 @@ name: tour
 description: Structured "before each task" preamble for a coding topic. Presents read-this-first doc pointers, key concepts, and common junior mistakes. From chiron's session preamble pattern — gives you the mental model before you start writing code. For topic overviews, NOT tutorials.
 user-invocable: true
 argument-hint: "[topic to learn about — omit to infer from conversation]"
-allowed-tools: Read, Grep, Glob, LS, Bash
+allowed-tools: Read, Grep, Glob, LS
 compatibility: "Run {{command_prefix}}teach-chiron first to generate .chiron-context.md"
 ---
 

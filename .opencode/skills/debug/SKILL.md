@@ -3,7 +3,7 @@ name: debug
 description: Structured debugging with hypothesis testing. Observe, hypothesize, verify, fix, explain — teaches debugging methodology via a domain-adapted hint ladder. Defers to AGENTS.md.
 user-invocable: true
 argument-hint: "[error description, file path, or stack trace — omit to infer from conversation]"
-allowed-tools: Read, Grep, Glob, LS, Bash
+allowed-tools: Read, Grep, Glob, LS
 compatibility: "Run /teach-chiron first to generate .chiron-context.md"
 ---
 

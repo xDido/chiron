@@ -4,7 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const { PROVIDERS } = require('./lib/providers');
 const { PLACEHOLDERS } = require('./lib/placeholders');
-const { readSourceSkills, transformSkill, replacePlaceholders, writeSkill } = require('./lib/transform');
+const { readSourceSkills, transformSkill, replacePlaceholders, writeSkill, parseSkill, validateSkill } = require('./lib/transform');
+const { regenerate, MANIFEST_PATH } = require('./lib/integrity');
 
 const ROOT = path.resolve(__dirname, '..');
 const SOURCE_DIR = path.join(ROOT, 'source', 'skills');
@@ -38,6 +39,19 @@ if (skills.length === 0) {
 }
 
 console.log(`Found ${skills.length} source skills: ${skills.map(s => s.name).join(', ')}`);
+
+// Validate every skill's frontmatter before writing anything to disk.
+// Collect all errors then fail once with a consolidated report.
+const validationErrors = [];
+for (const skill of skills) {
+  validationErrors.push(...validateSkill(skill.name, parseSkill(skill.content)));
+}
+if (validationErrors.length > 0) {
+  console.error('\nFrontmatter validation failed:');
+  for (const err of validationErrors) console.error(`  ${err}`);
+  console.error(`\n${validationErrors.length} error(s). Fix these and re-run.`);
+  process.exit(1);
+}
 
 // Transform and write for each platform
 let totalFiles = 0;
@@ -91,3 +105,6 @@ for (const [providerKey, providerConfig] of Object.entries(PROVIDERS)) {
 }
 
 console.log(`\nBuilt ${skills.length} skills × ${Object.keys(PROVIDERS).length} platforms = ${totalFiles} files`);
+
+const { changed } = regenerate(ROOT);
+console.log(changed ? `Updated ${MANIFEST_PATH}` : `${MANIFEST_PATH} already up to date`);

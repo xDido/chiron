@@ -3,7 +3,7 @@ name: architect
 description: Architecture Decision Records with trade-off analysis. Guides through decision context, quality-attribute scoring, and ADR generation via a domain-adapted hint ladder. Defers to {{config_files_plain}}.
 user-invocable: true
 argument-hint: "[design decision or architecture question — omit to infer from conversation]"
-allowed-tools: Read, Write, Grep, Glob, LS, Bash
+allowed-tools: Read, Write, Grep, Glob, LS
 compatibility: "Run {{command_prefix}}teach-chiron first to generate .chiron-context.md"
 ---
 

@@ -1,0 +1,26 @@
+name: CI (tests + integrity manifest)
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Run unit tests
+        run: bun test scripts/lib
+
+      - name: Verify .claude-plugin/INTEGRITY.json matches the tree
+        run: bun scripts/verify-integrity.js

@@ -2,6 +2,27 @@ const fs = require('fs');
 const path = require('path');
 
 /**
+ * Agent Skills spec fields + known provider extensions (see HARNESSES.md).
+ * Any frontmatter key outside this set is treated as a typo by validateSkill.
+ */
+const VALID_FRONTMATTER_KEYS = new Set([
+  'name', 'description',
+  'user-invocable', 'argument-hint', 'allowed-tools',
+  'license', 'compatibility', 'metadata',
+  'disable-model-invocation', 'model', 'effort', 'context',
+  'agent', 'hooks',
+]);
+
+/**
+ * Whitelist of Claude Code tools currently used or documented.
+ * Kept permissive; extend when legitimate new tools are introduced.
+ */
+const VALID_ALLOWED_TOOLS = new Set([
+  'Read', 'Write', 'Edit', 'Grep', 'Glob', 'LS',
+  'Bash', 'NotebookEdit', 'WebFetch', 'WebSearch',
+]);
+
+/**
  * Parse a SKILL.md into frontmatter lines + body.
  * Returns { fmLines: string[], fmKeys: string[], body: string }.
  * fmLines preserves original formatting; fmKeys tracks which YAML key each line belongs to.
@@ -152,11 +173,64 @@ function writeSkill(rootDir, configDir, skillName, content, packs, references) {
   }
 }
 
+/**
+ * Validate a parsed skill's frontmatter. Returns an array of human-readable
+ * error strings; empty array means the skill is valid.
+ *
+ * Checks:
+ *   - frontmatter block exists
+ *   - required fields (name, description) are present
+ *   - every frontmatter key is a known Agent Skills field or provider extension
+ *   - every value in `allowed-tools` is a known Claude Code tool name
+ */
+function validateSkill(skillName, parsed) {
+  const { fmLines, fmKeys } = parsed;
+  const errors = [];
+  const loc = `source/skills/${skillName}/SKILL.md`;
+
+  if (fmLines.length === 0) {
+    errors.push(`${loc}: missing frontmatter block (--- ... ---)`);
+    return errors;
+  }
+
+  const presentKeys = new Set(fmKeys.filter(Boolean));
+  for (const required of ['name', 'description']) {
+    if (!presentKeys.has(required)) {
+      errors.push(`${loc}: missing required frontmatter field '${required}'`);
+    }
+  }
+
+  for (const key of fmKeys) {
+    if (key && !VALID_FRONTMATTER_KEYS.has(key)) {
+      errors.push(`${loc}: unknown frontmatter field '${key}' (typo? known fields: ${[...VALID_FRONTMATTER_KEYS].join(', ')})`);
+    }
+  }
+
+  for (let i = 0; i < fmKeys.length; i++) {
+    if (fmKeys[i] !== 'allowed-tools') continue;
+    const match = fmLines[i].match(/^allowed-tools:\s*(.*)$/);
+    if (!match) continue;
+    const raw = match[1].trim();
+    if (!raw) continue;
+    const tools = raw.split(',').map(s => s.trim()).filter(Boolean);
+    for (const tool of tools) {
+      if (!VALID_ALLOWED_TOOLS.has(tool)) {
+        errors.push(`${loc}: unknown tool '${tool}' in allowed-tools (known: ${[...VALID_ALLOWED_TOOLS].join(', ')})`);
+      }
+    }
+  }
+
+  return errors;
+}
+
 module.exports = {
   parseSkill,
   replacePlaceholders,
   buildFrontmatter,
   transformSkill,
   readSourceSkills,
-  writeSkill
+  writeSkill,
+  validateSkill,
+  VALID_FRONTMATTER_KEYS,
+  VALID_ALLOWED_TOOLS
 };

@@ -1,7 +1,7 @@
 ---
 name: explain
 description: Compare 2-3 approaches to a coding or design decision with trade-offs and a recommendation. Teach-first framing — surfaces decision complexity rather than picking for you. For "which way should I..." questions (complements /chiron which handles "how do I..." questions). Defers to .pi/settings.json.
-allowed-tools: Read, Grep, Glob, LS, Bash
+allowed-tools: Read, Grep, Glob, LS
 ---
 
 # /explain — compare approaches with trade-offs
