@@ -1,6 +1,6 @@
 ---
 name: level
-description: Set or show chiron's voice level (gentle, default, or strict). Persists to ~/.chiron/config.json across sessions. Affects voice tone, hint ladder progression, and refusal behavior — not anti-patterns or the never-refuse rule.
+description: Set or show chiron's voice level (gentle, default, or strict). Zero-arg invocation prints the full config snapshot — voice level plus drill sizing and teaching dials — doubling as a health check. Persists to ~/.chiron/config.json across sessions.
 compatibility: "Run /teach-chiron first to generate .chiron-context.md"
 ---
 
@@ -28,7 +28,12 @@ If the current project's `.cursorrules` says to ignore level settings or pin chi
 
 `/level` is the sole interface for chiron's voice level. It reads and writes `~/.chiron/config.json`. Other chiron skills (`/chiron`, `/challenge`, `/hint`) read the same file at invocation time to pick up the configured level.
 
-Every response from this command uses the **three-level list format** with a `→` marker in the left margin pointing at the currently active level. The active level is read from `~/.chiron/config.json` (or defaults to `default` if the file is missing or invalid).
+Two behaviors:
+
+- **With an argument** (`gentle`, `default`, or `strict`): writes the new `voice_level` to `~/.chiron/config.json`, preserving all other fields.
+- **Without an argument**: prints the full config snapshot — voice level plus drill sizing plus teaching dials — so users can see every knob at a glance. This doubles as a health check.
+
+Every response uses the **three-level list format** with a `→` marker in the left margin pointing at the currently active level. The active level is read from `~/.chiron/config.json` (or defaults to `default` if the file is missing or invalid).
 
 ## Standard list format
 
@@ -53,7 +58,9 @@ Read `~/.chiron/config.json` if it exists. Extract the `voice_level` field.
 
 ### Case A — no argument (`/level` with nothing after)
 
-Show the three-level list with `→` on the current active level. Header shows the current level with `(no config file yet)` suffix if the file is missing.
+Print the full config snapshot: voice level, drill sizing, and teaching dials. This doubles as a health check so users can see every knob at once instead of hand-editing `~/.chiron/config.json` to discover what exists.
+
+Read `~/.chiron/config.json`. For any missing/invalid field, show the default value and annotate its source as `(default)`. If the whole file is missing, annotate the voice-level header with `(no config file yet)` and render every field as `(default)`.
 
 ```
 Current chiron level: <current>  [(no config file yet) if file missing]
@@ -62,19 +69,39 @@ Current chiron level: <current>  [(no config file yet) if file missing]
   default  — A+B blend (v0.1 baseline); L4 after L3 attempt or request
   strict   — sharper, more demanding; L4 after 2 attempts or request
 
-To change: /level gentle | /level default | /level strict
+Drill sizing:
+  max_lines_changed      = <val>   [1, 100]  (default 20)
+  max_functions_touched  = <val>   [1, 5]    (default 1)
+  time_minutes_min       = <val>   [1, 60]   (default 5)
+  time_minutes_max       = <val>   [1, 60]   (default 15)
+
+Teaching dials:
+  depth             = <val>   [1, 10]  (default 5)   — Socratic question depth
+  theory_ratio      = <val>   [1, 10]  (default 3)   — theory vs. practical
+  idiom_strictness  = <val>   [1, 10]  (default 5)   — convention pedantry
+
+Config file: ~/.chiron/config.json  [exists | missing]
+
+To change level: /level gentle | /level default | /level strict
+To tune dials:   edit ~/.chiron/config.json directly — see README Configuration for field docs
 ```
 
-Replace `  ` (two spaces) with `→ ` on the row matching `<current>`. Leave the other two rows with the two-space indent.
+Replace `  ` (two spaces) with `→ ` on the three-level list row matching `<current>`. Leave the other two rows with the two-space indent.
+
+Append ` (default)` after any field value that came from the fallback (missing file, missing key, or invalid value silently clamped).
 
 Do NOT modify the config file in this case.
 
 ### Case B — valid argument (`gentle`, `default`, or `strict`)
 
 1. Ensure `~/.chiron/` directory exists (create if missing).
-2. Read existing config file if it exists; preserve all other fields.
-3. Update (or add) `voice_level` to the new value.
-4. If the file didn't exist, create it with this minimal schema:
+2. Read existing config file if it exists. Classify by `schema_version`:
+   - **Missing or `schema_version === 1`** → proceed. (A v1 file without `schema_version` is treated as v1; we add the field on write.)
+   - **`schema_version` is an integer > 1** → **future** version. DO NOT WRITE. The file was produced by a newer chiron than this one; writing would downgrade it. Respond with: *"~/.chiron/config.json is schema_version `<N>`, but this chiron only understands up to 1. Refusing to write to avoid data loss. Please update chiron or hand-edit the file."* Then stop — do not modify the file.
+   - **`schema_version` present but non-integer, negative, or otherwise invalid** → treat as corrupt. Respond with: *"~/.chiron/config.json has an invalid `schema_version` (`<value>`). Refusing to write; please fix the field or delete the file to reset."* Then stop.
+   - **File unreadable (bad JSON, IO error)** → respond with: *"~/.chiron/config.json could not be parsed. Refusing to write; delete the file to reset or fix it by hand."* Then stop. **Never rename or delete** the user's config file automatically — it may contain hand-tuned dials worth recovering.
+3. Update (or add) `voice_level` to the new value. Preserve every other field verbatim (drill, teaching, and any unknown-to-us fields).
+4. Ensure `schema_version: 1` is present (add it if missing). If the file didn't exist at all, create it with this minimal skeleton:
    ```json
    {
      "schema_version": 1,
@@ -121,13 +148,20 @@ Do not moralize. Do not suggest the user *"try harder to type correctly"*. Just 
 }
 ```
 
-- `schema_version` — integer, reserved for future migrations. Always `1` in v0.2.x.
+- `schema_version` — integer, currently `1`. Bumped only on breaking changes (see evolution policy below).
 - `voice_level` — one of `"gentle"`, `"default"`, `"strict"`.
+
+**Schema evolution policy:**
+
+- **Additive changes do NOT bump `schema_version`.** New fields (like `drill.*` in v0.2.1, `teaching.*` in v0.12.0) extend the schema without breaking v1 readers — missing fields silently fall back to defaults. A v0.2.0 chiron can read a v0.13.0 file and vice-versa.
+- **Breaking changes DO bump `schema_version`.** Renaming a field, changing a type, or removing a field in a way that silent fallback cannot fix triggers a version bump and requires a migration step in `/level` (mirroring the profile.json v1→v2 migration in `/challenge` Step 8).
+- **Forward-compat safety:** a future-versioned file is NEVER overwritten. `/level` refuses to write to a file whose `schema_version` is greater than this skill knows about (see Step 2 Case B). This prevents accidental downgrades after a chiron version mix.
 
 **Invariants:**
 
-- Always preserve other fields in the config file when updating `voice_level`. Future v0.2.x releases will add fields (drill sizing, grading threshold, etc.); this command must not clobber them.
-- Never crash on corrupt input. Fall back to `default` silently.
+- Always preserve other fields in the config file when updating `voice_level`. Future releases will add fields (grading thresholds, hint tuning, etc.); this command must not clobber them.
+- On write, ensure `schema_version: 1` is present at the top level.
+- Never crash on corrupt input. Fall back to `default` silently during reads.
 - Never write to `~/.chiron/profile.json` from this command.
 
 ---
@@ -144,7 +178,7 @@ Do not moralize. Do not suggest the user *"try harder to type correctly"*. Just 
 
 ## Tuning other config fields *(v0.2.1+)*
 
-`/level` only manages the `voice_level` field. Other fields in `~/.chiron/config.json` (drill sizing as of v0.2.1, future tunables in later releases) can be edited directly with any text editor. See the README Configuration section for the current schema and field documentation.
+`/level` only *writes* to the `voice_level` field. Other fields in `~/.chiron/config.json` (drill sizing as of v0.2.1, teaching dials as of v0.12.0) are edited directly with any text editor, but zero-arg `/level` *reads* and *prints* all of them so users can discover what exists without opening the file. See the README Configuration section for the current schema and field documentation.
 
 Drill sizing fields added in v0.2.1:
 

@@ -1,7 +1,7 @@
 {
   "name": "chiron",
   "description": "Teach-first mentor mode for Claude Code. Socratic questions before code, drills from your own source.",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "author": {
     "name": "Ahmed Haitham",
     "email": "adhaithaam@gmail.com"

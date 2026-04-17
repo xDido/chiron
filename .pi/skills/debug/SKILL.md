@@ -1,7 +1,7 @@
 ---
 name: debug
 description: Structured debugging with hypothesis testing. Observe, hypothesize, verify, fix, explain — teaches debugging methodology via a domain-adapted hint ladder. Defers to .pi/settings.json.
-allowed-tools: Read, Grep, Glob, LS, Bash
+allowed-tools: Read, Grep, Glob, LS
 ---
 
 # /debug — structured debugging with hypothesis testing

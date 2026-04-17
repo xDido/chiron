@@ -287,21 +287,50 @@ When the user pastes their attempt (or makes an edit you can inspect):
 
 ## Step 8 — Log to profile
 
-Write an entry to `~/.chiron/profile.json`.
+Write an entry to `~/.chiron/profile.json`. `/challenge` is the **only writer** of this file; all other chiron skills read-only. Every write MUST pass through the migration pipeline below, in order — this is the single executable contract for profile schema evolution.
 
-**If the file does not exist**, create it with this skeleton, generating a fresh UUID v4 for `install_id`:
+**Constants used in this step:**
 
-```json
-{
-  "schema_version": 1,
-  "install_id": "<GENERATE A UUID v4 HERE, e.g., 8f2a9c1e-4b3d-4f7e-9a1b-2c3d4e5f6a7b>",
-  "entries": []
-}
-```
+- `CURRENT_PROFILE_VERSION = 2`
+- `SUPPORTED_PROFILE_VERSIONS = { 1, 2 }` (reading — writing always emits 2)
 
-The UUID is generated exactly once on first profile write. On subsequent writes, preserve the existing `install_id` — never regenerate.
+### Step 8.a — Read the existing file
 
-**Append an entry** to the `entries` array:
+Attempt to read `~/.chiron/profile.json`.
+
+- **File does not exist** → start with the fresh skeleton `{ "schema_version": 2, "entries": [] }`. Skip to Step 8.e.
+- **File exists but JSON.parse fails, or the top level is not an object** → the file is corrupt. Rename it to `~/.chiron/profile.json.broken.<ISO8601 timestamp>` (preserving the user's data for manual recovery), start with the fresh v2 skeleton, and append a one-line note to the user's next response: *"profile.json was unreadable and has been preserved as `profile.json.broken.<timestamp>` — starting a fresh drill log."* Continue to Step 8.e with the fresh skeleton.
+- **File reads cleanly** → continue to Step 8.b with the parsed object (call it `existing`).
+
+### Step 8.b — Determine the on-disk schema version
+
+Classify `existing` into one of four buckets using the rules below, in order:
+
+1. **`schema_version` is a positive integer greater than `CURRENT_PROFILE_VERSION`** → **future** version. DO NOT WRITE. The file was produced by a newer chiron than this one; writing would downgrade it and lose data. Emit to the user: *"profile.json is schema_version `<N>`, but this chiron only understands up to `<CURRENT_PROFILE_VERSION>`. Skipping this log to avoid downgrading — please update chiron or hand-edit `~/.chiron/profile.json` if you want to continue logging."* Then STOP Step 8 — do NOT fall through to 8.c and do NOT append.
+2. **`schema_version === 2`** → already current. `needs_migration = false`. Continue to 8.c.
+3. **`schema_version === 1`, OR `schema_version` is missing, OR `install_id` is present at the top level** → legacy v1. `needs_migration = true`. Continue to 8.c.
+4. **Anything else** (e.g., `schema_version === "two"`, negative, null, boolean) → treat as corrupt per Step 8.a's recovery path: back up as `profile.json.broken.<timestamp>`, start fresh, emit the same one-line note, continue to 8.e with the fresh skeleton.
+
+### Step 8.c — Migrate v1 → v2 if `needs_migration`
+
+If `needs_migration` is true:
+
+1. Start from a shallow copy of `existing`.
+2. Delete the top-level `install_id` field if present. (`install_id` was an unused UUID in v1; removed to reduce cross-session fingerprinting surface.)
+3. Set `schema_version = 2`.
+4. Preserve the existing `entries` array verbatim — do NOT filter, re-order, or mutate any entry. Per-entry shape is unchanged across v1 and v2.
+5. Drop any other top-level unknown fields. Profiles are flat (`schema_version`, `entries`) by design; nothing else belongs there.
+
+If `needs_migration` is false, skip straight to Step 8.d with `existing` unchanged.
+
+### Step 8.d — Validate the entries array
+
+- If `entries` is not an array (missing, null, wrong type), replace it with `[]`. This is the only shape guarantee the skill enforces; individual entries are not re-validated against old data.
+- If the entries array length exceeds 5000, retain the last 5000 and drop the oldest. (Soft cap to keep reads fast. Surface a one-line note to the user the first time this trims: *"profile.json exceeded 5000 entries; oldest entries pruned."*)
+
+### Step 8.e — Append the new entry
+
+Append a single entry to `entries`:
 
 ```json
 {
@@ -319,6 +348,17 @@ The UUID is generated exactly once on first profile write. On subsequent writes,
 - **`drill_solved`** — user passed the constraint (any grade)
 - **`drill_attempted`** — user tried but didn't meet the constraint, or submitted an ungradable attempt
 - **`drill_gaveup`** — user explicitly asked for the answer without finishing (said *"just tell me"*, *"show me the fix"*, or triggered the disengagement failure mode)
+
+### Step 8.f — Write the file
+
+Write the object back to `~/.chiron/profile.json` as JSON with 2-space indentation. The top-level fields in the written object MUST be exactly:
+
+- `schema_version: 2`
+- `entries: [ ... ]`
+
+No other top-level fields. If the migration dropped `install_id`, confirm it is not re-introduced by the write.
+
+**Migration surfacing.** When Step 8.c actually migrated the file (not when it was already v2), append one terse line to the assistant's next response: *"profile.json migrated from schema_version 1 to 2 (install_id removed)."* — shown once per migration, never again on subsequent writes.
 
 **Path handling.** `~/.chiron/profile.json` works on all three platforms via standard shell expansion. On Linux/macOS this is `$HOME/.chiron/profile.json`. On Windows-bash it expands to `$USERPROFILE/.chiron/profile.json`. Use whatever JSON write mechanism is available — the model can Write the file directly.
 

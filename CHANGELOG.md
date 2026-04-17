@@ -6,6 +6,51 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [0.16.0] — 2026-04-16
+
+### Added — Executable schema versioning for `~/.chiron/` files
+
+Both user-data files now ship a versioned migration pipeline instead of documented-only behaviour. Every write passes through an explicit decision tree; reads are permissive; downgrades are refused.
+
+- **`/challenge` Step 8 → migration pipeline.** The old one-line *"older profiles may contain `install_id` — drop it on next write"* note is replaced by a six-step procedure (8.a read → 8.b classify `schema_version` → 8.c migrate v1→v2 → 8.d validate `entries[]` → 8.e append → 8.f write). Constants `CURRENT_PROFILE_VERSION = 2` and `SUPPORTED_PROFILE_VERSIONS = {1, 2}` are declared at the top of the step. Legacy-v1 detection now triggers on any of: `install_id` present, `schema_version === 1`, or `schema_version` missing. A successful migration surfaces one terse user-facing line.
+- **Corrupt-profile safety.** Unreadable `profile.json` files are renamed to `profile.json.broken.<ISO8601 timestamp>` (data preserved for manual recovery) and a fresh log is started. A soft cap of 5000 entries prunes from the oldest with a one-line note the first time it trips.
+- **Forward-compat refusal.** Files with `schema_version` greater than this chiron understands are NEVER overwritten. `/challenge` stops without appending and surfaces a message pointing at the version mismatch; `/level` does the same for `config.json`. This prevents a newer chiron's file from being silently downgraded by an older install.
+- **`/level` hardening.** Case B now classifies `config.json`'s `schema_version` before writing (missing / 1 / >1 / invalid). On corruption, `/level` never renames or deletes the file — it stops and asks the user to fix or delete by hand, because config values are often hand-tuned. A "Schema evolution policy" block in the Config schema section makes the additive-without-bump vs breaking-with-bump rule explicit.
+- **`/postmortem` schema-aware reads.** Profile-informed trends now branches on `schema_version` (1, 2, future, corrupt). A future-versioned profile yields one "newer than this chiron understands" Session note and falls through to conversation-only scoring. The read-only invariant is reaffirmed: `/postmortem` never renames, repairs, or writes `profile.json` — that's `/challenge`'s job.
+- **README Privacy → Migrations.** New subsection with a version table (`config.json` 1; `profile.json` 2, reads 1+2), the v1→v2 migration explainer, forward-compat-safety note, and corrupt-file handling.
+
+### Added — Testing foundation
+
+First automated test suite in the project. `bun test scripts/lib` runs two files (43 tests, ~190ms):
+
+- **`scripts/lib/transform.test.js`** — covers `parseSkill` (valid / no frontmatter / unterminated / CRLF / blank+comment lines), `replacePlaceholders` (single / repeated / unmatched / empty map / special chars), `buildFrontmatter` (always-include name+description / per-provider filtering / placeholder substitution), `transformSkill` (golden transforms for Claude Code, Cursor, Gemini, Codex), `validateSkill` (6 error paths + happy path), provider↔placeholder consistency, and a sweep that validates every real skill in `source/skills/`.
+- **`scripts/lib/integrity.test.js`** — covers `collectFiles` (tracked vs untracked / sorted / deduped), `computeManifest` (version + algorithm + hash correctness), `verifyManifest` round-trip plus hash-mismatch / missing-file / extra-file / unsupported `manifest_version` / missing-manifest error paths, and `regenerate` (first-call / idempotent / detects-and-rewrites). Each test runs against a per-test temp-dir fixture.
+
+CI switched to `oven-sh/setup-bun@v2`; `bun test scripts/lib` now runs before `bun scripts/verify-integrity.js` on every PR and push to main.
+
+### Added — Frontmatter validator in the build
+
+`scripts/lib/transform.js` exports a new `validateSkill()` that checks: required fields (`name`, `description`), known frontmatter keys against `VALID_FRONTMATTER_KEYS` (Agent Skills spec + documented provider extensions), and each value in `allowed-tools` against `VALID_ALLOWED_TOOLS` (Claude Code tool whitelist). `scripts/build.js` runs validation over every source skill before writing any output, collects all errors, and fails the build with a consolidated per-skill report. Typos like `allowed-toolz` or `Gerp` fail loudly at build time instead of passing silently and being caught only when INTEGRITY.json's hashes drift.
+
+### Added — Cross-platform `scripts/install.js`
+
+New install script that copies one platform's pre-built skills into a target project without cloning the full repo. `node scripts/install.js --platform <name> --dest <project-root>` copies `.{platform}/skills/` into the destination and prints a version stamp. Supports `--list`, `--dry-run`, and `--help`. Eliminates the "clone + `cp -r`" dance for the 12 non-Claude-Code platforms.
+
+### Added — Zero-arg `/level` prints full config
+
+`/level` with no argument now prints a full health-check snapshot: voice level, drill sizing (`drill.max_lines_changed`, `drill.max_functions_touched`, `drill.time_minutes_min`, `drill.time_minutes_max`), and teaching dials (`teaching.depth`, `teaching.theory_ratio`, `teaching.idiom_strictness`), with `(default)` annotations on any field falling back. Users no longer need to open `~/.chiron/config.json` to discover which knobs exist. Writing semantics are unchanged — `/level` still only writes `voice_level`.
+
+### Changed — README platform table
+
+The install table for non-Claude platforms gained a **Status** column (supported / experimental / community) so users know whether Kiro, Trae, Trae CN, and OpenAI are on thinner ice than Cursor, Gemini, Codex, OpenCode, Agents, Pi, Rovo Dev, and VS Code Copilot. The section links `HARNESSES.md` for per-platform frontmatter and directory-fallback detail, and points at the new `scripts/install.js` alongside the manual `cp -r` example.
+
+### Internal — Repository hygiene
+
+- Test files under `scripts/lib/*.test.js` and the new `scripts/install.js` are integrity-tracked and covered by the manifest.
+- CI workflow renamed to *CI (tests + integrity manifest)* to reflect the expanded gate.
+
+---
+
 ## [0.15.0] — 2026-04-15
 
 ### Added — Zero-arg context inference across six skills

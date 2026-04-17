@@ -106,12 +106,20 @@ Rules for trend callouts:
 - **No moralizing.** State the trend as fact, not judgment. *"Third session"* yes. *"Finally solved it"* no.
 - **Never shame history.** Past failures are data, not character flaws.
 
+**Schema-aware reading (v0.16.0+):**
+
+- **`schema_version === 1` or `schema_version === 2`** → supported. Read `entries[]` and compute trend data normally. In v1 profiles, ignore any top-level `install_id` field (it's unused legacy). Entry shape is identical across v1 and v2.
+- **`schema_version` is an integer > 2** → unknown future version. The file was produced by a newer chiron than this one; the entries may have a shape this skill doesn't recognize. Skip trend analysis entirely and surface ONE terse line in the Session summary: *"Profile note: `~/.chiron/profile.json` is schema_version `<N>`, newer than this chiron understands (max 2) — scoring on current conversation only."* Fall through to conversation-only scoring.
+- **`schema_version` missing but `entries` is a valid array** → assume v1. Same behavior as v1 above.
+- **`schema_version` is a non-integer, negative, or otherwise invalid type** → treat as corrupt (see below).
+
 **Error handling (silent fallback — never crash):**
-- Profile file missing or corrupt → no trend data, score only on current conversation, no trend callouts
+- Profile file missing → no trend data, score only on current conversation, no trend callouts
+- File unreadable / corrupt JSON → same behavior as missing. **Do NOT rename or repair the file here** — `/postmortem` is strictly read-only; repair is `/challenge` Step 8's responsibility.
 - File is very large (>500 entries) → read last 200 entries only for trend analysis
 - No relevant trend signals (all tags are one-off or no overlap with current session) → score only on current conversation, no trend callouts
 
-**Read-only invariant:** Never write to `~/.chiron/profile.json` from `/postmortem`. This preserves the v0.3.0 read-only contract — `/postmortem` never persists scores or modifies any chiron state file. The file is owned exclusively by `/challenge`'s Step 8.
+**Read-only invariant:** Never write to `~/.chiron/profile.json` from `/postmortem`. This preserves the v0.3.0 read-only contract — `/postmortem` never persists scores, renames the file, or modifies any chiron state file. The file is owned exclusively by `/challenge`'s Step 8, which is the only writer and the only component allowed to perform migrations or backups.
 
 ## Response format — keep it terse
 

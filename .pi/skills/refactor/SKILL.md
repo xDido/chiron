@@ -1,7 +1,7 @@
 ---
 name: refactor
 description: Guided refactoring with named patterns. Identifies code smells, names the refactoring, and guides the transformation via a domain-adapted hint ladder. Defers to .pi/settings.json.
-allowed-tools: Read, Grep, Glob, LS, Bash
+allowed-tools: Read, Grep, Glob, LS
 ---
 
 # /refactor — guided refactoring with named patterns

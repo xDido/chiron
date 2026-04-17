@@ -3,7 +3,7 @@ name: refactor
 description: Guided refactoring with named patterns. Identifies code smells, names the refactoring, and guides the transformation via a domain-adapted hint ladder. Defers to CLAUDE.md or AGENTS.md.
 user-invocable: true
 argument-hint: "[file path, function name, or described smell — omit to infer from conversation]"
-allowed-tools: Read, Grep, Glob, LS, Bash
+allowed-tools: Read, Grep, Glob, LS
 compatibility: "Run /teach-chiron first to generate .chiron-context.md"
 ---
 

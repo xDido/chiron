@@ -2,7 +2,7 @@
 name: teach-chiron
 description: One-time comprehensive project scan. Reads every important file in the codebase and writes .chiron-context.md — the persistent context file that all other chiron skills reference instead of re-scanning.
 user-invocable: true
-allowed-tools: Read, Write, Grep, Glob, LS, Bash
+allowed-tools: Read, Write, Grep, Glob, LS
 ---
 
 # {{command_prefix}}teach-chiron — generate project context for chiron
